@@ -1,16 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:srm_notes/components/already_have_an_account_acheck.dart';
 import 'package:srm_notes/components/rounded_button.dart';
-
+import 'package:srm_notes/constants.dart';
 import 'package:srm_notes/screens/HomePage.dart';
 import 'package:srm_notes/screens/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
-import '../constants.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -113,14 +110,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Positioned(
-                        top: 50,
-                        left: 100,
-                        child: SvgPicture.asset(
-                          "assets/icons/signup.svg",
-                          height: size.height * 0.25,
-                        ),
-                      ),
+                      // Positioned(
+                      //   top: 50,
+                      //   left: 100,
+                      //   child: SvgPicture.asset(
+                      //     "assets/icons/signup.svg",
+                      //     height: size.height * 0.25,
+                      //   ),
+                      // ),
                       Container(
                         width: size.width * 0.8,
                         child: Form(
@@ -129,38 +126,73 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             children: <Widget>[
                               SizedBox(height: 20.0),
                               TextFormField(
-                                  //                     decoration: textInputDecoration.copyWith(hintText:'Your Name',labelText: "Name",prefixIcon: Icon(
-                                  //                             Icons.person,
-                                  // color: kPrimaryColor,
-                                  //                           ),),
-                                  decoration: InputDecoration(
-                                    fillColor: kPrimaryLightColor,
-                                    filled: true,
-                                    contentPadding: new EdgeInsets.symmetric(
-                                        vertical: 0.0, horizontal: 0.0),
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(29),
-                                        borderSide: BorderSide(
-                                            width: 2, color: Colors.black)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(29),
-                                        borderSide: BorderSide(
-                                            width: 2, color: Colors.purple)),
-                                    hintText: "Your Name",
-                                    labelText: "Name",
-                                    prefixIcon: Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Icon(
-                                        Icons.person,
-                                        color: kPrimaryColor,
-                                      ), // icon is 48px widget.
-                                    ),
+                                //                     decoration: textInputDecoration.copyWith(hintText:'Your Name',labelText: "Name",prefixIcon: Icon(
+                                //                             Icons.person,
+                                // color: kPrimaryColor,
+                                //                           ),),
+                                decoration: InputDecoration(
+                                  fillColor: kPrimaryLightColor,
+                                  filled: true,
+                                  contentPadding: new EdgeInsets.symmetric(
+                                      vertical: 0.0, horizontal: 0.0),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(29),
+                                      borderSide: BorderSide(
+                                          width: 2, color: Colors.black),),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(29),
+                                      borderSide: BorderSide(
+                                          width: 2, color: Colors.purple),),
+                                  hintText: "Your Name",
+                                  labelText: "Name",
+                                  prefixIcon: Padding(
+                                    padding: EdgeInsets.all(0.0),
+                                    child: Icon(
+                                      Icons.person,
+                                      color: kPrimaryColor,
+                                    ), // icon is 48px widget.
                                   ),
-                                  validator: (val) =>
-                                      val.isEmpty ? 'Enter your name' : null,
-                                  onChanged: (val) {
-                                    setState(() => _name = val);
-                                  }),
+                                ),
+                                validator: (val) =>
+                                    val.isEmpty ? 'Enter your name' : null,
+                                onChanged: (val) {
+                                  setState(() => _name = val);
+                                },
+                              ),
+                              SizedBox(height: 20.0),
+                              TextFormField(
+                                decoration: InputDecoration(
+                                  fillColor: kPrimaryLightColor,
+                                  filled: true,
+                                  contentPadding: new EdgeInsets.symmetric(
+                                      vertical: 0.0, horizontal: 0.0),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(29),
+                                    borderSide: BorderSide(
+                                        width: 2, color: Colors.black),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(29),
+                                    borderSide: BorderSide(
+                                        width: 2, color: Colors.purple),
+                                  ),
+                                  hintText: "RA...",
+                                  labelText: "Enter your Reg. No.",
+                                  prefixIcon: Padding(
+                                    padding: EdgeInsets.all(0.0),
+                                    child: Icon(
+                                      Icons.perm_identity,
+                                      color: kPrimaryColor,
+                                    ), // icon is 48px widget.
+                                  ),
+                                ),
+                                validator: (val) =>
+                                    // val.isEmpty ? 'Enter your Reg. No.' : null,
+                                    !val.contains('RA') ? "Reg no. must contain 'RA'" : null,
+                                onChanged: (val) {
+                                  setState(() => _reg = val);
+                                },
+                              ),
                               SizedBox(height: 20.0),
                               TextFormField(
                                   decoration: InputDecoration(
@@ -175,38 +207,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(29),
                                         borderSide: BorderSide(
-                                            width: 2, color: Colors.purple)),
-                                    hintText: "RA...",
-                                    labelText: "Enter your Reg. No.",
-                                    prefixIcon: Padding(
-                                      padding: EdgeInsets.all(0.0),
-                                      child: Icon(
-                                        Icons.perm_identity,
-                                        color: kPrimaryColor,
-                                      ), // icon is 48px widget.
-                                    ),
-                                  ),
-                                  validator: (val) => val.isEmpty
-                                      ? 'Enter your Reg. No.'
-                                      : null,
-                                  onChanged: (val) {
-                                    setState(() => _reg = val);
-                                  }),
-                              SizedBox(height: 20.0),
-                              TextFormField(
-                                  decoration: InputDecoration(
-                                    fillColor: kPrimaryLightColor,
-                                    filled: true,
-                                    contentPadding: new EdgeInsets.symmetric(
-                                        vertical: 0.0, horizontal: 0.0),
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(29),
-                                        borderSide: BorderSide(
-                                            width: 2, color: Colors.black)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(29),
-                                        borderSide: BorderSide(
-                                            width: 2, color: Colors.purple)),
+                                            width: 2, color: Colors.purple),),
                                     hintText: "Enter your college id",
                                     labelText: "Email",
                                     prefixIcon: Padding(
@@ -270,9 +271,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     contentPadding:
                                         new EdgeInsets.symmetric(vertical: 0.0),
                                     border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(29),
-                                        borderSide: BorderSide(
-                                            width: 2, color: Colors.green)),
+                                      borderRadius: BorderRadius.circular(29),
+                                      borderSide: BorderSide(
+                                          width: 2, color: Colors.green),
+                                    ),
                                     focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(29),
                                         borderSide: BorderSide(
@@ -281,10 +283,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     labelText: "Confirm Password",
                                     suffixIcon: Container(
                                       child: IconButton(
-                                          icon: Icon(Icons.remove_red_eye),
-                                          onPressed: () {
-                                            _toggle();
-                                          }),
+                                        icon: Icon(Icons.remove_red_eye),
+                                        onPressed: () {
+                                          _toggle();
+                                        },
+                                      ),
                                     ),
                                     prefixIcon: Icon(
                                       Icons.lock,
@@ -305,26 +308,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 text: "SIGNUP",
                                 press: () async {
                                   if (_formKey.currentState.validate()) {
-                                    setState(() {
-                                      isSpinner = true;
-                                    });
+                                    setState(
+                                      () {
+                                        isSpinner = true;
+                                      },
+                                    );
                                     print('inside');
                                     await createUser();
                                     await addUser();
-                                    setState(() {
-                                      isSpinner = false;
-                                    });
+                                    setState(
+                                      () {
+                                        isSpinner = false;
+                                      },
+                                    );
                                   }
                                 },
                               ),
-                              SizedBox(height: 20.0),
+                              // SizedBox(height: 20.0),
                               Text(
                                 error,
                                 style: TextStyle(
                                   color: Colors.red,
                                 ),
                               ),
-                              SizedBox(height: size.height * 0.03),
+                              SizedBox(height: 10),
                               AlreadyHaveAnAccountCheck(
                                 login: false,
                                 press: () {
