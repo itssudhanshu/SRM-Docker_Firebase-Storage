@@ -38,7 +38,7 @@ class WelcomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "WELCOME TO EDU",
+                    "WELCOME TO SRM-HELPER",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: size.height * 0.05),
@@ -48,7 +48,7 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                   SizedBox(height: size.height * 0.05),
                   RoundedButton(
-                    text: "LOGIN",
+                    text: "SIGN IN",
                     press: () {
                       Navigator.push(
                         context,

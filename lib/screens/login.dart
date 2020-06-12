@@ -4,14 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:srm_notes/components/already_have_an_account_acheck.dart';
 import 'package:srm_notes/components/models/loading.dart';
 import 'package:srm_notes/components/rounded_button.dart';
-import 'package:srm_notes/screens/HomePage.dart';
-import 'package:srm_notes/screens/signup.dart';
-
-import '../constants.dart';
+import 'package:srm_notes/constants.dart';
 
 class LoginScreen extends StatefulWidget {
-  final Function toggleView;
-  LoginScreen({this.toggleView});
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -37,14 +32,21 @@ class _LoginScreenState extends State<LoginScreen> {
     return isSpinner
         ? Loading()
         : Scaffold(
+            backgroundColor: Colors.white,
+            extendBodyBehindAppBar: true,
             appBar: AppBar(
+              elevation: 0,
               automaticallyImplyLeading: false,
               // leading: Icon(null),
-              backgroundColor: kPrimaryColor,
+              backgroundColor: Colors.transparent,
               title: Center(
                 child: Text(
-                  "LOGIN",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  "SIGN IN",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: Colors.black,
+                      letterSpacing: 2.0),
                 ),
               ),
             ),
@@ -147,20 +149,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                   }),
                               SizedBox(height: 20.0),
                               RoundedButton(
-                                text: "LOGIN",
+                                text: "SIGN IN",
                                 press: () async {
                                   try {
-                                  setState(() {
-                                    isSpinner = true;
-                                  });
+                                    setState(
+                                      () {
+                                        isSpinner = true;
+                                      },
+                                    );
                                     final user =
                                         await _auth.signInWithEmailAndPassword(
                                             email: _email, password: _pass);
                                     if (user != null) {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => HomePage()));
+                                      Navigator.pushReplacementNamed(
+                                          context, '/home');
                                     } else {
                                       isSpinner = false;
                                       displayDialog(context, 'Error',
@@ -176,8 +178,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               SizedBox(height: size.height * 0.03),
                               AlreadyHaveAnAccountCheck(
-                                press: () {
-                                  widget.toggleView();
+                                press: () async {
+                                  Navigator.pushNamed(context, '/signup');
                                 },
                               ),
                             ],
