@@ -9,7 +9,29 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text('BHAK BSDK',style: TextStyle(fontSize: 50,fontStyle: FontStyle.italic),)),
+      drawer: SafeArea(
+        child: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                child: Image.asset(
+                  "assets/images/signup_top.png",
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      appBar: AppBar(
+        title: Text("‍‍☯"),
+        centerTitle: true,
+      ),
+      body: Center(
+          child: Text(
+        'BHkhjmnbAK BS.k,hDK',
+        style: TextStyle(fontSize: 50, fontStyle: FontStyle.italic),
+      )),
     );
   }
 }

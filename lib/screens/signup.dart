@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:srm_notes/components/already_have_an_account_acheck.dart';
+import 'package:srm_notes/components/models/loading.dart';
 import 'package:srm_notes/components/rounded_button.dart';
 import 'package:srm_notes/constants.dart';
 import 'package:srm_notes/screens/HomePage.dart';
@@ -10,6 +11,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 
 class SignUpScreen extends StatefulWidget {
+    final Function toggleView;
+  SignUpScreen({this.toggleView});
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
 }
@@ -18,7 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _fireStore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
-
+  // List faculty = ["faculty","FACULTY"];
   bool isSpinner = false;
   String _name;
   String _reg;
@@ -61,7 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     Size size = MediaQuery.of(context).size;
     return ModalProgressHUD(
       inAsyncCall: isSpinner,
-      child: Scaffold(
+      child: isSpinner ? Loading() : Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
           // leading: Icon(null),
@@ -150,11 +153,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     child: Icon(
                                       Icons.person,
                                       color: kPrimaryColor,
-                                    ), // icon is 48px widget.
+                                    ), 
                                   ),
                                 ),
                                 validator: (val) =>
-                                    val.isEmpty ? 'Enter your name' : null,
+                                    val.contains('faculty') ? "Name must not contain FACULTY" : null,
                                 onChanged: (val) {
                                   setState(() => _name = val);
                                 },
@@ -335,14 +338,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               AlreadyHaveAnAccountCheck(
                                 login: false,
                                 press: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) {
-                                        return LoginScreen();
-                                      },
-                                    ),
-                                  );
+                                 widget.toggleView();
                                 },
                               ),
                             ],

@@ -20,3 +20,19 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//      return StreamProvider<User>.value(
+//       value: AuthService().user,
+//           child: MaterialApp(
+//        debugShowCheckedModeBanner: false,
+//         theme: ThemeData(
+//         primaryColor: kPrimaryColor,
+//         scaffoldBackgroundColor: Colors.white,
+//       ),
+//        home: WelcomeScreen(),
+//       ),
+//     );
+//   }
