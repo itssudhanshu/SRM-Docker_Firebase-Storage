@@ -12,7 +12,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 import '../constants.dart';
 
-
 class SignUpScreen extends StatefulWidget {
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
@@ -73,19 +72,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
           title: Center(
             child: Text(
               "SIGNUP",
-              style:
-                TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ),
         ),
         body: Container(
-
           height: size.height,
           width: double.infinity,
           // Here i can use size.width but use double.infinity because both work as a same
           child: Stack(
             alignment: Alignment.center,
-            
             children: <Widget>[
               Positioned(
                 top: 0,
@@ -114,33 +110,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
               // ),
               SingleChildScrollView(
                 child: Container(
-
                   child: Column(
-                    
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-              Positioned(
-                  top: 50,
-                  left: 100,
-                  child: SvgPicture.asset(
-                    "assets/icons/signup.svg",
-                    height: size.height * 0.25,
-                  ),
-              ),
+                      Positioned(
+                        top: 50,
+                        left: 100,
+                        child: SvgPicture.asset(
+                          "assets/icons/signup.svg",
+                          height: size.height * 0.25,
+                        ),
+                      ),
                       Container(
-      width: size.width * 0.8,
+                        width: size.width * 0.8,
                         child: Form(
                           key: _formKey,
                           child: Column(
                             children: <Widget>[
                               SizedBox(height: 20.0),
                               TextFormField(
-            //                     decoration: textInputDecoration.copyWith(hintText:'Your Name',labelText: "Name",prefixIcon: Icon(
-            //                             Icons.person,
-            // color: kPrimaryColor,
-            //                           ),),
+                                  //                     decoration: textInputDecoration.copyWith(hintText:'Your Name',labelText: "Name",prefixIcon: Icon(
+                                  //                             Icons.person,
+                                  // color: kPrimaryColor,
+                                  //                           ),),
                                   decoration: InputDecoration(
-                                    
                                     fillColor: kPrimaryLightColor,
                                     filled: true,
                                     contentPadding: new EdgeInsets.symmetric(
@@ -159,11 +152,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       padding: EdgeInsets.all(0.0),
                                       child: Icon(
                                         Icons.person,
-            color: kPrimaryColor,
+                                        color: kPrimaryColor,
                                       ), // icon is 48px widget.
                                     ),
                                   ),
-                                  validator: (val) => val.isEmpty ? 'Enter your name' : null,
+                                  validator: (val) =>
+                                      val.isEmpty ? 'Enter your name' : null,
                                   onChanged: (val) {
                                     setState(() => _name = val);
                                   }),
@@ -192,14 +186,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       ), // icon is 48px widget.
                                     ),
                                   ),
-                                  validator: (val) => val.isEmpty ? 'Enter your Reg. No.' : null,
+                                  validator: (val) => val.isEmpty
+                                      ? 'Enter your Reg. No.'
+                                      : null,
                                   onChanged: (val) {
-                                    
                                     setState(() => _reg = val);
                                   }),
                               SizedBox(height: 20.0),
                               TextFormField(
-                                    
                                   decoration: InputDecoration(
                                     fillColor: kPrimaryLightColor,
                                     filled: true,
@@ -223,14 +217,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       ), // icon is 48px widget.
                                     ),
                                   ),
-                                  
+
                                   // decoration: textInputDecoration.copyWith(hintText:'Email'),
                                   validator: (val) =>
                                       !val.endsWith('@srmist.edu.in')
                                           ? 'Email must end with @srmist.edu.in'
                                           : null,
                                   onChanged: (val) {
-                                    
                                     setState(() => _email = val);
                                   }),
                               SizedBox(height: 20.0),
@@ -238,7 +231,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   decoration: InputDecoration(
                                     fillColor: kPrimaryLightColor,
                                     filled: true,
-                                    contentPadding: new EdgeInsets.symmetric(vertical: 0.0),
+                                    contentPadding:
+                                        new EdgeInsets.symmetric(vertical: 0.0),
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(29),
                                         borderSide: BorderSide(
@@ -273,7 +267,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   decoration: InputDecoration(
                                     fillColor: kPrimaryLightColor,
                                     filled: true,
-                                    contentPadding: new EdgeInsets.symmetric(vertical: 0.0),
+                                    contentPadding:
+                                        new EdgeInsets.symmetric(vertical: 0.0),
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(29),
                                         borderSide: BorderSide(
@@ -296,11 +291,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       color: kPrimaryColor,
                                     ),
                                   ),
-                                  validator: (val){
-                                    if(val.isEmpty)
-                                       return 'Retype password';
-                                  if(val != _pass)
-                                       return 'Not Match';
+                                  validator: (val) {
+                                    if (val.isEmpty) return 'Retype password';
+                                    if (val != _pass) return 'Not Match';
                                   },
                                   obscureText: _obscureText,
                                   onChanged: (val) {
@@ -308,23 +301,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     // setState(() => _pass = val);
                                   }),
                               SizedBox(height: 20.0),
-                                RoundedButton(
-                      text: "SIGNUP",
-                      press: () async {
-
-                        if (_formKey.currentState.validate()) {
-                          setState(() {
-                            isSpinner = true;
-                          });
-                          print('inside');
-                          await createUser();
-                          await addUser();
-                          setState(() {
-                            isSpinner = false;
-                          });
-                        }
-                      },
-                    ),
+                              RoundedButton(
+                                text: "SIGNUP",
+                                press: () async {
+                                  if (_formKey.currentState.validate()) {
+                                    setState(() {
+                                      isSpinner = true;
+                                    });
+                                    print('inside');
+                                    await createUser();
+                                    await addUser();
+                                    setState(() {
+                                      isSpinner = false;
+                                    });
+                                  }
+                                },
+                              ),
                               SizedBox(height: 20.0),
                               Text(
                                 error,
@@ -332,20 +324,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   color: Colors.red,
                                 ),
                               ),
-                               SizedBox(height: size.height * 0.03),
-                        AlreadyHaveAnAccountCheck(
-                          login: false,
-                          press: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return LoginScreen();
+                              SizedBox(height: size.height * 0.03),
+                              AlreadyHaveAnAccountCheck(
+                                login: false,
+                                press: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return LoginScreen();
+                                      },
+                                    ),
+                                  );
                                 },
                               ),
-                            );
-                          },
-                        ),
                             ],
                           ),
                         ),
