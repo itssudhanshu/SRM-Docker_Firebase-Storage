@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "742890214126",
+    "firebase_url": "https://srm-helper-3223e.firebaseio.com",
+    "project_id": "srm-helper-3223e",
+    "storage_bucket": "srm-helper-3223e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:742890214126:android:d3dbb8d36d4f08991d99ff",
+        "android_client_info": {
+          "package_name": "com.srm.srm_notes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "742890214126-tler7fede7qitqfuharn0tadp6a5meui.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDy4QPoti_vKwb1k3eTlQmkNrGfxoosufg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "742890214126-tler7fede7qitqfuharn0tadp6a5meui.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
