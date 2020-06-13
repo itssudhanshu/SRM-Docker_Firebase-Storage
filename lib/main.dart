@@ -11,21 +11,18 @@ void main() {
   runApp(MyApp());
 }
 
-
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-
   var storage = FlutterSecureStorage();
   bool isLogged = false;
 
-  checkForLoggedInUser () async {
+  checkForLoggedInUser() async {
     var _bool = await storage.read(key: 'isLogged');
-    if(_bool == 'true')
-    {
+    if (_bool == 'true') {
       print(_bool);
       setState(() {
         isLogged = true;
@@ -33,9 +30,12 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void initState()  {
-     checkForLoggedInUser();
+  @override
+  void initState() {
+    checkForLoggedInUser();
+    super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
         primaryColor: kPrimaryColor,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: isLogged == false ? WelcomeScreen() : BottomNavigation() ,
+      home: isLogged == false ? WelcomeScreen() : BottomNavigation(),
       routes: {
         '/login': (context) => LoginScreen(),
         '/signup': (context) => SignUpScreen(),
@@ -53,8 +53,6 @@ class _MyAppState extends State<MyApp> {
         '/welcome': (context) => WelcomeScreen(),
         '/bottomnav': (context) => BottomNavigation(),
       },
-
     );
   }
 }
-

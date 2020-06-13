@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:srm_notes/components/appbar.dart';
 import 'package:srm_notes/constants.dart';
-import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 
 class HomePage extends StatefulWidget {
