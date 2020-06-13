@@ -162,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             email: _email, password: _pass);
                                     if (user != null) {
                                       Navigator.pushReplacementNamed(
-                                          context, '/home');
+                                          context, '/bottomnav');
                                     } else {
                                       isSpinner = false;
                                       displayDialog(context, 'Error',

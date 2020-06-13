@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:srm_notes/components/bottonNavigation.dart';
 import 'package:srm_notes/constants.dart';
 import 'package:srm_notes/screens/HomePage.dart';
 import 'package:srm_notes/screens/login.dart';
@@ -26,23 +27,9 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => SignUpScreen(),
         '/home': (context) => HomePage(),
         '/welcome': (context) => WelcomeScreen(),
+        '/bottomnav': (context) => BottomNavigation(),
       },
     );
   }
 }
 
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//      return StreamProvider<User>.value(
-//       value: AuthService().user,
-//           child: MaterialApp(
-//        debugShowCheckedModeBanner: false,
-//         theme: ThemeData(
-//         primaryColor: kPrimaryColor,
-//         scaffoldBackgroundColor: Colors.white,
-//       ),
-//        home: WelcomeScreen(),
-//       ),
-//     );
-//   }

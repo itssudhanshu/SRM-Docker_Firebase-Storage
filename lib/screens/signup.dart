@@ -31,7 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final newUser = await _auth.createUserWithEmailAndPassword(
           email: _email, password: _pass);
       if (newUser != null) {
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacementNamed(context, '/bottomnav');
       } else {
         displayDialog(context, 'Error', 'Some error occured.');
       }
