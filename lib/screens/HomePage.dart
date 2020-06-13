@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        child: ConstAppbar(title: "Home"),
+        child: ConstAppbar(title: "Upload"),
         preferredSize: Size.fromHeight(50.0),
       ),
       body: notes ? notespage() : questionpage(),
@@ -120,12 +120,11 @@ class _HomePageState extends State<HomePage> {
         isExpanded: true,
       ),
     };
-    return DefaultTabController(
-      length: widgets.length,
-      child: Scaffold(
-        body: Container(
+    return Column(
+      children: <Widget>[
+        Container(
           padding: EdgeInsets.all(20),
-          child: TabBarView(
+          child: Column(
             children: widgets
                 .map((k, v) {
                   return (MapEntry(
@@ -145,39 +144,8 @@ class _HomePageState extends State<HomePage> {
                 .toList(),
           ),
         ),
-      ),
-
-      // SingleChildScrollView(
-      //       scrollDirection: Axis.vertical,
-      //       child: Column(
-      //         children: widgets
-      //             .map((k, v) {
-      //               return (MapEntry(
-      //                   k,
-      //                   Center(
-      //                       child: Card(
-      //                           shape: RoundedRectangleBorder(
-      //                             borderRadius: BorderRadius.circular(10),
-      //                             side: BorderSide(
-      //                               color: Colors.grey,
-      //                               width: 1.0,
-      //                             ),
-      //                           ),
-      //                           margin: EdgeInsets.all(20),
-      //                           child: Padding(
-      //                             padding: const EdgeInsets.all(20.0),
-      //                             child: Column(
-      //                               children: <Widget>[
-      //                                 Text("$k:"),
-      //                                 v,
-      //                               ],
-      //                             ),
-      //                           )))));
-      //             })
-      //             .values
-      //             .toList(),
-      //       ),
-      //     ),
+        Text("fl.k,jms"),
+      ],
     );
   }
 
@@ -197,12 +165,11 @@ class _HomePageState extends State<HomePage> {
         isExpanded: true,
       ),
     };
-    return DefaultTabController(
-      length: widgets.length,
-      child: Scaffold(
-        body: Container(
+    return Column(
+      children: <Widget>[
+        Container(
           padding: EdgeInsets.all(20),
-          child: TabBarView(
+          child: Column(
             children: widgets
                 .map((k, v) {
                   return (MapEntry(
@@ -222,7 +189,8 @@ class _HomePageState extends State<HomePage> {
                 .toList(),
           ),
         ),
-      ),
+        Text("data"),
+      ],
     );
-}
+  }
 }

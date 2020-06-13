@@ -5,13 +5,12 @@ import 'package:srm_notes/components/appbar.dart';
 import '../constants.dart';
 
 class UploadPage extends StatefulWidget {
-
   @override
   _UploadPageState createState() => _UploadPageState();
 }
 
 class _UploadPageState extends State<UploadPage> {
- bool notes = true;
+  bool notes = true;
   bool asTabs = false;
   String selectedValue;
   String preselectedValue = "dolor sit";
@@ -121,12 +120,11 @@ class _UploadPageState extends State<UploadPage> {
         isExpanded: true,
       ),
     };
-    return DefaultTabController(
-      length: widgets.length,
-      child: Scaffold(
-        body: Container(
+    return Column(
+      children: <Widget>[
+        Container(
           padding: EdgeInsets.all(20),
-          child: TabBarView(
+          child: Column(
             children: widgets
                 .map((k, v) {
                   return (MapEntry(
@@ -146,7 +144,8 @@ class _UploadPageState extends State<UploadPage> {
                 .toList(),
           ),
         ),
-      ),
+        Text("fl.k,jms"),
+      ],
     );
   }
 
@@ -166,12 +165,11 @@ class _UploadPageState extends State<UploadPage> {
         isExpanded: true,
       ),
     };
-    return DefaultTabController(
-      length: widgets.length,
-      child: Scaffold(
-        body: Container(
+    return Column(
+      children: <Widget>[
+        Container(
           padding: EdgeInsets.all(20),
-          child: TabBarView(
+          child: Column(
             children: widgets
                 .map((k, v) {
                   return (MapEntry(
@@ -191,7 +189,8 @@ class _UploadPageState extends State<UploadPage> {
                 .toList(),
           ),
         ),
-      ),
+        Text("data"),
+      ],
     );
-}
+  }
 }
