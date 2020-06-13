@@ -76,12 +76,8 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
 
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      home: new Scaffold(
+    return  new Scaffold(
         key: _scaffoldKey,
-        appBar: new AppBar(
-          title: const Text('File Picker example app'),
-        ),
         body: new Center(
             child: new Padding(
           padding: const EdgeInsets.only(left: 10.0, right: 10.0),
@@ -213,7 +209,6 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
             ),
           ),
         )),
-      ),
-    );
+      );
   }
 }
