@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:srm_notes/components/already_have_an_account_acheck.dart';
@@ -23,6 +24,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String _reg;
   String _email;
   String _pass;
+  var storage = FlutterSecureStorage();
   String _confirmPass;
   String error = '';
   bool _obscureText = true;
@@ -31,6 +33,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final newUser = await _auth.createUserWithEmailAndPassword(
           email: _email, password: _pass);
       if (newUser != null) {
+        await storage.write(key: 'isLogged', value: 'true');
+        await addUser();
         Navigator.pushReplacementNamed(context, '/bottomnav');
       } else {
         displayDialog(context, 'Error', 'Some error occured.');

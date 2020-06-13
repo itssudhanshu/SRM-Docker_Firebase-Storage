@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:srm_notes/components/already_have_an_account_acheck.dart';
 import 'package:srm_notes/components/models/loading.dart';
@@ -22,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   final _auth = FirebaseAuth.instance;
-
+  var storage = FlutterSecureStorage();
   String _email;
   String _pass;
   bool isSpinner = false;
@@ -172,6 +174,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         await _auth.signInWithEmailAndPassword(
                                             email: _email, password: _pass);
                                     if (user != null) {
+                                      await storage.write(key: 'isLogged', value: 'true');
+
                                       Navigator.pushReplacementNamed(
                                           context, '/bottomnav');
                                     } else {
@@ -300,6 +304,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         await _auth.signInWithEmailAndPassword(
                                             email: _email, password: _pass);
                                     if (user != null) {
+                                      await storage.write(key: 'isLogged', value: 'true');
+
                                       Navigator.pushReplacementNamed(
                                           context, '/bottomnav');
                                     } else {
