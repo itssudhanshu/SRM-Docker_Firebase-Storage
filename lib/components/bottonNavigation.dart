@@ -34,6 +34,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         icon: Icon(Icons.home),
         title: ("Home"),
         activeColor: Colors.blue,
+        activeContentColor: Colors.white,
         inactiveColor: Colors.grey,
         isTranslucent: false,
       ),
@@ -41,6 +42,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         icon: Icon(Icons.file_upload),
         title: ("Upload"),
         activeColor: Colors.teal,
+        activeContentColor: Colors.white,
         inactiveColor: Colors.grey,
         isTranslucent: false,
       ),
@@ -48,6 +50,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         icon: Icon(Icons.message),
         title: ("Leaderboard"),
         activeColor: Colors.deepOrange,
+        activeContentColor: Colors.white,
         inactiveColor: Colors.grey,
         isTranslucent: false,
       ),
@@ -55,6 +58,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         icon: Icon(Icons.account_circle),
         title: ("Account"),
         activeColor: Colors.indigo,
+        activeContentColor: Colors.white,
         inactiveColor: Colors.grey,
         isTranslucent: false,
       ),
@@ -80,7 +84,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         },
         itemCount: 4,
         navBarStyle:
-            NavBarStyle.neumorphic // Choose the nav bar style with this property
+            NavBarStyle.style7 // Choose the nav bar style with this property
         );
   }
 }
