@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:srm_notes/components/bottonNavigation.dart';
+import 'package:srm_notes/components/launcher.dart';
 import 'package:srm_notes/constants.dart';
 import 'package:srm_notes/screens/HomePage.dart';
 import 'package:srm_notes/screens/login.dart';
@@ -19,6 +20,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var storage = FlutterSecureStorage();
   bool isLogged = false;
+  bool doneLoading = false;
 
   checkForLoggedInUser() async {
     var _bool = await storage.read(key: 'isLogged');
@@ -28,6 +30,9 @@ class _MyAppState extends State<MyApp> {
         isLogged = true;
       });
     }
+    setState(() {
+      doneLoading = true;
+    });
   }
 
   @override
@@ -45,7 +50,7 @@ class _MyAppState extends State<MyApp> {
         primaryColor: kPrimaryColor,
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: isLogged == false ? WelcomeScreen() : BottomNavigation(),
+      home: doneLoading == true ? isLogged == false ? WelcomeScreen() : BottomNavigation() : Launcher(),
       routes: {
         '/login': (context) => LoginScreen(),
         '/signup': (context) => SignUpScreen(),
