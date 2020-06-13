@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:srm_notes/constants.dart';
 import 'package:srm_notes/pages/account.dart';
 import 'package:srm_notes/pages/leaderboard.dart';
 import 'package:srm_notes/pages/upload.dart';
@@ -34,7 +35,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         icon: Icon(Icons.home),
         title: ("Home"),
         activeColor: Colors.blue,
-        activeContentColor: Colors.white,
+        activeContentColor: kPrimaryColor,
         inactiveColor: Colors.grey,
         isTranslucent: false,
       ),
@@ -42,7 +43,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         icon: Icon(Icons.file_upload),
         title: ("Upload"),
         activeColor: Colors.teal,
-        activeContentColor: Colors.white,
+        activeContentColor: kPrimaryColor,
         inactiveColor: Colors.grey,
         isTranslucent: false,
       ),
@@ -50,7 +51,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         icon: Icon(Icons.message),
         title: ("Leaderboard"),
         activeColor: Colors.deepOrange,
-        activeContentColor: Colors.white,
+        activeContentColor: kPrimaryColor,
         inactiveColor: Colors.grey,
         isTranslucent: false,
       ),
@@ -58,7 +59,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         icon: Icon(Icons.account_circle),
         title: ("Account"),
         activeColor: Colors.indigo,
-        activeContentColor: Colors.white,
+        activeContentColor: kPrimaryColor,
         inactiveColor: Colors.grey,
         isTranslucent: false,
       ),
@@ -84,7 +85,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         },
         itemCount: 4,
         navBarStyle:
-            NavBarStyle.style7 // Choose the nav bar style with this property
+            NavBarStyle.style5 // Choose the nav bar style with this property
         );
   }
 }

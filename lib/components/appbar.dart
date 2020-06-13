@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:srm_notes/constants.dart';
 
 class ConstAppbar extends StatelessWidget {
   final String title;
@@ -10,7 +11,13 @@ class ConstAppbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppBar(
       centerTitle: true,
-      title: Text(title),
+      elevation: 0,
+      title: Text(title,
+      style: TextStyle(
+        color: kPrimaryColor,
+      ),
+      ),
+      backgroundColor: Colors.transparent,
     );
   }
 }

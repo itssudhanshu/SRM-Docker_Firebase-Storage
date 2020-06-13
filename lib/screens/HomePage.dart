@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:srm_notes/components/appbar.dart';
 import 'package:srm_notes/constants.dart';
+import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -15,7 +16,13 @@ bool notes = true;
 
   void _toggle() {
     setState(() {
-      notes = !notes;
+      notes = true;
+    });
+  }
+  
+  void _toggletoque() {
+    setState(() {
+      notes = false;
     });
   }
   @override
@@ -59,7 +66,7 @@ return Scaffold(
           label: 'Qest. Paper',
           // labelStyle: TextTheme(fontSize: 18.0),
           onTap: (){
-            _toggle();
+            _toggletoque();
           },
         ),
       ],
@@ -70,7 +77,7 @@ Widget notespage(){
   return Container(
     child: Column(
       children: <Widget>[
-        
+        Text("notespage"),
       ],
     ),
   );
