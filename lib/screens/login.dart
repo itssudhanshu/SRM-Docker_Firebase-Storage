@@ -175,6 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             email: _email, password: _pass);
                                     if (user != null) {
                                       await storage.write(key: 'isLogged', value: 'true');
+
                                       Navigator.pushReplacementNamed(
                                           context, '/bottomnav');
                                     } else {
@@ -304,6 +305,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             email: _email, password: _pass);
                                     if (user != null) {
                                       await storage.write(key: 'isLogged', value: 'true');
+
                                       Navigator.pushReplacementNamed(
                                           context, '/bottomnav');
                                     } else {
@@ -314,8 +316,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   } catch (e) {
                                     isSpinner = false;
                                     displayDialog(context, 'Error',
-                                        'S'
-                                            'ome error occured.');
+                                        'Some error occured.');
                                     print(e);
                                   }
                                 },
