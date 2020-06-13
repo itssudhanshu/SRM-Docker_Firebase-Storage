@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:srm_notes/components/appbar.dart';
 
 class UploadPage extends StatefulWidget {
- 
+
   @override
   _UploadPageState createState() => _UploadPageState();
 }
@@ -18,6 +18,7 @@ class _UploadPageState extends State<UploadPage> {
         child: ConstAppbar(title: "Upload"),
         preferredSize: Size.fromHeight(50.0),
       ),
+
       body: SizedBox.expand(
         child: ListView.builder(
           itemCount: shades.length,
@@ -36,6 +37,5 @@ class _UploadPageState extends State<UploadPage> {
         ),
       ),
     );
-
-  }
+}
 }

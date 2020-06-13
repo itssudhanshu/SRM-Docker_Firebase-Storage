@@ -13,7 +13,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
-
+  bool forgpass = false;
   void _toggle() {
     setState(() {
       _obscureText = !_obscureText;
@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
               backgroundColor: Colors.transparent,
               title: Center(
                 child: Text(
-                  "SIGN IN",
+                  forgpass ? "RESET PASSWORD" : "SIGN IN",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -51,11 +51,20 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             body: Container(
+              child: forgpass ? forgpassw() : login(),
+            ), 
+           
+          );
+  }
+  Widget login(){
+    Size size = MediaQuery.of(context).size;
+    return  Container(
               width: double.infinity,
               height: size.height,
               child: Stack(
                 alignment: Alignment.center,
                 children: <Widget>[
+
                   Positioned(
                     top: 0,
                     left: 0,
@@ -64,14 +73,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: size.width * 0.35,
                     ),
                   ),
+
                   Positioned(
                     bottom: 0,
                     right: 0,
                     child: Image.asset(
                       "assets/images/login_bottom.png",
                       width: size.width * 0.4,
-                    ),
                   ),
+                ),
+
                   SingleChildScrollView(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -101,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         borderRadius: BorderRadius.circular(29),
                                         borderSide: BorderSide(
                                             width: 2, color: Colors.purple)),
-                                    hintText: "Enter your college id",
+                                    hintText: "Enter your college email id",
                                     labelText: "Email",
                                     prefixIcon: Padding(
                                       padding: EdgeInsets.all(0.0),
@@ -176,6 +187,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                   }
                                 },
                               ),
+                              SizedBox(height: size.height * 0.01),
+                              GestureDetector(
+                                onTap:(){
+                                  setState(() {
+                                  forgpass = true;
+                                  });
+                                },
+                                child: Text(
+                                  "Forgot Password ?",
+                                  style: TextStyle(
+                                    color: kPrimaryColor,
+                                  ),
+                                ),
+                              ),
                               SizedBox(height: size.height * 0.03),
                               AlreadyHaveAnAccountCheck(
                                 press: () async {
@@ -190,7 +215,115 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-            ),
-          );
+            );
+  }
+  Widget forgpassw() {
+       Size size = MediaQuery.of(context).size;
+    return  Container(
+              width: double.infinity,
+              height: size.height,
+              child: Stack(
+                alignment: Alignment.center,
+                children: <Widget>[
+
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    child: Image.asset(
+                      "assets/images/main_top.png",
+                      width: size.width * 0.35,
+                    ),
+                  ),
+
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Image.asset(
+                      "assets/images/login_bottom.png",
+                      width: size.width * 0.4,
+                  ),
+                ),
+
+                  SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(height: size.height * 0.03),
+                        SvgPicture.asset(
+                          "assets/icons/login.svg",
+                          height: size.height * 0.35,
+                        ),
+                        SizedBox(height: size.height * 0.03),
+                        Container(
+                          width: size.width * 0.8,
+                          child: Column(
+                            children: <Widget>[
+                              SizedBox(height: 20.0),
+                              TextFormField(
+                                  decoration: InputDecoration(
+                                    fillColor: kPrimaryLightColor,
+                                    filled: true,
+                                    contentPadding: new EdgeInsets.symmetric(
+                                        vertical: 0.0, horizontal: 0.0),
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(29),
+                                        borderSide: BorderSide(
+                                            width: 2, color: Colors.black)),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(29),
+                                        borderSide: BorderSide(
+                                            width: 2, color: Colors.purple)),
+                                    hintText: "Enter your Registered id",
+                                    labelText: "Email",
+                                    prefixIcon: Padding(
+                                      padding: EdgeInsets.all(0.0),
+                                      child: Icon(
+                                        Icons.mail,
+                                        color: kPrimaryColor,
+                                      ), // icon is 48px widget.
+                                    ),
+                                  ),
+                                  onChanged: (val) {
+                                    _email = val;
+                                  }),
+                              SizedBox(height: size.height * 0.05),
+                              RoundedButton(
+                                text: "Reset Password",
+                                press: () async {
+                                  try {
+                                    setState(
+                                      () {
+                                        isSpinner = true;
+                                      },
+                                    );
+                                    final user =
+                                        await _auth.signInWithEmailAndPassword(
+                                            email: _email, password: _pass);
+                                    if (user != null) {
+                                      Navigator.pushReplacementNamed(
+                                          context, '/bottomnav');
+                                    } else {
+                                      isSpinner = false;
+                                      displayDialog(context, 'Error',
+                                          'No user found with corresponding email and password');
+                                    }
+                                  } catch (e) {
+                                    isSpinner = false;
+                                    displayDialog(context, 'Error',
+                                        'Some error occured.');
+                                    print(e);
+                                  }
+                                },
+                              ),
+                              
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
   }
 }

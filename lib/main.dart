@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
         '/welcome': (context) => WelcomeScreen(),
         '/bottomnav': (context) => BottomNavigation(),
       },
+
     );
   }
 }
