@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:srm_notes/components/rounded_button.dart';
 import 'package:srm_notes/constants.dart';
 import 'package:srm_notes/screens/login.dart';
+import 'package:srm_notes/screens/signup.dart';
 
 class WelcomeScreen extends StatelessWidget {
   @override
@@ -37,7 +38,7 @@ class WelcomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "WELCOME TO EDU",
+                    "WELCOME TO SRM-HELPER",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: size.height * 0.05),
@@ -47,7 +48,7 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                   SizedBox(height: size.height * 0.05),
                   RoundedButton(
-                    text: "LOGIN",
+                    text: "SIGN IN",
                     press: () {
                       Navigator.push(
                         context,
@@ -64,14 +65,14 @@ class WelcomeScreen extends StatelessWidget {
                     color: kPrimaryLightColor,
                     textColor: Colors.black,
                     press: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) {
-                      //       return SignUpScreen();
-                      //     },
-                      //   ),
-                      // );
+                       Navigator.push(
+                         context,
+                         MaterialPageRoute(
+                           builder: (context) {
+                             return SignUpScreen();
+                           },
+                         ),
+                       );
                     },
                   ),
                 ],
