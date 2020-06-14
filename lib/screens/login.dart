@@ -97,6 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: <Widget>[
                       SizedBox(height: 20.0),
                       TextFormField(
+                          textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
                             fillColor: kPrimaryLightColor,
                             filled: true,
@@ -125,6 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           }),
                       SizedBox(height: 20.0),
                       TextFormField(
+                          textInputAction: TextInputAction.done,
                           decoration: InputDecoration(
                             fillColor: kPrimaryLightColor,
                             filled: true,

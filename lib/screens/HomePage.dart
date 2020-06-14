@@ -258,8 +258,9 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           IconButton(
             icon: isSearchEmpty ? Icon(Icons.search) : Icon(Icons.cancel),
-            color: Colors.red,
+            color: isSearchEmpty ? kPrimaryColor : Colors.black,
            onPressed: (){
+             
              setState(() {
                cancelSearch();
                this.isSearchEmpty = !this.isSearchEmpty;
