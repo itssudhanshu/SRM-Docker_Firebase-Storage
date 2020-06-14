@@ -60,12 +60,38 @@ class _UploadPageState extends State<UploadPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         child: ConstAppbar(title: "Upload"),
         preferredSize: Size.fromHeight(50.0),
       ),
-      body: notes ? notespage() : questionpage(),
+      body: Container(
+        height: size.height,
+        width: double.infinity,
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              top: 0,
+              left: 0,
+              child: Image.asset(
+                "assets/images/signup_top.png",
+                width: size.width * 0.35,
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: Image.asset(
+                "assets/images/main_bottom.png",
+                width: size.width * 0.25,
+              ),
+            ),
+            notes ? notespage() : questionpage(),
+          ],
+        ),
+      ),
       floatingActionButton: SpeedDial(
         animatedIcon: AnimatedIcons.menu_close,
         animatedIconTheme: IconThemeData(size: 22.0),
@@ -80,6 +106,7 @@ class _UploadPageState extends State<UploadPage> {
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 5.0,
+        marginBottom:50,
         shape: CircleBorder(),
         children: [
           SpeedDialChild(
@@ -108,6 +135,8 @@ class _UploadPageState extends State<UploadPage> {
     Map<String, Widget> widgets;
     widgets = {
       "Notes": SearchableDropdown.single(
+        iconEnabledColor: kPrimaryColor,
+        iconDisabledColor: Colors.black,
         items: items,
         value: selectedValue,
         hint: "Select Course",
@@ -122,6 +151,7 @@ class _UploadPageState extends State<UploadPage> {
     };
     return Column(
       children: <Widget>[
+        SizedBox(height: 70),
         Container(
           padding: EdgeInsets.all(20),
           child: Column(
@@ -167,6 +197,7 @@ class _UploadPageState extends State<UploadPage> {
     };
     return Column(
       children: <Widget>[
+        SizedBox(height: 70),
         Container(
           padding: EdgeInsets.all(20),
           child: Column(
