@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:srm_notes/components/appbar.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:srm_notes/bloc/userbloc.dart';
 import 'package:srm_notes/components/models/usermodel.dart';
 import 'package:srm_notes/pages/account.dart';
+
+import '../constants.dart';
 
 const String RANDOM_URL = "https://randomuser.me/api/?results=100";
 
@@ -19,7 +20,6 @@ class _HomePageState extends State<HomePage> {
   ScrollController _controller1 = ScrollController();
   TextEditingController searchController = TextEditingController();
   bool isSearchEmpty = true;
-
   Size size;
   var data;
 
@@ -188,7 +188,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     fetchRandomUsers();
     _controller.addListener(() {
-      // _controller.jumpTo(_controller.offset);
+      _controller.jumpTo(_controller.offset);
     });
     _controller1.addListener(() {});
   }
@@ -228,12 +228,45 @@ class _HomePageState extends State<HomePage> {
   Random rng = Random();
   @override
   Widget build(BuildContext context) {
-     Size size = MediaQuery.of(context).size;
+    size = MediaQuery.of(context).size;
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        child: ConstAppbar(title: "Home"),
-        preferredSize: Size.fromHeight(50.0),
+      // extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        centerTitle: true,
+        elevation: 0,
+        title: isSearchEmpty ? Text("Home",style: TextStyle(color:kPrimaryColor)) : TextField(
+                              controller: searchController,
+                              onChanged: (text) =>
+                                  {_searchUser(text), handleSearch(text)},
+                              // autofocus: true,
+                              keyboardType: TextInputType.text,
+                              textInputAction: TextInputAction.search,
+                              decoration: InputDecoration.collapsed(
+                                
+                                hintText: 'Search',
+                                border: InputBorder.none,
+                              ),
+                            ),
+        backgroundColor: Colors.transparent,
+        leading: !isSearchEmpty ? IconButton(icon: Icon(Icons.arrow_back),
+        color: Colors.black,
+         onPressed: (){
+          setState(() {
+               this.isSearchEmpty = !this.isSearchEmpty;
+             });
+        }) : null,
+        actions: <Widget>[
+          IconButton(
+            icon: isSearchEmpty ? Icon(Icons.search) : Icon(Icons.cancel),
+            color: isSearchEmpty ? kPrimaryColor : Colors.black,
+           onPressed: (){
+             
+             setState(() {
+               cancelSearch();
+               this.isSearchEmpty = !this.isSearchEmpty;
+             });
+          })
+        ],
       ),
       body: Container(
         height: size.height,
@@ -258,48 +291,50 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Container(
+      // extendBodyBehindAppBar: true,
+
               child: Column(
                 // onChanged: (text) => _searchUser(text),
                 children: <Widget>[
                   SizedBox(height: 20),
-                  Container(
-                    child: Container(
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.all(8),
-                      // padding: EdgeInsets.all(16),
-                      height: 50.0,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black45),
-                          borderRadius: BorderRadius.all(Radius.circular(16))),
-                      child: Row(
-                        // mainAxisAlignment: MainAxisAlignment.center,
-                        // crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          SizedBox(width: 10.0),
-                          Expanded(
-                            child: TextField(
-                              controller: searchController,
-                              onChanged: (text) =>
-                                  {_searchUser(text), handleSearch(text)},
-                              autofocus: false,
-                              keyboardType: TextInputType.text,
-                              textInputAction: TextInputAction.search,
-                              decoration: InputDecoration.collapsed(
-                                hintText: 'Search',
-                                border: InputBorder.none,
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              isSearchEmpty ? Icons.search : Icons.cancel,
-                            ),
-                            onPressed: cancelSearch,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // Container(
+                    // child: Container(
+                    //   alignment: Alignment.center,
+                    //   margin: EdgeInsets.all(8),
+                    //   // padding: EdgeInsets.all(16),
+                    //   height: 50.0,
+                    //   decoration: BoxDecoration(
+                    //       border: Border.all(color: Colors.black45),
+                    //       borderRadius: BorderRadius.all(Radius.circular(16))),
+                      // child: Row(
+                      //   // mainAxisAlignment: MainAxisAlignment.center,
+                      //   // crossAxisAlignment: CrossAxisAlignment.center,
+                      //   children: <Widget>[
+                      //     SizedBox(width: 10.0),
+                      //     Expanded(
+                      //       child: TextField(
+                      //         controller: searchController,
+                      //         onChanged: (text) =>
+                      //             {_searchUser(text), handleSearch(text)},
+                      //         autofocus: false,
+                      //         keyboardType: TextInputType.text,
+                      //         textInputAction: TextInputAction.search,
+                      //         decoration: InputDecoration.collapsed(
+                      //           hintText: 'Search',
+                      //           border: InputBorder.none,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     IconButton(
+                      //       icon: Icon(
+                      //         isSearchEmpty ? Icons.search : Icons.cancel,
+                      //       ),
+                      //       onPressed: cancelSearch,
+                      //     ),
+                      //   ],
+                      // ),
+                    // ),
+                  // ),
                   // Container(
                   //   padding: const EdgeInsets.all(16.0),
                   //   child: TextField(
@@ -317,7 +352,7 @@ class _HomePageState extends State<HomePage> {
                   //   ),
 
                   // ),
-                  Expanded(
+                 Expanded(
                     child: usersWidget(),
                   )
                 ],

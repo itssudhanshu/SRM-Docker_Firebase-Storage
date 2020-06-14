@@ -141,6 +141,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   children: <Widget>[
                                     SizedBox(height: 20.0),
                                     TextFormField(
+                                        textInputAction: TextInputAction.next,
+
                                       //                     decoration: textInputDecoration.copyWith(hintText:'Your Name',labelText: "Name",prefixIcon: Icon(
                                       //                             Icons.person,
                                       // color: kPrimaryColor,
@@ -183,6 +185,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     ),
                                     SizedBox(height: 20.0),
                                     TextFormField(
+                                        textInputAction: TextInputAction.next,
+
                                       decoration: InputDecoration(
                                         fillColor: kPrimaryLightColor,
                                         filled: true,
@@ -222,6 +226,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     ),
                                     SizedBox(height: 20.0),
                                     TextFormField(
+                                        textInputAction: TextInputAction.next,
+
                                         decoration: InputDecoration(
                                           fillColor: kPrimaryLightColor,
                                           filled: true,
@@ -262,6 +268,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         }),
                                     SizedBox(height: 20.0),
                                     TextFormField(
+                                        textInputAction: TextInputAction.next,
+
                                         decoration: InputDecoration(
                                           fillColor: kPrimaryLightColor,
                                           filled: true,
@@ -304,6 +312,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         }),
                                     SizedBox(height: 20.0),
                                     TextFormField(
+                                        textInputAction: TextInputAction.done,
+
                                         decoration: InputDecoration(
                                           fillColor: kPrimaryLightColor,
                                           filled: true,
