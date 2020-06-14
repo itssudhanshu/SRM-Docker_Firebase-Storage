@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:srm_notes/components/appbar.dart';
 import 'package:srm_notes/constants.dart';
 
 class AccountPage extends StatefulWidget {
@@ -31,7 +30,7 @@ class _AccountPageState extends State<AccountPage> {
             elevation: 10.0,
             child: ClipPath(
               child: Container(color: Color(0xFF6F35A5).withOpacity(0.8)),
-              clipper: getClipper(),
+              clipper: GetClipper(),
             ),
           ),
           Positioned(
@@ -242,7 +241,7 @@ class Details extends StatelessWidget {
   }
 }
 
-class getClipper extends CustomClipper<Path> {
+class GetClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     var path = new Path();
@@ -255,7 +254,6 @@ class getClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) {
-    // TODO: implement shouldReclip
     return true;
   }
 }
