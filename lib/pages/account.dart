@@ -25,6 +25,7 @@ class _AccountPageState extends State<AccountPage> {
         backgroundColor: Colors.transparent,
       ),
       body: new Stack(
+        alignment: Alignment.center,
         children: <Widget>[
           Material(
             elevation: 10.0,
@@ -35,6 +36,7 @@ class _AccountPageState extends State<AccountPage> {
           ),
           Positioned(
             width: 350.0,
+            
             top: MediaQuery.of(context).size.height / 5,
             child: Column(
               children: <Widget>[
@@ -51,7 +53,7 @@ class _AccountPageState extends State<AccountPage> {
                         boxShadow: [
                           BoxShadow(blurRadius: 5.0, color: Colors.black)
                         ])),
-                SizedBox(height: 20.0),
+                SizedBox(height:  MediaQuery.of(context).size.height / 25),
                 Text(
                   'Sudhanshu Kushwaha',
                   style: TextStyle(
@@ -61,7 +63,7 @@ class _AccountPageState extends State<AccountPage> {
                     letterSpacing: 2.0,
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height:  MediaQuery.of(context).size.height / 40),
                 Card(
                   margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
                   clipBehavior: Clip.antiAlias,
@@ -151,7 +153,7 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height:  MediaQuery.of(context).size.height / 30),
                 Container(
                   padding: EdgeInsets.all(20.0),
                   child: Column(
@@ -165,7 +167,7 @@ class _AccountPageState extends State<AccountPage> {
                         icon: Icons.format_color_text,
                         details: "RA1711003011424",
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height:  MediaQuery.of(context).size.height / 30),
                       Container(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
