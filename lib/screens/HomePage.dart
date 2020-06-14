@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:srm_notes/bloc/userbloc.dart';
 import 'package:srm_notes/components/models/usermodel.dart';
-import 'package:srm_notes/constants.dart';
 import 'package:srm_notes/pages/account.dart';
 
 const String RANDOM_URL = "https://randomuser.me/api/?results=100";
