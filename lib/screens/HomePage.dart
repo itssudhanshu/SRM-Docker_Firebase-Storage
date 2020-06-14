@@ -157,9 +157,7 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
             ),
-            SizedBox(
-              width: 10,
-            ),
+            SizedBox(width: 10),
             Expanded(
               child: ListView.builder(
                 controller: _controller1,
@@ -232,76 +230,101 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         child: ConstAppbar(title: "Home"),
         preferredSize: Size.fromHeight(50.0),
       ),
-      body: Column(
-        // onChanged: (text) => _searchUser(text),
-        children: <Widget>[
-          SizedBox(
-            height: 20,
-          ),
-
-          Container(
-            child: Container(
-              alignment: Alignment.center,
-              margin: EdgeInsets.all(8),
-              // padding: EdgeInsets.all(16),
-              height: 50.0,
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black45),
-                  borderRadius: BorderRadius.all(Radius.circular(16))),
-              child: Row(
-                // mainAxisAlignment: MainAxisAlignment.center,
-                // crossAxisAlignment: CrossAxisAlignment.center,
+      body: Container(
+        height: size.height,
+        width: double.infinity,
+        child: Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            Positioned(
+              top: 0,
+              left: 0,
+              child: Image.asset(
+                "assets/images/signup_top.png",
+                width: size.width * 0.35,
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              child: Image.asset(
+                "assets/images/main_bottom.png",
+                width: size.width * 0.25,
+              ),
+            ),
+            Container(
+              child: Column(
+                // onChanged: (text) => _searchUser(text),
                 children: <Widget>[
-                    SizedBox(width: 10.0),
-                  Expanded(
-                    child: TextField(
-                      controller: searchController,
-                      onChanged: (text) =>{ _searchUser(text),handleSearch(text)},
-                      autofocus: false,
-                      keyboardType: TextInputType.text,
-                 
-                      textInputAction: TextInputAction.search,
-                      decoration: InputDecoration.collapsed(
-                        hintText: 'Search',
-                        border: InputBorder.none,
+                  SizedBox(height: 20),
+                  Container(
+                    child: Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.all(8),
+                      // padding: EdgeInsets.all(16),
+                      height: 50.0,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black45),
+                          borderRadius: BorderRadius.all(Radius.circular(16))),
+                      child: Row(
+                        // mainAxisAlignment: MainAxisAlignment.center,
+                        // crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(width: 10.0),
+                          Expanded(
+                            child: TextField(
+                              controller: searchController,
+                              onChanged: (text) =>
+                                  {_searchUser(text), handleSearch(text)},
+                              autofocus: false,
+                              keyboardType: TextInputType.text,
+                              textInputAction: TextInputAction.search,
+                              decoration: InputDecoration.collapsed(
+                                hintText: 'Search',
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              isSearchEmpty ? Icons.search : Icons.cancel,
+                            ),
+                            onPressed: cancelSearch,
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      isSearchEmpty ? Icons.search : Icons.cancel,
-                    ),
-                    onPressed: cancelSearch,
-                  ),
+                  // Container(
+                  //   padding: const EdgeInsets.all(16.0),
+                  //   child: TextField(
+                  //     decoration: InputDecoration(
+                  //         suffixIcon: Icon(Icons.search),
+
+                  //         hintText: 'Search',
+                  //         contentPadding:
+                  //             EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  //         border: OutlineInputBorder(
+                  //             borderSide: BorderSide(width: 3.1, color: Colors.red),
+                  //             borderRadius: BorderRadius.circular(30)
+                  //             )
+                  //             ),
+                  //   ),
+
+                  // ),
+                  Expanded(
+                    child: usersWidget(),
+                  )
                 ],
               ),
             ),
-          ),
-          // Container(
-          //   padding: const EdgeInsets.all(16.0),
-          //   child: TextField(
-          //     decoration: InputDecoration(
-          //         suffixIcon: Icon(Icons.search),
-
-          //         hintText: 'Search',
-          //         contentPadding:
-          //             EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-          //         border: OutlineInputBorder(
-          //             borderSide: BorderSide(width: 3.1, color: Colors.red),
-          //             borderRadius: BorderRadius.circular(30)
-          //             )
-          //             ),
-          //   ),
-
-          // ),
-          Expanded(
-            child: usersWidget(),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -313,7 +336,7 @@ class _HomePageState extends State<HomePage> {
       isSearchEmpty = true;
     });
   }
-  
+
   void handleSearch(String value) {
     if (value.isNotEmpty) {
       setState(() {
