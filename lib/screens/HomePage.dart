@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        child: ConstAppbar(title: "Upload"),
+        child: ConstAppbar(title: "Home"),
         preferredSize: Size.fromHeight(50.0),
       ),
       body: notes ? notespage() : questionpage(),
