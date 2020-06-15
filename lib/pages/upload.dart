@@ -4,7 +4,10 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:srm_notes/components/appbar.dart';
 import 'package:srm_notes/components/picker.dart';
+import 'package:srm_notes/components/rounded_button.dart';
 import '../constants.dart';
+import 'package:flutter/services.dart';
+import 'package:file_picker/file_picker.dart';
 
 class UploadPage extends StatefulWidget {
   @override
@@ -12,6 +15,16 @@ class UploadPage extends StatefulWidget {
 }
 
 class _UploadPageState extends State<UploadPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  String _fileName;
+  String _path;
+  Map<String, String> _paths;
+  String _extension;
+  bool _loadingPath = false;
+  bool _multiPick = true;
+  FileType _pickingType = FileType.custom;
+  TextEditingController _controller = new TextEditingController();
+
   bool notes = true;
   bool asTabs = false;
   String selectedValue;
@@ -25,6 +38,7 @@ class _UploadPageState extends State<UploadPage> {
 
   @override
   void initState() {
+    _controller.addListener(() => _extension = _controller.text);
     String wordPair = "";
     loremIpsum
         .toLowerCase()
@@ -51,17 +65,60 @@ class _UploadPageState extends State<UploadPage> {
     super.initState();
   }
 
-  // void _toggle() {
-  //   setState(() {
-  //     notes = true;
-  //   });
-  // }
+  void _openFileExplorer() async {
+    setState(() => _loadingPath = true);
+    try {
+      if (_multiPick) {
+        // _path = await FilePicker.getMultiFilePath(allowedExtensions: ['pdf']),
+        _path = null;
+        _paths = await FilePicker.getMultiFilePath(
+            type: _pickingType,
+            allowedExtensions: [
+              'jpg',
+              'pdf',
+              'doc',
+              'docx',
+              'xlsx',
+              'png',
+              'txt'
+            ]);
+        // (_extension?.isNotEmpty ?? false) ? _extension?.replaceAll(' ', '')?.split('OOOO') : null);
+      } else {
+        _paths = null;
+        _path = await FilePicker.getFilePath(
+            type: _pickingType,
+            allowedExtensions: (_extension?.isNotEmpty ?? false)
+                ? _extension?.replaceAll(' ', '')?.split(',')
+                : null);
+      }
+    } on PlatformException catch (e) {
+      print("Unsupported operation" + e.toString());
+    }
+    if (!mounted) return;
+    setState(() {
+      _loadingPath = false;
+      _fileName = _path != null
+          ? _path.split('/').last
+          : _paths != null ? _paths.keys.toString() : '...';
+    });
+  }
 
-  // void _toggletoque() {
-  //   setState(() {
-  //     notes = false;
-  //   });
-  // }
+  void _clearCachedFiles() {
+    setState(() => _loadingPath = true);
+    FilePicker.clearTemporaryFiles().then((result) {
+      _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.green,
+          content: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Select new files',
+            ),
+          ),
+        ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +140,7 @@ class _UploadPageState extends State<UploadPage> {
       ),
     };
     return Scaffold(
+      key: _scaffoldKey,
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         child: ConstAppbar(title: "Upload"),
@@ -135,7 +193,7 @@ class _UploadPageState extends State<UploadPage> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.only(left: 20 , right: 20),
+                  padding: EdgeInsets.only(left: 20, right: 20),
                   child: CustomRadioButton(
                     enableShape: true,
                     elevation: 5.0,
@@ -152,126 +210,159 @@ class _UploadPageState extends State<UploadPage> {
                     selectedColor: kPrimaryColor,
                   ),
                 ),
+                SizedBox(height: 8),
+                SingleChildScrollView(
+                  child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                          height: size.height * 0.45,
+                          child: new Builder(
+                            builder: (BuildContext context) => GestureDetector(
+                              onTap: (){
+                                _openFileExplorer();
+                              },
+                                                          child: Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                      "assets/images/upload.png",
+                                    ),
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                                child: _loadingPath
+                                    ? GestureDetector(
+                                      onTap: (){
+                                        _openFileExplorer();
+                                      },
+                                          child: 
+                                              Container(
+                                                
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    image: AssetImage(
+                                                      "assets/images/upload.png",
+                                                    ),
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
+                                              ),
+                                              
+                                
+                                    )
+                                    : _path != null || _paths != null
+                                        ? new Container(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 30.0),
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.50,
+                                            child: new Scrollbar(
+                                                child: new ListView.separated(
+                                              itemCount: _paths != null &&
+                                                      _paths.isNotEmpty
+                                                  ? _paths.length
+                                                  : 1,
+                                              itemBuilder: (BuildContext context,
+                                                  int index) {
+                                                final bool isMultiPath =
+                                                    _paths != null &&
+                                                        _paths.isNotEmpty;
+                                                final String name =
+                                                    'File $index: ' +
+                                                        (isMultiPath
+                                                            ? _paths.keys
+                                                                .toList()[index]
+                                                            : _fileName ?? '...');
+                                                final path = isMultiPath
+                                                    ? _paths.values
+                                                        .toList()[index]
+                                                        .toString()
+                                                    : _path;
 
-                SizedBox(height: 20),
+                                                return new ListTile(
+                                                  title: new Text(
+                                                    name,
+                                                  ),
+                                                  subtitle: new Text(path),
+                                                );
+                                              },
+                                              separatorBuilder:
+                                                  (BuildContext context,
+                                                          int index) =>
+                                                      new Divider(),
+                                            )),
+                                          )
+                                        : new Container(
+                                            child: Image.asset(
+                                              "assets/images/upload.png",
+                                              width: size.width,
+                                            ),
+                                          ),
+                              ),
+                            ),
+                          )),
+                      new Column(
+                        children: <Widget>[
+                          GestureDetector(
+                        onTap: () {
+                                  _clearCachedFiles();
+
+                        },
+                        child: Text(
+                          "Clear present files",
+                          style: TextStyle(
+                          color: kPrimaryColor,
+                          ),
+                        ),
+                      ),
+
+                          SizedBox(height: size.height * 0.02),
+                          GestureDetector(
+                            onTap: () {
+                              _openFileExplorer();
+                            },
+                            child: Container(
+                              margin: EdgeInsets.symmetric(vertical: 10),
+                              width: size.width * 0.8,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(29),
+                                child: Container(
+                                  color: kPrimaryColor,
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 20, horizontal: 40),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        "Upload",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20.0),
+                                      ),
+                                      SizedBox(width: size.width * 0.02),
+                                      Icon(
+                                        Icons.file_upload,
+                                        color: Colors.white,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ],
         ),
       ),
-      // floatingActionButton: SpeedDial(
-      //   animatedIcon: AnimatedIcons.menu_close,
-      //   animatedIconTheme: IconThemeData(size: 22.0),
-      //   // this is ignored if animatedIcon is non null
-      //   // child: Icon(Icons.add),
-      //   visible: true,
-      //   curve: Curves.bounceIn,
-      //   overlayColor: Colors.black,
-      //   overlayOpacity: 0.2,
-      //   tooltip: 'Speed Dial',
-      //   heroTag: 'speed-dial-hero-tag',
-      //   backgroundColor: Colors.white,
-      //   foregroundColor: Colors.black,
-      //   elevation: 5.0,
-      //   marginBottom:50,
-      //   shape: CircleBorder(),
-      //   children: [
-      //     SpeedDialChild(
-      //         child: Icon(Icons.library_books),
-      //         backgroundColor: kPrimaryColor,
-      //         label: 'Notes',
-      //         // labelStyle: TextTheme(fontSize: 18.0),
-      //         onTap: () {
-      //           _toggle();
-      //         }),
-      //     SpeedDialChild(
-      //       child: Icon(Icons.note),
-      //       backgroundColor: kPrimaryColor,
-      //       label: 'Qest. Paper',
-      //       // labelStyle: TextTheme(fontSize: 18.0),
-      //       onTap: () {
-      //         _toggletoque();
-      //       },
-      //     ),
-      //   ],
-      // ),
     );
   }
-
-  Widget notespage() {
-    return Column(
-      children: <Widget>[
-        SizedBox(height: 70),
-        Container(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            children: widgets
-                .map((k, v) {
-                  return (MapEntry(
-                      k,
-                      SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Column(children: [
-                          Text(k),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          v,
-                        ]),
-                      )));
-                })
-                .values
-                .toList(),
-          ),
-        ),
-        Text("fl.k,jms"),
-      ],
-    );
-  }
-
-//   Widget questionpage() {
-//     Map<String, Widget> widgets;
-//     widgets = {
-//       "Question Paper": SearchableDropdown.single(
-//         items: items,
-//         value: selectedValue,
-//         hint: "Select Course",
-//         searchHint: "Select one",
-//         onChanged: (value) {
-//           setState(() {
-//             selectedValue = value;
-//           });
-//         },
-//         isExpanded: true,
-//       ),
-//     };
-//     return Column(
-//       children: <Widget>[
-//         SizedBox(height: 70),
-//         Container(
-//           padding: EdgeInsets.all(20),
-//           child: Column(
-//             children: widgets
-//                 .map((k, v) {
-//                   return (MapEntry(
-//                       k,
-//                       SingleChildScrollView(
-//                         scrollDirection: Axis.vertical,
-//                         child: Column(children: [
-//                           Text(k),
-//                           SizedBox(
-//                             height: 20,
-//                           ),
-//                           v,
-//                         ]),
-//                       )));
-//                 })
-//                 .values
-//                 .toList(),
-//           ),
-//         ),
-//         Text("data"),
-//       ],
-//     );
-//   }
 }

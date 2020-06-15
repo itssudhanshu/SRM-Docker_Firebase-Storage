@@ -260,7 +260,6 @@ class _HomePageState extends State<HomePage> {
             icon: isSearchEmpty ? Icon(Icons.search) : Icon(Icons.cancel),
             color: isSearchEmpty ? kPrimaryColor : Colors.black,
            onPressed: (){
-             
              setState(() {
                cancelSearch();
                this.isSearchEmpty = !this.isSearchEmpty;
