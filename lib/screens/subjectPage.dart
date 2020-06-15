@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:math';
@@ -9,18 +8,22 @@ import 'package:srm_notes/bloc/userbloc.dart';
 import 'package:srm_notes/components/models/loading.dart';
 import 'package:srm_notes/components/models/usermodel.dart';
 import 'package:srm_notes/pages/account.dart';
-import 'package:srm_notes/screens/subjectPage.dart';
 
 import '../constants.dart';
 
 const String RANDOM_URL = "https://randomuser.me/api/?results=100";
 
-class HomePage extends StatefulWidget {
+class SubjectPage extends StatefulWidget {
+  var sub;
+  SubjectPage(this.sub);
   @override
-  _HomePageState createState() => _HomePageState();
+  _SubjectPageState createState() => _SubjectPageState(this.sub);
 }
 
-class _HomePageState extends State<HomePage> {
+class _SubjectPageState extends State<SubjectPage> {
+  var subject;
+  _SubjectPageState(this.subject);
+
   final _fireStore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
   ScrollController _controller = ScrollController();
@@ -51,14 +54,14 @@ class _HomePageState extends State<HomePage> {
   Widget _cardWidget(title) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) {
-              return SubjectPage(title);
-            },
-          ),
-        );
+//        Navigator.push(
+//          context,
+//          MaterialPageRoute(
+//            builder: (context) {
+//              return AccountPage();
+//            },
+//          ),
+//        );
       },
       child: Container(
         height: 60,
@@ -68,22 +71,31 @@ class _HomePageState extends State<HomePage> {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
-            // fit: StackFit.expand,
+          // fit: StackFit.expand,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               SizedBox(width: size.width * 0.02),
               ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
-                child: Icon(Icons.folder,size: 40, color: kPrimaryColor,),
+                child: Icon(Icons.folder,size: 40,color: kPrimaryColor,),
               ),
-              SizedBox(width: size.width * 0.05),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    // fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
+              SizedBox(width: size.width * 0.2),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      child: Text(
+                        title,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          // fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ]),
@@ -230,29 +242,29 @@ class _HomePageState extends State<HomePage> {
         title: isSearchEmpty
             ? Text("Home", style: TextStyle(color: Colors.white))
             : TextField(
-                controller: searchController,
-                onChanged: (text) => {_searchUser(text), handleSearch(text)},
-                // autofocus: true,
-                keyboardType: TextInputType.text,
-                textInputAction: TextInputAction.search,
-                decoration: InputDecoration.collapsed(
-                  hintText: 'Search',
-                  hintStyle: TextStyle(
-                    color: Colors.white
-                  ),
-                  border: InputBorder.none,
-                ),
-              ),
+          controller: searchController,
+          onChanged: (text) => {_searchUser(text), handleSearch(text)},
+          // autofocus: true,
+          keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.search,
+          decoration: InputDecoration.collapsed(
+            hintText: 'Search',
+            hintStyle: TextStyle(
+                color: Colors.white
+            ),
+            border: InputBorder.none,
+          ),
+        ),
         backgroundColor: kPrimaryColor,
         leading: !isSearchEmpty
             ? IconButton(
-                icon: Icon(Icons.arrow_back),
-                color: Colors.white,
-                onPressed: () {
-                  setState(() {
-                    this.isSearchEmpty = !this.isSearchEmpty;
-                  });
-                })
+            icon: Icon(Icons.arrow_back),
+            color: Colors.white,
+            onPressed: () {
+              setState(() {
+                this.isSearchEmpty = !this.isSearchEmpty;
+              });
+            })
             : null,
         actions: <Widget>[
           IconButton(
@@ -351,10 +363,10 @@ class _HomePageState extends State<HomePage> {
 
                   // ),
                   StreamBuilder<QuerySnapshot>(
-                    stream: _fireStore.collection('Subjects').snapshots(),
+                    stream: _fireStore.collection(subject).snapshots(),
                     builder: (context, snapshot) {
                       if(snapshot.data == null) {
-                        return Loading();
+                        return Expanded(child: Center(child: Loading()));
                       }
                       var doc = snapshot.data;
                       final messages = snapshot.data.documents.reversed;
@@ -368,12 +380,10 @@ class _HomePageState extends State<HomePage> {
                         wid.add(mw);
                       }
                       return Expanded(
-                        child: GridView.count(
-                          crossAxisCount: 2,
-                          childAspectRatio: 2.5,
-                          padding: EdgeInsets.all(10),
+                        child: ListView(
+                          padding: EdgeInsets.all(10.0),
                           children: wid,
-                        )
+                        ),
                       );
                     },
                   ),
