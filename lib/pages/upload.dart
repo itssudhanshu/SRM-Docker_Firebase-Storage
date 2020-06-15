@@ -1,10 +1,8 @@
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:srm_notes/components/appbar.dart';
-import 'package:srm_notes/components/picker.dart';
-import 'package:srm_notes/components/rounded_button.dart';
+
 import '../constants.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
@@ -123,22 +121,6 @@ class _UploadPageState extends State<UploadPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    widgets = {
-      "Notes": SearchableDropdown.single(
-        iconEnabledColor: kPrimaryColor,
-        iconDisabledColor: Colors.black,
-        items: items,
-        value: selectedValue,
-        hint: "Select Course",
-        searchHint: "Select one",
-        onChanged: (value) {
-          setState(() {
-            selectedValue = value;
-          });
-        },
-        isExpanded: true,
-      ),
-    };
     return Scaffold(
       key: _scaffoldKey,
       extendBodyBehindAppBar: true,
@@ -171,25 +153,21 @@ class _UploadPageState extends State<UploadPage> {
             Column(
               children: <Widget>[
                 SizedBox(height: 70),
-                Container(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    children: widgets
-                        .map((k, v) {
-                          return (MapEntry(
-                              k,
-                              SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                child: Column(
-                                  children: [
-                                    // SizedBox(height: 20),
-                                    v,
-                                  ],
-                                ),
-                              )));
-                        })
-                        .values
-                        .toList(),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: SearchableDropdown( ///ese [SearchableDropdown.single] for suffix icon
+                    iconEnabledColor: kPrimaryColor,
+                    iconDisabledColor: Colors.black,
+                    items: items,
+                    value: selectedValue,
+                    hint: "Select Course",
+                    searchHint: "Select one",
+                    onChanged: (value) {
+                      setState(() {
+                        selectedValue = value;
+                      });
+                    },
+                    isExpanded: true,
                   ),
                 ),
                 Container(
@@ -219,10 +197,10 @@ class _UploadPageState extends State<UploadPage> {
                           height: size.height * 0.45,
                           child: new Builder(
                             builder: (BuildContext context) => GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 _openFileExplorer();
                               },
-                                                          child: Container(
+                              child: Container(
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                     image: AssetImage(
@@ -233,24 +211,20 @@ class _UploadPageState extends State<UploadPage> {
                                 ),
                                 child: _loadingPath
                                     ? GestureDetector(
-                                      onTap: (){
-                                        _openFileExplorer();
-                                      },
-                                          child: 
-                                              Container(
-                                                
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: AssetImage(
-                                                      "assets/images/upload.png",
-                                                    ),
-                                                    fit: BoxFit.contain,
-                                                  ),
-                                                ),
+                                        onTap: () {
+                                          _openFileExplorer();
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: AssetImage(
+                                                "assets/images/upload.png",
                                               ),
-                                              
-                                
-                                    )
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                        ),
+                                      )
                                     : _path != null || _paths != null
                                         ? new Container(
                                             padding: const EdgeInsets.only(
@@ -265,8 +239,9 @@ class _UploadPageState extends State<UploadPage> {
                                                       _paths.isNotEmpty
                                                   ? _paths.length
                                                   : 1,
-                                              itemBuilder: (BuildContext context,
-                                                  int index) {
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
                                                 final bool isMultiPath =
                                                     _paths != null &&
                                                         _paths.isNotEmpty;
@@ -275,7 +250,8 @@ class _UploadPageState extends State<UploadPage> {
                                                         (isMultiPath
                                                             ? _paths.keys
                                                                 .toList()[index]
-                                                            : _fileName ?? '...');
+                                                            : _fileName ??
+                                                                '...');
                                                 final path = isMultiPath
                                                     ? _paths.values
                                                         .toList()[index]
@@ -307,18 +283,16 @@ class _UploadPageState extends State<UploadPage> {
                       new Column(
                         children: <Widget>[
                           GestureDetector(
-                        onTap: () {
-                                  _clearCachedFiles();
-
-                        },
-                        child: Text(
-                          "Clear present files",
-                          style: TextStyle(
-                          color: kPrimaryColor,
+                            onTap: () {
+                              _clearCachedFiles();
+                            },
+                            child: Text(
+                              "Clear present files",
+                              style: TextStyle(
+                                color: kPrimaryColor,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-
                           SizedBox(height: size.height * 0.02),
                           GestureDetector(
                             onTap: () {
