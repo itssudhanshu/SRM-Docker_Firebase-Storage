@@ -78,7 +78,9 @@ class _UploadPageState extends State<UploadPage> {
               'docx',
               'xlsx',
               'png',
-              'txt'
+              'txt',
+              'ppt',
+              'pptx'
             ]);
         // (_extension?.isNotEmpty ?? false) ? _extension?.replaceAll(' ', '')?.split('OOOO') : null);
       } else {
@@ -155,19 +157,25 @@ class _UploadPageState extends State<UploadPage> {
                 SizedBox(height: 70),
                 Padding(
                   padding: const EdgeInsets.all(20.0),
-                  child: SearchableDropdown( ///ese [SearchableDropdown.single] for suffix icon
-                    iconEnabledColor: kPrimaryColor,
-                    iconDisabledColor: Colors.black,
-                    items: items,
-                    value: selectedValue,
-                    hint: "Select Course",
-                    searchHint: "Select one",
-                    onChanged: (value) {
-                      setState(() {
-                        selectedValue = value;
-                      });
-                    },
-                    isExpanded: true,
+                  child: Container(
+                    decoration: BoxDecoration(
+                     border: Border.all(), 
+                    ),
+                    child: SearchableDropdown( ///ese [SearchableDropdown.single] for suffix icon
+                      underline: Colors.white,
+                      iconEnabledColor: kPrimaryColor,
+                      iconDisabledColor: Colors.black,
+                      items: items,
+                      value: selectedValue,
+                      hint: "Select Course",
+                      searchHint: "Select one",
+                      onChanged: (value) {
+                        setState(() {
+                          selectedValue = value;
+                        });
+                      },
+                      isExpanded: true,
+                    ),
                   ),
                 ),
                 Container(
@@ -193,8 +201,9 @@ class _UploadPageState extends State<UploadPage> {
                   child: new Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      SizedBox(height: 20),
                       Container(
-                          height: size.height * 0.45,
+                          height: size.height * 0.30,
                           child: new Builder(
                             builder: (BuildContext context) => GestureDetector(
                               onTap: () {
@@ -206,7 +215,7 @@ class _UploadPageState extends State<UploadPage> {
                                     image: AssetImage(
                                       "assets/images/upload.png",
                                     ),
-                                    fit: BoxFit.contain,
+                                    fit: BoxFit.scaleDown,
                                   ),
                                 ),
                                 child: _loadingPath
@@ -274,7 +283,7 @@ class _UploadPageState extends State<UploadPage> {
                                         : new Container(
                                             child: Image.asset(
                                               "assets/images/upload.png",
-                                              width: size.width,
+                                              width: size.width * 0.70,
                                             ),
                                           ),
                               ),
@@ -300,13 +309,13 @@ class _UploadPageState extends State<UploadPage> {
                             },
                             child: Container(
                               margin: EdgeInsets.symmetric(vertical: 10),
-                              width: size.width * 0.8,
+                              width: size.width * 0.5,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(29),
                                 child: Container(
                                   color: kPrimaryColor,
                                   padding: EdgeInsets.symmetric(
-                                      vertical: 20, horizontal: 40),
+                                      vertical: 15, horizontal: 10),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[

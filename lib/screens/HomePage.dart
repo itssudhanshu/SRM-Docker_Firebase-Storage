@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
           _controller.jumpTo(_controller.offset - details.delta.dy);
           _controller1.jumpTo(_controller1.offset - details.delta.dy);
         } else if (details.delta.dy < 0) {
-          print('We are swiping down');
+          // print('We are swiping down');
           double maxScroll = _controller.position.maxScrollExtent;
           double currentScroll = _controller.position.pixels;
           double maxScroll1 = _controller1.position.maxScrollExtent;
@@ -234,37 +234,40 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
-        title: isSearchEmpty ? Text("Home",style: TextStyle(color:kPrimaryColor)) : TextField(
-                              controller: searchController,
-                              onChanged: (text) =>
-                                  {_searchUser(text), handleSearch(text)},
-                              // autofocus: true,
-                              keyboardType: TextInputType.text,
-                              textInputAction: TextInputAction.search,
-                              decoration: InputDecoration.collapsed(
-                                
-                                hintText: 'Search',
-                                border: InputBorder.none,
-                              ),
-                            ),
+        title: isSearchEmpty
+            ? Text("Home", style: TextStyle(color: kPrimaryColor))
+            : TextField(
+                controller: searchController,
+                onChanged: (text) => {_searchUser(text), handleSearch(text)},
+                // autofocus: true,
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.search,
+                decoration: InputDecoration.collapsed(
+                  hintText: 'Search',
+                  border: InputBorder.none,
+                ),
+              ),
         backgroundColor: Colors.transparent,
-        leading: !isSearchEmpty ? IconButton(icon: Icon(Icons.arrow_back),
-        color: Colors.black,
-         onPressed: (){
-          setState(() {
-               this.isSearchEmpty = !this.isSearchEmpty;
-             });
-        }) : null,
+        leading: !isSearchEmpty
+            ? IconButton(
+                icon: Icon(Icons.arrow_back),
+                color: Colors.black,
+                onPressed: () {
+                  setState(() {
+                    this.isSearchEmpty = !this.isSearchEmpty;
+                  });
+                })
+            : null,
         actions: <Widget>[
           IconButton(
-            icon: isSearchEmpty ? Icon(Icons.search) : Icon(Icons.cancel),
-            color: isSearchEmpty ? kPrimaryColor : Colors.black,
-           onPressed: (){
-             setState(() {
-               cancelSearch();
-               this.isSearchEmpty = !this.isSearchEmpty;
-             });
-          })
+              icon: isSearchEmpty ? Icon(Icons.search) : Icon(Icons.cancel),
+              color: isSearchEmpty ? kPrimaryColor : Colors.black,
+              onPressed: () {
+                setState(() {
+                  cancelSearch();
+                  this.isSearchEmpty = !this.isSearchEmpty;
+                });
+              })
         ],
       ),
       body: Container(
@@ -290,49 +293,49 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Container(
-      // extendBodyBehindAppBar: true,
+              // extendBodyBehindAppBar: true,
 
               child: Column(
                 // onChanged: (text) => _searchUser(text),
                 children: <Widget>[
-                  SizedBox(height: 20),
+                  // SizedBox(height: 20),
                   // Container(
-                    // child: Container(
-                    //   alignment: Alignment.center,
-                    //   margin: EdgeInsets.all(8),
-                    //   // padding: EdgeInsets.all(16),
-                    //   height: 50.0,
-                    //   decoration: BoxDecoration(
-                    //       border: Border.all(color: Colors.black45),
-                    //       borderRadius: BorderRadius.all(Radius.circular(16))),
-                      // child: Row(
-                      //   // mainAxisAlignment: MainAxisAlignment.center,
-                      //   // crossAxisAlignment: CrossAxisAlignment.center,
-                      //   children: <Widget>[
-                      //     SizedBox(width: 10.0),
-                      //     Expanded(
-                      //       child: TextField(
-                      //         controller: searchController,
-                      //         onChanged: (text) =>
-                      //             {_searchUser(text), handleSearch(text)},
-                      //         autofocus: false,
-                      //         keyboardType: TextInputType.text,
-                      //         textInputAction: TextInputAction.search,
-                      //         decoration: InputDecoration.collapsed(
-                      //           hintText: 'Search',
-                      //           border: InputBorder.none,
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     IconButton(
-                      //       icon: Icon(
-                      //         isSearchEmpty ? Icons.search : Icons.cancel,
-                      //       ),
-                      //       onPressed: cancelSearch,
-                      //     ),
-                      //   ],
-                      // ),
-                    // ),
+                  // child: Container(
+                  //   alignment: Alignment.center,
+                  //   margin: EdgeInsets.all(8),
+                  //   // padding: EdgeInsets.all(16),
+                  //   height: 50.0,
+                  //   decoration: BoxDecoration(
+                  //       border: Border.all(color: Colors.black45),
+                  //       borderRadius: BorderRadius.all(Radius.circular(16))),
+                  // child: Row(
+                  //   // mainAxisAlignment: MainAxisAlignment.center,
+                  //   // crossAxisAlignment: CrossAxisAlignment.center,
+                  //   children: <Widget>[
+                  //     SizedBox(width: 10.0),
+                  //     Expanded(
+                  //       child: TextField(
+                  //         controller: searchController,
+                  //         onChanged: (text) =>
+                  //             {_searchUser(text), handleSearch(text)},
+                  //         autofocus: false,
+                  //         keyboardType: TextInputType.text,
+                  //         textInputAction: TextInputAction.search,
+                  //         decoration: InputDecoration.collapsed(
+                  //           hintText: 'Search',
+                  //           border: InputBorder.none,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     IconButton(
+                  //       icon: Icon(
+                  //         isSearchEmpty ? Icons.search : Icons.cancel,
+                  //       ),
+                  //       onPressed: cancelSearch,
+                  //     ),
+                  //   ],
+                  // ),
+                  // ),
                   // ),
                   // Container(
                   //   padding: const EdgeInsets.all(16.0),
@@ -351,7 +354,7 @@ class _HomePageState extends State<HomePage> {
                   //   ),
 
                   // ),
-                 Expanded(
+                  Expanded(
                     child: usersWidget(),
                   )
                 ],
