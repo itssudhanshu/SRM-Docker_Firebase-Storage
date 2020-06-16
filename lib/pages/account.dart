@@ -1,7 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:srm_notes/components/mail.dart';
 import 'package:srm_notes/constants.dart';
-import 'package:flutter_inner_drawer/inner_drawer.dart';
 
 class AccountPage extends StatefulWidget {
   @override
@@ -9,124 +9,130 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  final AuthService _auth = AuthService();
+  // final AuthService _auth = AuthService().;
+  final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return
-        // InnerDrawer(
-        //   //  key: _innerDrawerKey,
-
-        //         onTapClose: true,
-        //         // tapScaffoldEnabled: false,
-        //         swipe: true,
-        //         colorTransitionChild: kPrimaryColor,
-        //         // offset: ,
-
-        //         rightOffset: 0.005,
-        //         // scale: IDOffset.horizontal( 0.8 ),
-        //         proportionalChildArea : true,
-        //         // borderRadius: 50,
-        //         // leftAnimationType: InnerDrawerAnimation.static, // default static
-        //         rightAnimationType: InnerDrawerAnimation.linear,
-        //         backgroundDecoration: BoxDecoration(color: kPrimaryColor),
-        //         // innerDrawerCallback: (a) => print(a), // return  true (open) or false (close)
-        //         // leftChild: Container(),
-        //         rightChild: Container(),
-
-        //   scaffold:
-        Scaffold(
+    return Scaffold(
       extendBodyBehindAppBar: true,
-      endDrawer: Drawer(
-        // elevation: 10,
-        // drawerAlignment: DrawerAlignment.end,
-        child: SafeArea(
-          maintainBottomViewPadding: false,
-          child: Column(
-            children: <Widget>[
-              DrawerHeader(
-                child: Image.asset("assets/images/signup_top.png"),
-              ),
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: <Widget>[
-                    ListTile(
-                      title: Text('Edit Profile'),
-                      leading: Icon(Icons.edit),
-                      onTap: () {},
+      endDrawer: Container(
+        width: MediaQuery.of(context).size.width * 0.70,
+        child: Drawer(
+          child: SafeArea(
+            maintainBottomViewPadding: false,
+            child: Column(
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.topLeft,
+                  padding: EdgeInsets.only(left: 10),
+                  child: ListTile(
+                    title: Text(
+                      "ss2862@srmist.edu.in",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    ListTile(
-                      title: Text('My Uploads'),
-                      leading: Icon(Icons.file_upload),
-                      onTap: () {},
-                    ),
-                    ExpansionTile(
-                          leading: Icon(Icons.apps),
-                          title: const Text('How to use this App?'),
-                          children: <Widget>[
-                            ListTile(
-                                title: Text(
-                                    '1.Add tasks or notes through + sign below.')),
-                            ListTile(title: Text('2.Share your notes.')),
-                            ListTile(title: Text('3.Mark Important notes.')),
-                            ListTile(
-                                title: Text(
-                                    '4.Edit tasks pressing long to your previous input.')),
-                            ListTile(
-                                title: Text(
-                                    '5.Remove tasks on sliding to block from left to right.')),
-                            ListTile(
-                                title: Text(
-                                    '6.Differentiate your tasks by colors.')),
-                          ],
-                        ),
-                        
-                   
-                  ],
+                  ),
                 ),
-              ),
-              Container(
+                Divider(thickness: 1.5),
+                Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    children: <Widget>[
+                      ListTile(
+                        title: Text('Edit Profile'),
+                        leading: Icon(Icons.edit),
+                        onTap: () {},
+                      ),
+                      ListTile(
+                        title: Text('My Uploads'),
+                        leading: Icon(Icons.file_upload),
+                        onTap: () {},
+                      ),
+                      ExpansionTile(
+                        leading: Icon(Icons.apps),
+                        title: const Text('How to use this App?'),
+                        children: <Widget>[
+                          ListTile(
+                              title: Text(
+                                  '1.Add tasks or notes through + sign below.')),
+                          ListTile(title: Text('2.Share your notes.')),
+                          ListTile(title: Text('3.Mark Important notes.')),
+                          ListTile(
+                              title: Text(
+                                  '4.Edit tasks pressing long to your previous input.')),
+                          ListTile(
+                              title: Text(
+                                  '5.Remove tasks on sliding to block from left to right.')),
+                          ListTile(
+                              title: Text(
+                                  '6.Differentiate your tasks by colors.')),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
                   // This align moves the children to the bottom
                   child: Align(
-                      alignment: FractionalOffset.bottomCenter,
-                      // This container holds all the children that will be aligned
-                      // on the bottom and should not scroll with the above ListView
-                      child: Container(
-                          child: Column(
+                    alignment: FractionalOffset.bottomCenter,
+                    // This container holds all the children that will be aligned
+                    // on the bottom and should not scroll with the above ListView
+                    child: Container(
+                      child: Column(
                         children: <Widget>[
-                          Divider(),
-                           ListTile(
-                        title: Text('Logout'),
-                        leading: Icon(Icons.exit_to_app),
-                        onTap: () {
-                          await _auth.signOut();
-                        }),
+                          Divider(thickness: 1.5),
                           ListTile(
-                              leading: Icon(Icons.help),
-                              onTap: () {
-                                Navigator.of(context).push(
-                                    MaterialPageRoute<Null>(
-                                        builder: (BuildContext context) {
-                                  return new Mail();
-                                }));
-                              },
-                              title: Text('Help and Feedback'))
+                              title: Text('Logout'),
+                              leading: Icon(Icons.exit_to_app),
+                              onTap: () async {
+                                await _auth.signOut();
+                              }),
+                          ListTile(
+                            leading: Icon(Icons.help),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<Null>(
+                                  builder: (BuildContext context) {
+                                    return new Mail();
+                                  },
+                                ),
+                              );
+                            },
+                            title: Text('Help and Feedback'),
+                          ),
+                          SizedBox(height: 20),
                         ],
-                      ))))
-            ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
       appBar: AppBar(
-        actions: <Widget>[],
+        actions: <Widget>[
+          Builder(
+              builder: (context) => IconButton(
+                    icon: Icon(Icons.dehaze, size: 25,),
+                    onPressed: () => Scaffold.of(context).openEndDrawer(),
+                    tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+                  ),
+            ),
+        ],
         centerTitle: true,
         elevation: 0,
         title: Text(
           "Profile",
           style: TextStyle(
             color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
             letterSpacing: 2.0,
           ),
         ),
@@ -170,7 +176,7 @@ class _AccountPageState extends State<AccountPage> {
                       width: 130.0,
                       height: 130.0,
                       decoration: BoxDecoration(
-                          color: Colors.red,
+                          color: kPrimaryLightColor,
                           image: DecorationImage(
                               image: NetworkImage(
                                   'https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg'),
@@ -198,7 +204,7 @@ class _AccountPageState extends State<AccountPage> {
                     elevation: 5.0,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10.0, vertical: 20.0),
+                          horizontal: 10.0, vertical: 15.0),
                       child: Row(
                         children: <Widget>[
                           Expanded(
@@ -213,7 +219,7 @@ class _AccountPageState extends State<AccountPage> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 10.0,
+                                  height: 10.0
                                 ),
                                 Text(
                                   "5200",
@@ -238,7 +244,7 @@ class _AccountPageState extends State<AccountPage> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 10.0,
+                                  height: 10.0
                                 ),
                                 Text(
                                   "28.5K",
@@ -263,7 +269,7 @@ class _AccountPageState extends State<AccountPage> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 10.0,
+                                  height: 10.0
                                 ),
                                 Text(
                                   "1300",
@@ -280,7 +286,7 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height / 30),
+                  // SizedBox(height: MediaQuery.of(context).size.height / 35),
                   Container(
                     padding: EdgeInsets.all(20.0),
                     child: Column(

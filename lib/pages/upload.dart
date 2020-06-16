@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:srm_notes/components/appbar.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as p;
 import 'package:srm_notes/components/models/loading.dart';
 
 import '../constants.dart';
@@ -15,7 +13,6 @@ import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 
 FirebaseUser loggedInUser;
-
 
 class UploadPage extends StatefulWidget {
   @override
@@ -38,16 +35,14 @@ class _UploadPageState extends State<UploadPage> {
   FileType _pickingType = FileType.custom;
   TextEditingController _controller = new TextEditingController();
   Color color = Colors.black;
+  double width_dropd = 1.0;
   File image;
   bool notes = true;
   bool asTabs = false;
   String selectedValue;
   String preselectedValue = "dolor sit";
   bool uploading = false;
-  List<String> _items = [
-    'Machine Learning',
-    'Maths'
-  ];
+  List<String> _items = ['Machine Learning', 'Maths'];
   Map<String, Widget> widgets;
 
   @override
@@ -103,9 +98,9 @@ class _UploadPageState extends State<UploadPage> {
     setState(() {
       _loadingPath = false;
 
-       _fileName = _path != null
-           ? _path.toString().split('/').last
-           : _paths != null ? _paths.keys.toString() : '...';
+      _fileName = _path != null
+          ? _path.toString().split('/').last
+          : _paths != null ? _paths.keys.toString() : '...';
     });
   }
 
@@ -121,15 +116,13 @@ class _UploadPageState extends State<UploadPage> {
   }
 
   Future savedoc(List<int> asset, String name) async {
-
     print(selectedValue);
     print(name);
 
     final StorageReference firebaseStorageRef =
-    FirebaseStorage.instance.ref().child(selectedValue);
+        FirebaseStorage.instance.ref().child(selectedValue);
 
-    final StorageUploadTask task =
-    await firebaseStorageRef.putData(asset);
+    final StorageUploadTask task = firebaseStorageRef.putData(asset);
 
     StorageTaskSnapshot taskSnapshot = await task.onComplete;
     String url = await taskSnapshot.ref.getDownloadURL();
@@ -142,7 +135,7 @@ class _UploadPageState extends State<UploadPage> {
       'name': _fileName,
       'sender': loggedInUser.email,
       'url': url,
-      'time' : DateTime.now().toString().split('at')[0]
+      'time': DateTime.now().toString().split('at')[0]
     });
     setState(() {
       uploading = false;
@@ -211,71 +204,75 @@ class _UploadPageState extends State<UploadPage> {
                     ),
                   ),
                   // notes ? notespage() : questionpage(),
-                  Column(
-                    children: <Widget>[
-                      SizedBox(height: 70),
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 2, color: color),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: SearchableDropdown(
-                            ///ese [SearchableDropdown.single] for suffix icon
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontFamily: 'Avenir',
+                  SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 70),
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: width_dropd, color: color),
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                            underline: "",
-                            iconEnabledColor: kPrimaryColor,
-                            iconDisabledColor: Colors.black,
-                            items: _items.map((item) {
-                              return DropdownMenuItem(
-                                child: new Text(item),
-                                value: item,
-                              );
-                            }).toList(),
-                            value: selectedValue,
-                            hint: "Select Course",
-                            searchHint: "Select one",
-                            onChanged: (value) {
-                              setState(() {
-                                selectedValue = value;
-                                color = kPrimaryColor;
-                              });
-                            },
-                            isExpanded: true,
+                            child: SearchableDropdown(
+                              ///ese [SearchableDropdown.single] for suffix icon
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'Avenir',
+                              ),
+                              underline: "",
+                              iconEnabledColor: kPrimaryColor,
+                              iconDisabledColor: Colors.black,
+                              items: _items.map((item) {
+                                return DropdownMenuItem(
+                                  child: new Text(item),
+                                  value: item,
+                                );
+                              }).toList(),
+                              value: selectedValue,
+                              hint: "Select Course",
+                              searchHint: "Select one",
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedValue = value;
+                                  color = kPrimaryColor;
+                                  width_dropd = 2.0;
+                                });
+                              },
+                              isExpanded: true,
+                            ),
                           ),
                         ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(left: 20, right: 20),
-                        child: CustomRadioButton(
-                          enableShape: true,
-                          elevation: 5.0,
-                          buttonColor: Theme.of(context).canvasColor,
-                          buttonLables: [
-                            "Notes",
-                            "Question Paper",
-                          ],
-                          buttonValues: [
-                            "Notes",
-                            "Question_Paper",
-                          ],
-                          radioButtonValue: (value) => print(value),
-                          selectedColor: kPrimaryColor,
+                        Container(
+                          padding: EdgeInsets.only(left: 20, right: 20),
+                          child: CustomRadioButton(
+                            enableShape: true,
+                            elevation: 5.0,
+                            buttonColor: Theme.of(context).canvasColor,
+                            buttonLables: [
+                              "Notes",
+                              "Question Paper",
+                            ],
+                            buttonValues: [
+                              "Notes",
+                              "Question_Paper",
+                            ],
+                            radioButtonValue: (value) => print(value),
+                            selectedColor: kPrimaryColor,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 8),
-                      SingleChildScrollView(
-                        child: new Column(
+                        SizedBox(height: 8),
+                        Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            SizedBox(height: 20),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 15),
+                              child: Text("Tap on Image to select File❓"),
+                            ),
                             Container(
-                                height: size.height * 0.40,
+                                height: size.height * 0.30,
                                 child: new Builder(
                                   builder: (BuildContext context) =>
                                       GestureDetector(
@@ -370,7 +367,7 @@ class _UploadPageState extends State<UploadPage> {
                                     ),
                                   ),
                                 )),
-                            SizedBox(height: size.height * 0.04),
+                            SizedBox(height: size.height * 0.03),
                             new Column(
                               children: <Widget>[
                                 GestureDetector(
@@ -381,6 +378,7 @@ class _UploadPageState extends State<UploadPage> {
                                     "Clear present files",
                                     style: TextStyle(
                                       color: kPrimaryColor,
+                                      fontSize: 15,
                                     ),
                                   ),
                                 ),
@@ -417,19 +415,20 @@ class _UploadPageState extends State<UploadPage> {
                                             Icon(
                                               Icons.file_upload,
                                               color: Colors.white,
-                                            )
+                                            ),
                                           ],
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
+                                SizedBox(height: size.height * 0.02),
                               ],
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
