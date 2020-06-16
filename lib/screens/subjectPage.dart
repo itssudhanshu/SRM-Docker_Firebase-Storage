@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:srm_notes/components/models/loading.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../constants.dart';
 
@@ -28,19 +29,15 @@ class _SubjectPageState extends State<SubjectPage> {
 
   Future<void> getFilteredList() async {}
 
-  Widget _cardWidget(title,uploader,time, url) {
+  Widget _cardWidget(title, uploader, time, url) {
     url = url.toString().replaceAll('~', '//');
     return GestureDetector(
-      onTap: () {
-        
-//        Navigator.push(
-//          context,
-//          MaterialPageRoute(
-//            builder: (context) {
-//              return AccountPage();
-//            },
-//          ),
-//        );
+      onTap: () async {
+        if (await canLaunch(url)) {
+          await launch(url);
+        } else {
+          throw 'Could not launch $url';
+        }
       },
       child: Container(
         height: 70,
@@ -50,13 +47,17 @@ class _SubjectPageState extends State<SubjectPage> {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
-          // fit: StackFit.expand,
+            // fit: StackFit.expand,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               SizedBox(width: size.width * 0.02),
               ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
-                child: Icon(Icons.folder,size: 50,color: kPrimaryColor,),
+                child: Icon(
+                  Icons.folder,
+                  size: 50,
+                  color: kPrimaryColor,
+                ),
               ),
               SizedBox(width: size.width * 0.05),
               Flexible(
@@ -67,20 +68,22 @@ class _SubjectPageState extends State<SubjectPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text(uploader,
-                          style: TextStyle(color:kPrimaryColor),),
-
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0,0,12,0),
-                        child: Text(time.toString().split(' ')[0],
-                          style: TextStyle(color: Colors.grey[700]),
+                        Text(
+                          uploader,
+                          style: TextStyle(color: kPrimaryColor),
                         ),
-                      ),
-
-
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                          child: Text(
+                            time.toString().split(' ')[0],
+                            style: TextStyle(color: Colors.grey[700]),
+                          ),
+                        ),
                       ],
                     ),
-                    SizedBox(height: 7,),
+                    SizedBox(
+                      height: 7,
+                    ),
                     Container(
                       child: Text(
                         title,
@@ -99,12 +102,11 @@ class _SubjectPageState extends State<SubjectPage> {
     );
   }
 
+
   @override
   void initState() {
     super.initState();
-   
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -117,35 +119,33 @@ class _SubjectPageState extends State<SubjectPage> {
         title: isSearchEmpty
             ? Text("$subject", style: TextStyle(color: Colors.white))
             : TextField(
-          style: TextStyle(color: Colors.white),
-          controller: searchController,
-          onChanged: (text){
-            setState(() {
-              _searchedText = text.toLowerCase();
-            });
-          },
-          // autofocus: true,
-          keyboardType: TextInputType.text,
-          textInputAction: TextInputAction.search,
-          decoration: InputDecoration.collapsed(
-            hintText: 'Search',
-            hintStyle: TextStyle(
-                color: Colors.white
-            ),
-            border: InputBorder.none,
-          ),
-        ),
+                style: TextStyle(color: Colors.white),
+                controller: searchController,
+                onChanged: (text) {
+                  setState(() {
+                    _searchedText = text.toLowerCase();
+                  });
+                },
+                // autofocus: true,
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.search,
+                decoration: InputDecoration.collapsed(
+                  hintText: 'Search',
+                  hintStyle: TextStyle(color: Colors.white),
+                  border: InputBorder.none,
+                ),
+              ),
         backgroundColor: kPrimaryColor,
         leading: !isSearchEmpty
             ? IconButton(
-            icon: Icon(Icons.arrow_back),
-            color:Colors.white,
-            onPressed: () {
-              setState(() {
-                _searchedText = null;
-                this.isSearchEmpty = !this.isSearchEmpty;
-              });
-            })
+                icon: Icon(Icons.arrow_back),
+                color: Colors.white,
+                onPressed: () {
+                  setState(() {
+                    _searchedText = null;
+                    this.isSearchEmpty = !this.isSearchEmpty;
+                  });
+                })
             : null,
         actions: <Widget>[
           IconButton(
@@ -188,11 +188,10 @@ class _SubjectPageState extends State<SubjectPage> {
               child: Column(
                 // onChanged: (text) => _searchUser(text),
                 children: <Widget>[
-
                   StreamBuilder<QuerySnapshot>(
                     stream: _fireStore.collection(subject).snapshots(),
                     builder: (context, snapshot) {
-                      if(snapshot.data == null) {
+                      if (snapshot.data == null) {
                         return Expanded(child: Center(child: Loading()));
                       }
                       var doc = snapshot.data;
@@ -200,17 +199,16 @@ class _SubjectPageState extends State<SubjectPage> {
                       List<Widget> wid = [];
 
                       for (var message in messages) {
-
                         final name = message.data['name'];
                         final uploader = message.data['sender'];
                         final url = message.data['url'];
                         final time = message.data['time'];
-                        final mw = _cardWidget(name,uploader,time,url);
+                        final mw = _cardWidget(name, uploader, time, url);
 
-                        if(_searchedText == null || name.toLowerCase().contains(_searchedText))
-                          {
-                            wid.add(mw);
-                          }
+                        if (_searchedText == null ||
+                            name.toLowerCase().contains(_searchedText)) {
+                          wid.add(mw);
+                        }
                       }
                       return Expanded(
                         child: ListView(
