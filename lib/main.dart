@@ -24,6 +24,8 @@ class _MyAppState extends State<MyApp> {
 
   checkForLoggedInUser() async {
     var _bool = await storage.read(key: 'isLogged');
+    var _email = await storage.read(key: 'email');
+    var _pass = await storage.read(key: 'pass');
     if (_bool == 'true') {
       print(_bool);
       setState(() {

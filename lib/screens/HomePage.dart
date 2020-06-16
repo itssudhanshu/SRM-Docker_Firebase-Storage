@@ -90,6 +90,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  var _searchedText;
   @override
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
@@ -99,12 +100,15 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         elevation: 0,
         title: isSearchEmpty
-            ? Text("Home", style: TextStyle(color: kPrimaryColor))
+            ? Text("Home", style: TextStyle(color: Colors.white))
             : TextField(
-                
+          style: TextStyle(color: Colors.white),
                 controller: searchController,
-                onChanged: (text) => {handleSearch(text)},
-                // autofocus: true,
+                onChanged: (text) {
+                  setState(() {
+                    _searchedText = text.toLowerCase();
+                  });
+                },
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration.collapsed(
@@ -113,13 +117,14 @@ class _HomePageState extends State<HomePage> {
                   border: InputBorder.none,
                 ),
               ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: kPrimaryColor,
         leading: !isSearchEmpty
             ? IconButton(
                 icon: Icon(Icons.arrow_back),
-                color: kPrimaryColor,
+                color: Colors.white,
                 onPressed: () {
                   setState(() {
+                    _searchedText = null;
                     this.isSearchEmpty = !this.isSearchEmpty;
                   });
                 })
@@ -127,7 +132,7 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           IconButton(
               icon: isSearchEmpty ? Icon(Icons.search) : Icon(Icons.cancel),
-              color: isSearchEmpty ? kPrimaryColor : kPrimaryColor,
+              color: isSearchEmpty ? Colors.white : Colors.white,
               onPressed: () {
                 setState(() {
                   cancelSearch();
@@ -176,7 +181,10 @@ class _HomePageState extends State<HomePage> {
                         final name = message.data['name'];
                         final code = message.data['code'];
                         final mw = _cardWidget(name,code);
-                        wid.add(mw);
+                        if(_searchedText == null || name.toLowerCase().contains(_searchedText))
+                          {
+                            wid.add(mw);
+                          }
                       }
                       return Expanded(
                           child: GridView.count(
@@ -198,6 +206,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   void cancelSearch() {
+    setState(() {
+      _searchedText = null;
+    });
     FocusScope.of(context).requestFocus(new FocusNode());
     setState(() {
       searchController.clear();

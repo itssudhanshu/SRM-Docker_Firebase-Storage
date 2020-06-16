@@ -14,6 +14,7 @@ class SubjectPage extends StatefulWidget {
 }
 
 class _SubjectPageState extends State<SubjectPage> {
+  var _searchedText;
   var subject;
   _SubjectPageState(this.subject);
 
@@ -27,7 +28,8 @@ class _SubjectPageState extends State<SubjectPage> {
 
   Future<void> getFilteredList() async {}
 
-  Widget _cardWidget(title) {
+  Widget _cardWidget(title,uploader,time, url) {
+    url = url.toString().replaceAll('~', '//');
     return GestureDetector(
       onTap: () {
 //        Navigator.push(
@@ -40,7 +42,7 @@ class _SubjectPageState extends State<SubjectPage> {
 //        );
       },
       child: Container(
-        height: 60,
+        height: 70,
         margin: EdgeInsets.all(5.0),
         decoration: BoxDecoration(
           color: Colors.grey[200],
@@ -53,21 +55,38 @@ class _SubjectPageState extends State<SubjectPage> {
               SizedBox(width: size.width * 0.02),
               ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
-                child: Icon(Icons.folder,size: 40,color: kPrimaryColor,),
+                child: Icon(Icons.folder,size: 50,color: kPrimaryColor,),
               ),
-              SizedBox(width: size.width * 0.2),
+              SizedBox(width: size.width * 0.05),
               Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(uploader,
+                          style: TextStyle(color:kPrimaryColor),),
+
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0,0,12,0),
+                        child: Text(time.toString().split(' ')[0],
+                          style: TextStyle(color: Colors.grey[700]),
+                        ),
+                      ),
+
+
+                      ],
+                    ),
+                    SizedBox(height: 7,),
                     Container(
                       child: Text(
                         title,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           // fontWeight: FontWeight.bold,
-                          fontSize: 15,
+                          fontSize: 17,
                         ),
                       ),
                     ),
@@ -95,28 +114,34 @@ class _SubjectPageState extends State<SubjectPage> {
         centerTitle: true,
         elevation: 0,
         title: isSearchEmpty
-            ? Text("Notes", style: TextStyle(color: kPrimaryColor))
+            ? Text("$subject", style: TextStyle(color: Colors.white))
             : TextField(
+          style: TextStyle(color: Colors.white),
           controller: searchController,
-          onChanged: (text) => { handleSearch(text)},
+          onChanged: (text){
+            setState(() {
+              _searchedText = text.toLowerCase();
+            });
+          },
           // autofocus: true,
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.search,
           decoration: InputDecoration.collapsed(
             hintText: 'Search',
             hintStyle: TextStyle(
-                color: kPrimaryColor
+                color: Colors.white
             ),
             border: InputBorder.none,
           ),
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: kPrimaryColor,
         leading: !isSearchEmpty
             ? IconButton(
             icon: Icon(Icons.arrow_back),
-            color:kPrimaryColor,
+            color:Colors.white,
             onPressed: () {
               setState(() {
+                _searchedText = null;
                 this.isSearchEmpty = !this.isSearchEmpty;
               });
             })
@@ -124,10 +149,11 @@ class _SubjectPageState extends State<SubjectPage> {
         actions: <Widget>[
           IconButton(
               icon: isSearchEmpty ? Icon(Icons.search) : Icon(Icons.cancel),
-              color: isSearchEmpty ? kPrimaryColor : kPrimaryColor,
+              color: isSearchEmpty ? Colors.white : Colors.white,
               onPressed: () {
                 setState(() {
                   cancelSearch();
+                  _searchedText = null;
                   this.isSearchEmpty = !this.isSearchEmpty;
                 });
               })
@@ -175,9 +201,15 @@ class _SubjectPageState extends State<SubjectPage> {
                       for (var message in messages) {
 
                         final name = message.data['name'];
-                        final code = message.data['code'];
-                        final mw = _cardWidget(name);
-                        wid.add(mw);
+                        final uploader = message.data['sender'];
+                        final url = message.data['url'];
+                        final time = message.data['time'];
+                        final mw = _cardWidget(name,uploader,time,url);
+
+                        if(_searchedText == null || name.toLowerCase().contains(_searchedText))
+                          {
+                            wid.add(mw);
+                          }
                       }
                       return Expanded(
                         child: ListView(

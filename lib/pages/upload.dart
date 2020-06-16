@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -12,6 +14,9 @@ import '../constants.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 
+FirebaseUser loggedInUser;
+
+
 class UploadPage extends StatefulWidget {
   @override
   _UploadPageState createState() => _UploadPageState();
@@ -19,6 +24,11 @@ class UploadPage extends StatefulWidget {
 
 class _UploadPageState extends State<UploadPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final _fireStore = Firestore.instance;
+  final store = FirebaseStorage.instance;
+  final _auth = FirebaseAuth.instance;
+
   String _fileName;
   File _path;
   Map<String, String> _paths;
@@ -35,15 +45,14 @@ class _UploadPageState extends State<UploadPage> {
   String preselectedValue = "dolor sit";
   bool uploading = false;
   List<String> _items = [
-    'ML 15CS302',
-    'B',
-    'C',
-    'D',
+    'Machine Learning',
+    'Maths'
   ];
   Map<String, Widget> widgets;
 
   @override
   void initState() {
+    getCurrentUser();
     _controller.addListener(() => _extension = _controller.text);
 
     super.initState();
@@ -94,17 +103,47 @@ class _UploadPageState extends State<UploadPage> {
     setState(() {
       _loadingPath = false;
 
-      // _fileName = _path != null
-      //     ? _path.split('/').last
-      //     : _paths != null ? _paths.keys.toString() : '...';
+       _fileName = _path != null
+           ? _path.toString().split('/').last
+           : _paths != null ? _paths.keys.toString() : '...';
     });
   }
 
+  void getCurrentUser() async {
+    try {
+      final user = await _auth.currentUser();
+      if (user != null) {
+        loggedInUser = user;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future savedoc(List<int> asset, String name) async {
-    StorageReference reference =
-        FirebaseStorage.instance.ref().child(selectedValue);
-    StorageUploadTask uploadTask = reference.putData(asset);
-    String url = await (await uploadTask.onComplete).ref.getDownloadURL();
+
+    print(selectedValue);
+    print(name);
+
+    final StorageReference firebaseStorageRef =
+    FirebaseStorage.instance.ref().child(selectedValue);
+
+    final StorageUploadTask task =
+    await firebaseStorageRef.putData(asset);
+
+    StorageTaskSnapshot taskSnapshot = await task.onComplete;
+    String url = await taskSnapshot.ref.getDownloadURL();
+    url = url.replaceAll('//', '~');
+    print(url);
+    var response = Firestore.instance
+        .collection(selectedValue)
+        .document("${DateTime.now()}")
+        .setData({
+      'name': _fileName,
+      'sender': loggedInUser.email,
+      'url': url,
+      'time' : DateTime.now().toString().split('at')[0]
+    });
     setState(() {
       uploading = false;
       _clearCachedFiles();
