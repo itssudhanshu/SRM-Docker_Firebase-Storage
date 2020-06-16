@@ -35,7 +35,6 @@ class _UploadPageState extends State<UploadPage> {
   FileType _pickingType = FileType.custom;
   TextEditingController _controller = new TextEditingController();
   Color color = Colors.black;
-  double width_dropd = 1.0;
   File image;
   bool notes = true;
   bool asTabs = false;
@@ -175,7 +174,7 @@ class _UploadPageState extends State<UploadPage> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
-      extendBodyBehindAppBar: true,
+      // extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         child: ConstAppbar(title: "Upload"),
         preferredSize: Size.fromHeight(50.0),
@@ -207,21 +206,17 @@ class _UploadPageState extends State<UploadPage> {
                   SingleChildScrollView(
                     child: Column(
                       children: <Widget>[
-                        SizedBox(height: 70),
+                        SizedBox(height: size.height * 0.04),
                         Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: Container(
                             decoration: BoxDecoration(
-                              border: Border.all(width: width_dropd, color: color),
+                              border:
+                                  Border.all(width: 2.0, color: color),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: SearchableDropdown(
                               ///ese [SearchableDropdown.single] for suffix icon
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'Avenir',
-                              ),
                               underline: "",
                               iconEnabledColor: kPrimaryColor,
                               iconDisabledColor: Colors.black,
@@ -238,7 +233,7 @@ class _UploadPageState extends State<UploadPage> {
                                 setState(() {
                                   selectedValue = value;
                                   color = kPrimaryColor;
-                                  width_dropd = 2.0;
+                                  // width_dropd = 2.0;
                                 });
                               },
                               isExpanded: true,
@@ -345,11 +340,34 @@ class _UploadPageState extends State<UploadPage> {
 
                                                           //     child: Image.file(image, height: 300.0, width: 300.0),
                                                           // );
-                                                          new ListTile(
-                                                        title: new Text(
-                                                          name,
+                                                          Container(
+                                                            margin: EdgeInsets.all(8.0),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: kPrimaryLightColor,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(15),
                                                         ),
-                                                        // subtitle: new Text(path),
+                                                        child: new ListTile(
+                                                          leading: CircleAvatar(
+                                                            backgroundColor:
+                                                                Colors.white,
+                                                            child: Icon(
+                                                              Icons.note,
+                                                              color:
+                                                                  Colors.green,
+                                                            ),
+                                                          ),
+                                                          trailing: Icon(
+                                                            Icons.check,
+                                                            color: Colors.green,
+                                                          ),
+                                                          title: new Text(
+                                                            name,
+                                                          ),
+                                                          // subtitle: new Text(path),
+                                                        ),
                                                       );
                                                     },
                                                     separatorBuilder:
@@ -359,10 +377,10 @@ class _UploadPageState extends State<UploadPage> {
                                                   )),
                                                 )
                                               : new Container(
-                                                  child: Image.asset(
-                                                    "assets/images/upload.png",
-                                                    width: size.width * 0.70,
-                                                  ),
+                                                  // child: Image.asset(
+                                                  //   "assets/images/upload.png",
+                                                  //   width: size.width * 0.70,
+                                                  // ),
                                                 ),
                                     ),
                                   ),
@@ -387,9 +405,26 @@ class _UploadPageState extends State<UploadPage> {
                                   onTap: () {
                                     // setState(() {
                                     setState(() {
-                                      uploading = true;
+                                      if (_path.readAsBytesSync() != null &&
+                                          selectedValue != null) {
+                                        uploading = true;
+                                        savedoc(
+                                            _path.readAsBytesSync(), _fileName);
+                                      } else {
+                                        _scaffoldKey.currentState.showSnackBar(
+                                          SnackBar(
+                                            backgroundColor: Colors.red,
+                                            content: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                'Please Select Course',
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
                                     });
-                                    savedoc(_path.readAsBytesSync(), _fileName);
                                     // });
                                   },
                                   child: Container(

@@ -10,14 +10,15 @@ class ConstAppbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      
       centerTitle: true,
       elevation: 0,
       title: Text(title,
       style: TextStyle(
-        color: kPrimaryColor,
+        color: Colors.white,
       ),
       ),
-      backgroundColor: Colors.transparent,
+      backgroundColor: kPrimaryColor,
     );
   }
 }

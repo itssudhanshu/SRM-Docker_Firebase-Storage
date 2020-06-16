@@ -39,13 +39,15 @@ class _SubjectPageState extends State<SubjectPage> {
           throw 'Could not launch $url';
         }
       },
+
       child: Container(
         height: 70,
         margin: EdgeInsets.all(5.0),
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: kPrimaryLightColor,
           borderRadius: BorderRadius.circular(12),
         ),
+
         child: Row(
             // fit: StackFit.expand,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -53,10 +55,13 @@ class _SubjectPageState extends State<SubjectPage> {
               SizedBox(width: size.width * 0.02),
               ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
-                child: Icon(
-                  Icons.folder,
-                  size: 50,
-                  color: kPrimaryColor,
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                                  child: Icon(
+                    Icons.folder,
+                    // size: 50,
+                    color: kPrimaryColor,
+                  ),
                 ),
               ),
               SizedBox(width: size.width * 0.05),
