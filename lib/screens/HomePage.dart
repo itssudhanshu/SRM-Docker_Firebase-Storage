@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
         elevation: 0,
         title: isSearchEmpty
-            ? Text("Home", style: TextStyle(color: Colors.white))
+            ? Text("Home", style: TextStyle(color: kPrimaryColor))
             : TextField(
                 
                 controller: searchController,
@@ -113,11 +113,11 @@ class _HomePageState extends State<HomePage> {
                   border: InputBorder.none,
                 ),
               ),
-        backgroundColor: kPrimaryColor,
+        backgroundColor: Colors.transparent,
         leading: !isSearchEmpty
             ? IconButton(
                 icon: Icon(Icons.arrow_back),
-                color: Colors.white,
+                color: kPrimaryColor,
                 onPressed: () {
                   setState(() {
                     this.isSearchEmpty = !this.isSearchEmpty;
@@ -127,7 +127,7 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           IconButton(
               icon: isSearchEmpty ? Icon(Icons.search) : Icon(Icons.cancel),
-              color: isSearchEmpty ? Colors.white : Colors.white,
+              color: isSearchEmpty ? kPrimaryColor : kPrimaryColor,
               onPressed: () {
                 setState(() {
                   cancelSearch();

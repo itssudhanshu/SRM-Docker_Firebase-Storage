@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'dart:math';
-import 'package:http/http.dart' as http;
+
 import 'package:srm_notes/components/models/loading.dart';
 
 import '../constants.dart';
@@ -21,8 +19,7 @@ class _SubjectPageState extends State<SubjectPage> {
 
   final _fireStore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
-  ScrollController _controller = ScrollController();
-  ScrollController _controller1 = ScrollController();
+
   TextEditingController searchController = TextEditingController();
   bool isSearchEmpty = true;
   Size size;
@@ -98,7 +95,7 @@ class _SubjectPageState extends State<SubjectPage> {
         centerTitle: true,
         elevation: 0,
         title: isSearchEmpty
-            ? Text("Home", style: TextStyle(color: Colors.white))
+            ? Text("Notes", style: TextStyle(color: kPrimaryColor))
             : TextField(
           controller: searchController,
           onChanged: (text) => { handleSearch(text)},
@@ -108,16 +105,16 @@ class _SubjectPageState extends State<SubjectPage> {
           decoration: InputDecoration.collapsed(
             hintText: 'Search',
             hintStyle: TextStyle(
-                color: Colors.white
+                color: kPrimaryColor
             ),
             border: InputBorder.none,
           ),
         ),
-        backgroundColor: kPrimaryColor,
+        backgroundColor: Colors.transparent,
         leading: !isSearchEmpty
             ? IconButton(
             icon: Icon(Icons.arrow_back),
-            color: Colors.white,
+            color:kPrimaryColor,
             onPressed: () {
               setState(() {
                 this.isSearchEmpty = !this.isSearchEmpty;
@@ -127,7 +124,7 @@ class _SubjectPageState extends State<SubjectPage> {
         actions: <Widget>[
           IconButton(
               icon: isSearchEmpty ? Icon(Icons.search) : Icon(Icons.cancel),
-              color: isSearchEmpty ? Colors.white : Colors.white,
+              color: isSearchEmpty ? kPrimaryColor : kPrimaryColor,
               onPressed: () {
                 setState(() {
                   cancelSearch();

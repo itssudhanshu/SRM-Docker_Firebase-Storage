@@ -64,11 +64,11 @@ class _LeaderboardState extends State<Leaderboard>
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      // extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(50.0),
         child: AnimatedContainer(
-          height: _isAppbar ? 70.0 : 0.0,
+          // height: _isAppbar ? 70.0 : 0.0,
           duration: Duration(milliseconds: 200),
           child: ConstAppbar(title: "Leaderboard"),
         ),
