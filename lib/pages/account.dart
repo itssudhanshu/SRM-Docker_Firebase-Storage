@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:srm_notes/components/mail.dart';
 import 'package:srm_notes/constants.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
-
 
 class AccountPage extends StatefulWidget {
   @override
@@ -9,41 +9,118 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  final AuthService _auth = AuthService();
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return 
-    InnerDrawer(
-      //  key: _innerDrawerKey,
-          
-            onTapClose: true, 
-            swipe: true, 
-            colorTransitionChild: kPrimaryColor, 
-            leftOffset: 0.5, 
-            rightOffset: 0,
-            
-            scale: IDOffset.horizontal( 0.8 ), 
-            proportionalChildArea : true, 
-            borderRadius: 50, 
-            // leftAnimationType: InnerDrawerAnimation.static, // default static
-            rightAnimationType: InnerDrawerAnimation.linear,
-            backgroundDecoration: BoxDecoration(color: kPrimaryColor), 
-            // innerDrawerCallback: (a) => print(a), // return  true (open) or false (close)
-            // leftChild: Container(),
-            rightChild: Container(), 
-            
-      scaffold: Scaffold(
+    return
+        // InnerDrawer(
+        //   //  key: _innerDrawerKey,
+
+        //         onTapClose: true,
+        //         // tapScaffoldEnabled: false,
+        //         swipe: true,
+        //         colorTransitionChild: kPrimaryColor,
+        //         // offset: ,
+
+        //         rightOffset: 0.005,
+        //         // scale: IDOffset.horizontal( 0.8 ),
+        //         proportionalChildArea : true,
+        //         // borderRadius: 50,
+        //         // leftAnimationType: InnerDrawerAnimation.static, // default static
+        //         rightAnimationType: InnerDrawerAnimation.linear,
+        //         backgroundDecoration: BoxDecoration(color: kPrimaryColor),
+        //         // innerDrawerCallback: (a) => print(a), // return  true (open) or false (close)
+        //         // leftChild: Container(),
+        //         rightChild: Container(),
+
+        //   scaffold:
+        Scaffold(
       extendBodyBehindAppBar: true,
+      endDrawer: Drawer(
+        // elevation: 10,
+        // drawerAlignment: DrawerAlignment.end,
+        child: SafeArea(
+          maintainBottomViewPadding: false,
+          child: Column(
+            children: <Widget>[
+              DrawerHeader(
+                child: Image.asset("assets/images/signup_top.png"),
+              ),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: <Widget>[
+                    ListTile(
+                      title: Text('Edit Profile'),
+                      leading: Icon(Icons.edit),
+                      onTap: () {},
+                    ),
+                    ListTile(
+                      title: Text('My Uploads'),
+                      leading: Icon(Icons.file_upload),
+                      onTap: () {},
+                    ),
+                    ExpansionTile(
+                          leading: Icon(Icons.apps),
+                          title: const Text('How to use this App?'),
+                          children: <Widget>[
+                            ListTile(
+                                title: Text(
+                                    '1.Add tasks or notes through + sign below.')),
+                            ListTile(title: Text('2.Share your notes.')),
+                            ListTile(title: Text('3.Mark Important notes.')),
+                            ListTile(
+                                title: Text(
+                                    '4.Edit tasks pressing long to your previous input.')),
+                            ListTile(
+                                title: Text(
+                                    '5.Remove tasks on sliding to block from left to right.')),
+                            ListTile(
+                                title: Text(
+                                    '6.Differentiate your tasks by colors.')),
+                          ],
+                        ),
+                        
+                   
+                  ],
+                ),
+              ),
+              Container(
+                  // This align moves the children to the bottom
+                  child: Align(
+                      alignment: FractionalOffset.bottomCenter,
+                      // This container holds all the children that will be aligned
+                      // on the bottom and should not scroll with the above ListView
+                      child: Container(
+                          child: Column(
+                        children: <Widget>[
+                          Divider(),
+                           ListTile(
+                        title: Text('Logout'),
+                        leading: Icon(Icons.exit_to_app),
+                        onTap: () {
+                          await _auth.signOut();
+                        }),
+                          ListTile(
+                              leading: Icon(Icons.help),
+                              onTap: () {
+                                Navigator.of(context).push(
+                                    MaterialPageRoute<Null>(
+                                        builder: (BuildContext context) {
+                                  return new Mail();
+                                }));
+                              },
+                              title: Text('Help and Feedback'))
+                        ],
+                      ))))
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(
-        actions: <Widget>[
-          IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-          onPressed: () => Scaffold.of(context).openDrawer();
-          },
-        )
- 
-        ],
+        actions: <Widget>[],
         centerTitle: true,
         elevation: 0,
         title: Text(
@@ -52,7 +129,7 @@ class _AccountPageState extends State<AccountPage> {
             color: Colors.white,
             letterSpacing: 2.0,
           ),
-        ),     
+        ),
         backgroundColor: Colors.transparent,
       ),
       body: Container(
@@ -262,7 +339,7 @@ class _AccountPageState extends State<AccountPage> {
           ],
         ),
       ),
-    ),
+      // ),
     );
   }
 }
@@ -295,7 +372,6 @@ class Details extends StatelessWidget {
         ],
       ),
     );
-    
   }
 }
 

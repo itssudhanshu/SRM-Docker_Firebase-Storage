@@ -32,6 +32,7 @@ class _SubjectPageState extends State<SubjectPage> {
     url = url.toString().replaceAll('~', '//');
     return GestureDetector(
       onTap: () {
+        
 //        Navigator.push(
 //          context,
 //          MaterialPageRoute(
