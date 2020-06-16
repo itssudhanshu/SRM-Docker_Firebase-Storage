@@ -28,10 +28,11 @@ class _UploadPageState extends State<UploadPage> {
 
   String _fileName;
   File _path;
+  List<File> _paths_multiple;
   Map<String, String> _paths;
   String _extension;
   bool _loadingPath = false;
-  bool _multiPick = false;
+  bool _multiPick = true;
   FileType _pickingType = FileType.custom;
   TextEditingController _controller = new TextEditingController();
   Color color = Colors.black;
@@ -58,7 +59,7 @@ class _UploadPageState extends State<UploadPage> {
       if (_multiPick) {
         // _path = await FilePicker.getMultiFilePath(allowedExtensions: ['pdf']),
         _path = null;
-        _paths = await FilePicker.getMultiFilePath(
+        _paths_multiple = await FilePicker.getMultiFile(
             type: _pickingType,
             allowedExtensions: [
               'jpg',
@@ -71,7 +72,7 @@ class _UploadPageState extends State<UploadPage> {
               'ppt',
               'pptx'
             ]);
-
+        print(_fileName);
         // (_extension?.isNotEmpty ?? false) ? _extension?.replaceAll(' ', '')?.split('OOOO') : null);
       } else {
         _paths = null;
@@ -211,12 +212,11 @@ class _UploadPageState extends State<UploadPage> {
                           padding: const EdgeInsets.all(20.0),
                           child: Container(
                             decoration: BoxDecoration(
-                              border:
-                                  Border.all(width: 2.0, color: color),
+                              border: Border.all(width: 2.0, color: color),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: SearchableDropdown(
-                              ///ese [SearchableDropdown.single] for suffix icon
+                              //ese SearchableDropdown.single for suffix icon
                               underline: "",
                               iconEnabledColor: kPrimaryColor,
                               iconDisabledColor: Colors.black,
@@ -329,11 +329,11 @@ class _UploadPageState extends State<UploadPage> {
                                                                       index]
                                                                   : _fileName ??
                                                                       '...');
-                                                      // final path = isMultiPath
-                                                      //     ? _paths.values
-                                                      //         .toList()[index]
-                                                      //         .toString()
-                                                      //     : _path;
+                                                      final path = isMultiPath
+                                                          ? _paths.values
+                                                              .toList()[index]
+                                                              .toString()
+                                                          : _path;
 
                                                       return
                                                           // Container(
@@ -341,10 +341,12 @@ class _UploadPageState extends State<UploadPage> {
                                                           //     child: Image.file(image, height: 300.0, width: 300.0),
                                                           // );
                                                           Container(
-                                                            margin: EdgeInsets.all(8.0),
+                                                        margin:
+                                                            EdgeInsets.all(8.0),
                                                         decoration:
                                                             BoxDecoration(
-                                                          color: kPrimaryLightColor,
+                                                          color:
+                                                              kPrimaryLightColor,
                                                           borderRadius:
                                                               BorderRadius
                                                                   .circular(15),
@@ -381,7 +383,7 @@ class _UploadPageState extends State<UploadPage> {
                                                   //   "assets/images/upload.png",
                                                   //   width: size.width * 0.70,
                                                   // ),
-                                                ),
+                                                  ),
                                     ),
                                   ),
                                 )),
