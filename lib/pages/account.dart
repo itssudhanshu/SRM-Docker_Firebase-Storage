@@ -19,6 +19,8 @@ class _AccountPageState extends State<AccountPage> {
       extendBodyBehindAppBar: true,
       endDrawer: Container(
         width: MediaQuery.of(context).size.width * 0.70,
+        height: size.height*0.9,
+        margin: EdgeInsets.only(top:20),
         child: Drawer(
           child: SafeArea(
             maintainBottomViewPadding: false,
@@ -184,7 +186,9 @@ class _AccountPageState extends State<AccountPage> {
                           borderRadius: BorderRadius.all(Radius.circular(75.0)),
                           boxShadow: [
                             BoxShadow(blurRadius: 5.0, color: Colors.black)
-                          ])),
+                          ]
+                          )
+                          ),
                   SizedBox(height: MediaQuery.of(context).size.height / 25),
                   Text(
                     'Sudhanshu Kushwaha',
