@@ -22,6 +22,7 @@ class _UploadPageState extends State<UploadPage> {
   bool _multiPick = true;
   FileType _pickingType = FileType.custom;
   TextEditingController _controller = new TextEditingController();
+  Color color = Colors.black;
 
   bool notes = true;
   bool asTabs = false;
@@ -159,10 +160,17 @@ class _UploadPageState extends State<UploadPage> {
                   padding: const EdgeInsets.all(20.0),
                   child: Container(
                     decoration: BoxDecoration(
-                     border: Border.all(), 
+                      border: Border.all(width: 2, color: color),
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    child: SearchableDropdown( ///ese [SearchableDropdown.single] for suffix icon
-                      underline: Colors.white,
+                    child: SearchableDropdown(
+                      ///ese [SearchableDropdown.single] for suffix icon
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontFamily: 'Avenir',
+                      ),
+                      underline: "",
                       iconEnabledColor: kPrimaryColor,
                       iconDisabledColor: Colors.black,
                       items: items,
@@ -172,6 +180,7 @@ class _UploadPageState extends State<UploadPage> {
                       onChanged: (value) {
                         setState(() {
                           selectedValue = value;
+                          color = kPrimaryColor;
                         });
                       },
                       isExpanded: true,

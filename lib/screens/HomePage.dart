@@ -8,7 +8,6 @@ import 'package:http/http.dart' as http;
 import 'package:srm_notes/bloc/userbloc.dart';
 import 'package:srm_notes/components/models/loading.dart';
 import 'package:srm_notes/components/models/usermodel.dart';
-import 'package:srm_notes/pages/account.dart';
 import 'package:srm_notes/screens/subjectPage.dart';
 
 import '../constants.dart';
