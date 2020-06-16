@@ -1,11 +1,15 @@
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:srm_notes/components/appbar.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as p;
 
 import '../constants.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
+
 
 class UploadPage extends StatefulWidget {
   @override
@@ -23,44 +27,24 @@ class _UploadPageState extends State<UploadPage> {
   FileType _pickingType = FileType.custom;
   TextEditingController _controller = new TextEditingController();
   Color color = Colors.black;
-
+  File image;
   bool notes = true;
   bool asTabs = false;
   String selectedValue;
   String preselectedValue = "dolor sit";
-  List<int> selectedItems = [];
-  final List<DropdownMenuItem> items = [];
-  final String loremIpsum =
-      "Lorem ipsum, do., lor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-
+  List<String> _items = [
+    'ML 15CS302', 
+    'B', 
+    'C', 
+    'D',
+    ];
   Map<String, Widget> widgets;
 
+ 
   @override
   void initState() {
     _controller.addListener(() => _extension = _controller.text);
-    String wordPair = "";
-    loremIpsum
-        .toLowerCase()
-        .replaceAll(",", "")
-        .replaceAll(".", "")
-        .split(" ")
-        .forEach((word) {
-      if (wordPair.isEmpty) {
-        wordPair = word + " ";
-      } else {
-        wordPair += word;
-        if (items.indexWhere((item) {
-              return (item.value == wordPair);
-            }) ==
-            -1) {
-          items.add(DropdownMenuItem(
-            child: Text(wordPair),
-            value: wordPair,
-          ));
-        }
-        wordPair = "";
-      }
-    });
+
     super.initState();
   }
 
@@ -82,7 +66,10 @@ class _UploadPageState extends State<UploadPage> {
               'txt',
               'ppt',
               'pptx'
-            ]);
+      
+            ]
+            );
+           
         // (_extension?.isNotEmpty ?? false) ? _extension?.replaceAll(' ', '')?.split('OOOO') : null);
       } else {
         _paths = null;
@@ -91,6 +78,11 @@ class _UploadPageState extends State<UploadPage> {
             allowedExtensions: (_extension?.isNotEmpty ?? false)
                 ? _extension?.replaceAll(' ', '')?.split(',')
                 : null);
+                 setState(() {
+              // image = _path;
+          // _fileName = p.basename(sampleImage.path);
+        });
+        print(_fileName);
       }
     } on PlatformException catch (e) {
       print("Unsupported operation" + e.toString());
@@ -173,7 +165,12 @@ class _UploadPageState extends State<UploadPage> {
                       underline: "",
                       iconEnabledColor: kPrimaryColor,
                       iconDisabledColor: Colors.black,
-                      items: items,
+                      items: _items.map((item) {
+                        return DropdownMenuItem(
+                          child: new Text(item),
+                          value: item,
+                        );
+                      }).toList(),
                       value: selectedValue,
                       hint: "Select Course",
                       searchHint: "Select one",
@@ -212,7 +209,7 @@ class _UploadPageState extends State<UploadPage> {
                     children: <Widget>[
                       SizedBox(height: 20),
                       Container(
-                          height: size.height * 0.30,
+                          height: size.height * 0.40,
                           child: new Builder(
                             builder: (BuildContext context) => GestureDetector(
                               onTap: () {
@@ -263,24 +260,29 @@ class _UploadPageState extends State<UploadPage> {
                                                 final bool isMultiPath =
                                                     _paths != null &&
                                                         _paths.isNotEmpty;
-                                                final String name =
+                                                final String name = 
                                                     'File $index: ' +
                                                         (isMultiPath
                                                             ? _paths.keys
                                                                 .toList()[index]
                                                             : _fileName ??
                                                                 '...');
-                                                final path = isMultiPath
-                                                    ? _paths.values
-                                                        .toList()[index]
-                                                        .toString()
-                                                    : _path;
+                                                // final path = isMultiPath
+                                                //     ? _paths.values
+                                                //         .toList()[index]
+                                                //         .toString()
+                                                //     : _path;
 
-                                                return new ListTile(
+                                                return 
+                                                // Container(
+                                                  
+                                                //     child: Image.file(image, height: 300.0, width: 300.0),
+                                                // );
+                                                new ListTile(
                                                   title: new Text(
                                                     name,
                                                   ),
-                                                  subtitle: new Text(path),
+                                                  // subtitle: new Text(path),
                                                 );
                                               },
                                               separatorBuilder:
@@ -290,7 +292,8 @@ class _UploadPageState extends State<UploadPage> {
                                             )),
                                           )
                                         : new Container(
-                                            child: Image.asset(
+                                            child: 
+                                            Image.asset(
                                               "assets/images/upload.png",
                                               width: size.width * 0.70,
                                             ),
@@ -298,6 +301,7 @@ class _UploadPageState extends State<UploadPage> {
                               ),
                             ),
                           )),
+                      SizedBox(height: size.height * 0.04),
                       new Column(
                         children: <Widget>[
                           GestureDetector(
@@ -356,5 +360,6 @@ class _UploadPageState extends State<UploadPage> {
         ),
       ),
     );
+
   }
 }

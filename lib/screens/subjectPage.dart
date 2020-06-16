@@ -4,13 +4,9 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:http/http.dart' as http;
-import 'package:srm_notes/bloc/userbloc.dart';
 import 'package:srm_notes/components/models/loading.dart';
-import 'package:srm_notes/components/models/usermodel.dart';
 
 import '../constants.dart';
-
-const String RANDOM_URL = "https://randomuser.me/api/?results=100";
 
 class SubjectPage extends StatefulWidget {
   var sub;
@@ -33,22 +29,6 @@ class _SubjectPageState extends State<SubjectPage> {
   var data;
 
   Future<void> getFilteredList() async {}
-//  Widget usersWidget() {
-//    size = MediaQuery.of(context).size;
-//    return StreamBuilder(
-//        stream: userBloc.userController.stream,
-//        builder: (BuildContext buildContext,
-//            AsyncSnapshot<List<RandomUserModel>> snapshot) {
-//          if (snapshot == null) {
-//            return CircularProgressIndicator();
-//          }
-//          return snapshot.connectionState == ConnectionState.waiting
-//              ? Center(
-//                  child: CircularProgressIndicator(),
-//                )
-//              : _randomUsers(snapshot: snapshot);
-//        });
-//  }
 
   Widget _cardWidget(title) {
     return GestureDetector(
@@ -102,134 +82,13 @@ class _SubjectPageState extends State<SubjectPage> {
     );
   }
 
-//  Widget _randomUsers({AsyncSnapshot<List<RandomUserModel>> snapshot}) {
-//    return GestureDetector(
-//      onPanUpdate: (details) {
-//        //print(details.globalPosition.dy);
-//        if (details.delta.dy > 0) {
-//          if (_controller.offset < 0) {
-//            _controller.jumpTo(0);
-//            _controller1.jumpTo(0);
-//          }
-//          _controller.jumpTo(_controller.offset - details.delta.dy);
-//          _controller1.jumpTo(_controller1.offset - details.delta.dy);
-//        } else if (details.delta.dy < 0) {
-//          // print('We are swiping down');
-//          double maxScroll = _controller.position.maxScrollExtent;
-//          double currentScroll = _controller.position.pixels;
-//          double maxScroll1 = _controller1.position.maxScrollExtent;
-//          double currentScroll1 = _controller1.position.pixels;
-//
-//          ///lets say that we reached 99% of the screen
-//          double delta =
-//              230; // or something else.. you have to do the math yourself
-//          if (maxScroll - currentScroll <= delta) {
-//            print('reached the end ?');
-//
-//            _controller.jumpTo(_controller.position.maxScrollExtent);
-//          }
-//          if (maxScroll1 - currentScroll1 <= delta) {
-//            print('reached the end ?');
-//
-//            _controller1.jumpTo(_controller1.position.maxScrollExtent);
-//          }
-//
-//          _controller.jumpTo(_controller.offset - details.delta.dy);
-//          _controller1.jumpTo(_controller1.offset - details.delta.dy);
-//        }
-//      },
-//      child: Container(
-//        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-//        child: Row(
-//          children: <Widget>[
-//            Expanded(
-//              child: ListView.builder(
-//                controller: _controller,
-//                physics: NeverScrollableScrollPhysics(),
-//                // physics: PageScrollPhysics(),
-//                itemCount: snapshot.data.length,
-//                itemBuilder: (BuildContext context, int index) {
-//                  if (index.isEven) {
-//                    return Container(
-//                      height: 80,
-//                      child: _cardWidget(snapshot, index),
-//                    );
-//                  } else {
-//                    return SizedBox();
-//                  }
-//                },
-//              ),
-//            ),
-//            SizedBox(width: 10),
-//            Expanded(
-//              child: ListView.builder(
-//                controller: _controller1,
-//                physics: NeverScrollableScrollPhysics(),
-//                itemCount: snapshot.data.length,
-//                itemBuilder: (BuildContext context, int index) {
-//                  // if (index == random || index == 1) {
-//                  //   return _showAd();
-//                  // }
-//                  if (index.isOdd) {
-//                    return Container(
-//                      height: 80,
-//                      child: _cardWidget(snapshot, index),
-//                    );
-//                  } else {
-//                    return SizedBox();
-//                  }
-//                },
-//              ),
-//            ),
-//          ],
-//        ),
-//      ),
-//    );
-//  }
-
   @override
   void initState() {
     super.initState();
-    fetchRandomUsers();
-    _controller.addListener(() {
-      _controller.jumpTo(_controller.offset);
-    });
-    _controller1.addListener(() {});
+   
   }
 
-  void _searchUser(String searchQuery) {
-    List<RandomUserModel> searchResult = [];
-    userBloc.userController.sink.add(null);
-    print('total users = ${totalUsers.length}'); //
-    if (searchQuery.isEmpty) {
-      userBloc.userController.sink.add(totalUsers);
-      return;
-    }
-    totalUsers.forEach((user) {
-      if (user.first.toLowerCase().contains(searchQuery.toLowerCase()) ||
-          user.last.toLowerCase().contains(searchQuery.toLowerCase())) {
-        searchResult.add(user);
-      }
-    });
-    print('searched users length = ${searchResult.length}'); //
-    userBloc.userController.sink.add(searchResult);
-  }
 
-  Future<void> fetchRandomUsers() async {
-    http.Response response = await http.get(RANDOM_URL);
-    if (response.statusCode == 200) {
-      var body = jsonDecode(response.body);
-      final Iterable list = body["results"];
-      // map each json object to model and addto list and return the list of models
-      totalUsers =
-          list.map((model) => RandomUserModel.fromJson(model)).toList();
-      userBloc.userController.sink.add(totalUsers);
-    }
-  }
-
-  int random;
-  List<RandomUserModel> totalUsers = [];
-  Random rng = Random();
   @override
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
@@ -242,7 +101,7 @@ class _SubjectPageState extends State<SubjectPage> {
             ? Text("Home", style: TextStyle(color: Colors.white))
             : TextField(
           controller: searchController,
-          onChanged: (text) => {_searchUser(text), handleSearch(text)},
+          onChanged: (text) => { handleSearch(text)},
           // autofocus: true,
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.search,
@@ -305,62 +164,7 @@ class _SubjectPageState extends State<SubjectPage> {
               child: Column(
                 // onChanged: (text) => _searchUser(text),
                 children: <Widget>[
-                  // SizedBox(height: 20),
-                  // Container(
-                  // child: Container(
-                  //   alignment: Alignment.center,
-                  //   margin: EdgeInsets.all(8),
-                  //   // padding: EdgeInsets.all(16),
-                  //   height: 50.0,
-                  //   decoration: BoxDecoration(
-                  //       border: Border.all(color: Colors.black45),
-                  //       borderRadius: BorderRadius.all(Radius.circular(16))),
-                  // child: Row(
-                  //   // mainAxisAlignment: MainAxisAlignment.center,
-                  //   // crossAxisAlignment: CrossAxisAlignment.center,
-                  //   children: <Widget>[
-                  //     SizedBox(width: 10.0),
-                  //     Expanded(
-                  //       child: TextField(
-                  //         controller: searchController,
-                  //         onChanged: (text) =>
-                  //             {_searchUser(text), handleSearch(text)},
-                  //         autofocus: false,
-                  //         keyboardType: TextInputType.text,
-                  //         textInputAction: TextInputAction.search,
-                  //         decoration: InputDecoration.collapsed(
-                  //           hintText: 'Search',
-                  //           border: InputBorder.none,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     IconButton(
-                  //       icon: Icon(
-                  //         isSearchEmpty ? Icons.search : Icons.cancel,
-                  //       ),
-                  //       onPressed: cancelSearch,
-                  //     ),
-                  //   ],
-                  // ),
-                  // ),
-                  // ),
-                  // Container(
-                  //   padding: const EdgeInsets.all(16.0),
-                  //   child: TextField(
-                  //     decoration: InputDecoration(
-                  //         suffixIcon: Icon(Icons.search),
 
-                  //         hintText: 'Search',
-                  //         contentPadding:
-                  //             EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                  //         border: OutlineInputBorder(
-                  //             borderSide: BorderSide(width: 3.1, color: Colors.red),
-                  //             borderRadius: BorderRadius.circular(30)
-                  //             )
-                  //             ),
-                  //   ),
-
-                  // ),
                   StreamBuilder<QuerySnapshot>(
                     stream: _fireStore.collection(subject).snapshots(),
                     builder: (context, snapshot) {
