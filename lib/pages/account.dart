@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:srm_notes/constants.dart';
+import 'package:flutter_inner_drawer/inner_drawer.dart';
+
 
 class AccountPage extends StatefulWidget {
   @override
@@ -10,9 +12,38 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return new Scaffold(
+    return 
+    InnerDrawer(
+      //  key: _innerDrawerKey,
+          
+            onTapClose: true, 
+            swipe: true, 
+            colorTransitionChild: kPrimaryColor, 
+            leftOffset: 0.5, 
+            rightOffset: 0,
+            
+            scale: IDOffset.horizontal( 0.8 ), 
+            proportionalChildArea : true, 
+            borderRadius: 50, 
+            // leftAnimationType: InnerDrawerAnimation.static, // default static
+            rightAnimationType: InnerDrawerAnimation.linear,
+            backgroundDecoration: BoxDecoration(color: kPrimaryColor), 
+            // innerDrawerCallback: (a) => print(a), // return  true (open) or false (close)
+            // leftChild: Container(),
+            rightChild: Container(), 
+            
+      scaffold: Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+          onPressed: () => Scaffold.of(context).openDrawer();
+          },
+        )
+ 
+        ],
         centerTitle: true,
         elevation: 0,
         title: Text(
@@ -231,6 +262,7 @@ class _AccountPageState extends State<AccountPage> {
           ],
         ),
       ),
+    ),
     );
   }
 }
@@ -263,6 +295,7 @@ class Details extends StatelessWidget {
         ],
       ),
     );
+    
   }
 }
 
