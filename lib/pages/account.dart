@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:srm_notes/components/mail.dart';
 import 'package:srm_notes/constants.dart';
+import 'package:srm_notes/pages/editprofile.dart';
+FirebaseUser loggedInUser;
 
 class AccountPage extends StatefulWidget {
   @override
@@ -11,6 +13,22 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   // final AuthService _auth = AuthService().;
   final _auth = FirebaseAuth.instance;
+  void getCurrentUser() async {
+    try {
+      final user = await _auth.currentUser();
+      if (user != null) {
+        loggedInUser = user;
+        
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+  @override
+  void initState() {
+    getCurrentUser();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +65,16 @@ class _AccountPageState extends State<AccountPage> {
                       ListTile(
                         title: Text('Edit Profile'),
                         leading: Icon(Icons.edit),
-                        onTap: () {},
+                        onTap: () {
+                           Navigator.of(context).push(
+                                MaterialPageRoute<Null>(
+                                  builder: (BuildContext context) {
+                                    return  Edit();
+                                  },
+                                ),
+                              );
+                         
+                        },
                       ),
                       ListTile(
                         title: Text('My Uploads'),
@@ -297,7 +324,7 @@ class _AccountPageState extends State<AccountPage> {
                       children: <Widget>[
                         Details(
                           icon: Icons.email,
-                          details: "ss2862@srmist.edu.in",
+                          details: loggedInUser.email,
                         ),
                         SizedBox(height: 10),
                         Details(
