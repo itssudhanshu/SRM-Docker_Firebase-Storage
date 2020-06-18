@@ -25,6 +25,7 @@ class _UploadPageState extends State<UploadPage> {
   final _fireStore = Firestore.instance;
   final store = FirebaseStorage.instance;
   final _auth = FirebaseAuth.instance;
+  final GlobalKey dropdownKey = GlobalKey();
 
   String _fileName;
   File _path;
@@ -124,6 +125,7 @@ class _UploadPageState extends State<UploadPage> {
 
     StorageTaskSnapshot taskSnapshot = await task.onComplete;
     print("upload complete");
+    _clearCachedFiles();
     String url = await taskSnapshot.ref.getDownloadURL();
     url = url.replaceAll('//', '~');
     print(url);
@@ -143,14 +145,25 @@ class _UploadPageState extends State<UploadPage> {
     // documentFileUpload(url);
     return url;
   }
-// void documentFileUpload(String str) {
 
-//   var data = {
-//     "PDF": str,
-//   };
-//   mainReference.child("Documents").child('pdf').set(data).then((v) {
-//   });
-// }
+  void openDropdown() {
+    GestureDetector detector;
+    void searchForGestureDetector(BuildContext element) {
+      element.visitChildElements((element) {
+        if (element.widget != null && element.widget is GestureDetector) {
+          detector = element.widget;
+          return false;
+        } else {
+          searchForGestureDetector(element);
+        }
+        return true;
+      });
+    }
+    searchForGestureDetector(dropdownKey.currentContext);
+    assert(detector != null);
+    detector.onTap();
+  }
+
   void _clearCachedFiles() {
     setState(() => _loadingPath = true);
     FilePicker.clearTemporaryFiles().then((result) {
@@ -178,9 +191,11 @@ class _UploadPageState extends State<UploadPage> {
         child: ConstAppbar(title: "Upload"),
         preferredSize: Size.fromHeight(50.0),
       ),
-      body: uploading
-          ? Loading()
-          : Container(
+      body:
+      //  uploading
+      //     ? Loading()
+      //     :
+           Container(
               height: size.height,
               width: double.infinity,
               child: Stack(
@@ -214,6 +229,7 @@ class _UploadPageState extends State<UploadPage> {
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: SearchableDropdown(
+                              key: dropdownKey,
                               //ese SearchableDropdown.single for suffix icon
                               underline: "",
                               iconEnabledColor: kPrimaryColor,
@@ -276,7 +292,7 @@ class _UploadPageState extends State<UploadPage> {
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
                                           image: AssetImage(
-                                            "assets/images/upload.png",
+                                            "assets/images/uploaddone.png",
                                           ),
                                           fit: BoxFit.scaleDown,
                                         ),
@@ -340,7 +356,7 @@ class _UploadPageState extends State<UploadPage> {
                                                           // );
                                                           Container(
                                                         margin:
-                                                            EdgeInsets.all(8.0),
+                                                            EdgeInsets.fromLTRB(8.0, 0.0, 8.0,0.0),
                                                         decoration:
                                                             BoxDecoration(
                                                           color:
@@ -374,7 +390,8 @@ class _UploadPageState extends State<UploadPage> {
                                                         (BuildContext context,
                                                                 int index) =>
                                                             new Divider(),
-                                                  )),
+                                                  ),
+                                                  ),
                                                 )
                                               : new Container(
                                                   // child: Image.asset(
@@ -412,29 +429,21 @@ class _UploadPageState extends State<UploadPage> {
 
                                         if (file != null &&
                                             selectedValue != null) {
-                                          uploading = true;
+                                          // uploading = true;
 
                                           //call uploading function
                                           await savedoc(file, _fileName);
                                         } else {
-                                          _scaffoldKey.currentState
-                                              .showSnackBar(
-                                            SnackBar(
-                                              backgroundColor: Colors.red,
-                                              content: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  'Please Select Course',
-                                                ),
-                                              ),
-                                            ),
-                                          );
+                                          setState(() {
+                                          openDropdown();
+                                            
+                                          });
+                                        
                                         }
                                       }
-                                      uploading = false;
-                                      _clearCachedFiles();
+                                      // uploading = false;
                                     });
+                                      _clearCachedFiles();
                                   },
                                   child: Container(
                                     margin: EdgeInsets.symmetric(vertical: 10),
