@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:srm_notes/components/mail.dart';
 import 'package:srm_notes/constants.dart';
 import 'package:srm_notes/pages/editprofile.dart';
+
 FirebaseUser loggedInUser;
 
 class AccountPage extends StatefulWidget {
@@ -13,17 +14,20 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   // final AuthService _auth = AuthService().;
   final _auth = FirebaseAuth.instance;
-  void getCurrentUser() async {
+  Future<void> getCurrentUser() async {
     try {
       final user = await _auth.currentUser();
       if (user != null) {
-        loggedInUser = user;
+        setState(() {
+          loggedInUser = user;
+        });
         
       }
     } catch (e) {
       print(e);
     }
   }
+
   @override
   void initState() {
     getCurrentUser();
@@ -37,8 +41,8 @@ class _AccountPageState extends State<AccountPage> {
       extendBodyBehindAppBar: true,
       endDrawer: Container(
         width: MediaQuery.of(context).size.width * 0.70,
-        height: size.height*0.9,
-        margin: EdgeInsets.only(top:20),
+        height: size.height * 0.9,
+        margin: EdgeInsets.only(top: 20),
         child: Drawer(
           child: SafeArea(
             maintainBottomViewPadding: false,
@@ -66,14 +70,13 @@ class _AccountPageState extends State<AccountPage> {
                         title: Text('Edit Profile'),
                         leading: Icon(Icons.edit),
                         onTap: () {
-                           Navigator.of(context).push(
-                                MaterialPageRoute<Null>(
-                                  builder: (BuildContext context) {
-                                    return  Edit();
-                                  },
-                                ),
-                              );
-                         
+                          Navigator.of(context).push(
+                            MaterialPageRoute<Null>(
+                              builder: (BuildContext context) {
+                                return Edit();
+                              },
+                            ),
+                          );
                         },
                       ),
                       ListTile(
@@ -147,12 +150,15 @@ class _AccountPageState extends State<AccountPage> {
       appBar: AppBar(
         actions: <Widget>[
           Builder(
-              builder: (context) => IconButton(
-                    icon: Icon(Icons.dehaze, size: 25,),
-                    onPressed: () => Scaffold.of(context).openEndDrawer(),
-                    tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-                  ),
+            builder: (context) => IconButton(
+              icon: Icon(
+                Icons.dehaze,
+                size: 25,
+              ),
+              onPressed: () => Scaffold.of(context).openEndDrawer(),
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
             ),
+          ),
         ],
         centerTitle: true,
         elevation: 0,
@@ -213,9 +219,7 @@ class _AccountPageState extends State<AccountPage> {
                           borderRadius: BorderRadius.all(Radius.circular(75.0)),
                           boxShadow: [
                             BoxShadow(blurRadius: 5.0, color: Colors.black)
-                          ]
-                          )
-                          ),
+                          ])),
                   SizedBox(height: MediaQuery.of(context).size.height / 25),
                   Text(
                     'Sudhanshu Kushwaha',
@@ -249,9 +253,7 @@ class _AccountPageState extends State<AccountPage> {
                                     // fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 10.0
-                                ),
+                                SizedBox(height: 10.0),
                                 Text(
                                   "5200",
                                   style: TextStyle(
@@ -274,9 +276,7 @@ class _AccountPageState extends State<AccountPage> {
                                     // fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 10.0
-                                ),
+                                SizedBox(height: 10.0),
                                 Text(
                                   "28.5K",
                                   style: TextStyle(
@@ -299,9 +299,7 @@ class _AccountPageState extends State<AccountPage> {
                                     // fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 10.0
-                                ),
+                                SizedBox(height: 10.0),
                                 Text(
                                   "1300",
                                   style: TextStyle(

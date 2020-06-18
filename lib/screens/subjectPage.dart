@@ -1,10 +1,9 @@
+import 'dart:ui' as ui;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:srm_notes/components/models/loading.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../constants.dart';
 
 class SubjectPage extends StatefulWidget {
@@ -39,7 +38,6 @@ class _SubjectPageState extends State<SubjectPage> {
           throw 'Could not launch $url';
         }
       },
-
       child: Container(
         height: 70,
         margin: EdgeInsets.all(5.0),
@@ -47,66 +45,83 @@ class _SubjectPageState extends State<SubjectPage> {
           color: kPrimaryLightColor,
           borderRadius: BorderRadius.circular(12),
         ),
-
-        child: Row(
-            // fit: StackFit.expand,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(width: size.width * 0.02),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                                  child: Icon(
-                    Icons.folder,
-                    // size: 50,
-                    color: kPrimaryColor,
-                  ),
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              right: 0,
+              bottom: 0,
+              top: 0,
+              child: CustomPaint(
+                size: Size(150, 150),
+                painter: CustomCardShapePainter(
+                  24,
+                  kPrimaryColor,
+                  kPrimaryLightColor,
                 ),
               ),
-              SizedBox(width: size.width * 0.05),
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+            ),
+            Positioned.fill(
+              child: Row(
+                  // fit: StackFit.expand,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          uploader,
-                          style: TextStyle(color: kPrimaryColor),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
-                          child: Text(
-                            time.toString().split(' ')[0],
-                            style: TextStyle(color: Colors.grey[700]),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 7,
-                    ),
-                    Container(
-                      child: Text(
-                        title,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          // fontWeight: FontWeight.bold,
-                          fontSize: 17,
+                    SizedBox(width: size.width * 0.02),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Icon(
+                          Icons.folder,
+                          // size: 50,
+                          color: kPrimaryColor,
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ]),
+                    SizedBox(width: size.width * 0.05),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                uploader,
+                                style: TextStyle(color: kPrimaryColor),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                                child: Text(
+                                  time.toString().split(' ')[0],
+                                  style: TextStyle(color: Colors.grey[700]),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 7,
+                          ),
+                          Container(
+                            child: Text(
+                              title,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                // fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]),
+            ),
+          ],
+        ),
       ),
     );
   }
-
 
   @override
   void initState() {
@@ -250,5 +265,43 @@ class _SubjectPageState extends State<SubjectPage> {
         isSearchEmpty = true;
       });
     }
+  }
+}
+
+class CustomCardShapePainter extends CustomPainter {
+  final double radius;
+  final Color startColor;
+  final Color endColor;
+
+  CustomCardShapePainter(this.radius, this.startColor, this.endColor);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    var radius = 24.0;
+
+    var paint = Paint();
+    paint.shader = ui.Gradient.linear(
+        Offset(0, 0), Offset(size.width, size.height), [
+      HSLColor.fromColor(startColor).withLightness(0.8).toColor(),
+      endColor
+    ]);
+
+    var path = Path()
+      ..moveTo(0, size.height)
+      ..lineTo(size.width - radius, size.height)
+      ..quadraticBezierTo(
+          size.width, size.height, size.width, size.height - radius)
+      ..lineTo(size.width, radius)
+      ..quadraticBezierTo(size.width, 0, size.width - radius, 0)
+      ..lineTo(size.width - 1.5 * radius, 0)
+      ..quadraticBezierTo(-radius, 2 * radius, 0, size.height)
+      ..close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
   }
 }

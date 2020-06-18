@@ -37,7 +37,7 @@ class _UploadPageState extends State<UploadPage> {
   bool _multiPick = true;
   FileType _pickingType = FileType.custom;
   TextEditingController _controller = new TextEditingController();
-  Color color = Colors.black;
+  Color color = kPrimaryLightColor;
   File image;
   bool notes = true;
   bool asTabs = false;
@@ -317,13 +317,13 @@ class _UploadPageState extends State<UploadPage> {
                                     : multifile != null || _paths != null
                                         ? new Container(
                                             padding: const EdgeInsets.only(
-                                                bottom: 30.0),
+                                                bottom: 10.0),
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .height *
                                                 0.50,
                                             child: new Scrollbar(
-                                              child: new ListView.separated(
+                                              child: new ListView.builder(
                                                 itemCount: multifile != null &&
                                                         multifile.isNotEmpty
                                                     ? multifile.length
@@ -331,29 +331,15 @@ class _UploadPageState extends State<UploadPage> {
                                                 itemBuilder:
                                                     (BuildContext context,
                                                         int index) {
-                                                  final bool isMultiPath =
-                                                      multifile != null &&
-                                                          multifile.isNotEmpty;
                                                   final String name =
                                                       'File $index: ' +
                                                           multifile[index]
                                                               .toString()
                                                               .split('/')
                                                               .last;
-                                                  // final path = isMultiPath
-                                                  //     ? _paths.values
-                                                  //         .toList()[index]
-                                                  //         .toString()
-                                                  //     : _path;
-
-                                                  return
-                                                      // Container(
-
-                                                      //     child: Image.file(image, height: 300.0, width: 300.0),
-                                                      // );
-                                                      Container(
+                                                  return Container(
                                                     margin: EdgeInsets.fromLTRB(
-                                                        8.0, 0.0, 8.0, 0.0),
+                                                        8.0, 8.0, 8.0, 0.0),
                                                     decoration: BoxDecoration(
                                                       color: kPrimaryLightColor,
                                                       borderRadius:
@@ -365,7 +351,7 @@ class _UploadPageState extends State<UploadPage> {
                                                         backgroundColor:
                                                             Colors.white,
                                                         child: Icon(
-                                                          Icons.note,
+                                                          Icons.attachment,
                                                           color: Colors.green,
                                                         ),
                                                       ),
@@ -374,16 +360,12 @@ class _UploadPageState extends State<UploadPage> {
                                                         color: Colors.green,
                                                       ),
                                                       title: new Text(
-                                                        name,
+                                                        name
                                                       ),
-                                                      // subtitle: new Text(path),
+                                                     
                                                     ),
                                                   );
                                                 },
-                                                separatorBuilder:
-                                                    (BuildContext context,
-                                                            int index) =>
-                                                        new Divider(),
                                               ),
                                             ),
                                           )
@@ -465,7 +447,6 @@ class _UploadPageState extends State<UploadPage> {
                             ),
                           ),
                           SizedBox(height: size.height * 0.02),
-                         
                         ],
                       ),
                     ],

@@ -38,25 +38,25 @@ class _LeaderboardState extends State<Leaderboard>
   final double _borderRadius = 24;
 
   var items = [
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 4.4,
+    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
         'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 4.4,
+    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
         'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 4.4,
+    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
         'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 4.4,
+    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
         'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 4.4,
+    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
         'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 4.4,
+    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
         'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 4.4,
+    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
         'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 4.4,
+    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
         'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 4.4,
+    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
         'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 4.4,
+    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
         'RA171102011424', 500, 1500),
   ];
 
@@ -105,7 +105,7 @@ class _LeaderboardState extends State<Leaderboard>
                         child: Stack(
                           children: <Widget>[
                             Container(
-                              height: 120,
+                              height: 110,
                               decoration: BoxDecoration(
                                 borderRadius:
                                     BorderRadius.circular(_borderRadius),
@@ -146,6 +146,8 @@ class _LeaderboardState extends State<Leaderboard>
                                 children: <Widget>[
                                   Expanded(
                                     child: CircleAvatar(
+                                      backgroundColor:
+                                          kPrimaryLightColor.withOpacity(0.8),
                                       radius: 30,
                                       child: ClipOval(
                                         child: Image.network(
@@ -187,55 +189,29 @@ class _LeaderboardState extends State<Leaderboard>
                                         ),
                                         SizedBox(height: 16),
                                         Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                           children: <Widget>[
                                             // SizedBox(width: 20),
                                             Container(
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Text(
-                                                    "Uploads",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15.0,
-                                                      // fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 5.0),
-                                                  Text(
-                                                    "5200",
-                                                    style: TextStyle(
-                                                      fontSize: 15.0,
-                                                      color: kPrimaryColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  )
-                                                ],
+                                              child: Text(
+                                                "Total Uploads : ",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 15.0,
+                                                  // fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                             ),
-                                            SizedBox(width: 20),
                                             Container(
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Text(
-                                                    "Uploads",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15.0,
-                                                      // fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 5.0),
-                                                  Text(
-                                                    "5200",
-                                                    style: TextStyle(
-                                                      fontSize: 15.0,
-                                                      color: kPrimaryColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  )
-                                                ],
+                                              child: Text(
+                                                items[index]
+                                                    .uploadno
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  color: kPrimaryColor,
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                             ),
                                           ],
@@ -250,14 +226,23 @@ class _LeaderboardState extends State<Leaderboard>
                                           MainAxisAlignment.center,
                                       children: <Widget>[
                                         Text(
-                                          items[index].rating.toString(),
+                                          "Rank",
                                           style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Avenir',
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w700),
+                                            color: Colors.white,
+                                            fontFamily: 'Avenir',
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
-                                        RatingBar(rating: items[index].rating),
+                                        Text(
+                                          items[index].rank.toString(),
+                                          style: TextStyle(
+                                            color: kPrimaryColor,
+                                            fontFamily: 'Avenir',
+                                            fontSize: 35,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   )
@@ -324,11 +309,11 @@ class PlaceInfo {
   final String regno;
   final int uploadno;
   final int likeno;
-  final double rating;
+  final int rank;
   final Color startColor;
   final Color endColor;
 
-  PlaceInfo(this.name, this.startColor, this.endColor, this.rating, this.regno,
+  PlaceInfo(this.name, this.startColor, this.endColor, this.rank, this.regno,
       this.uploadno, this.likeno);
 }
 
