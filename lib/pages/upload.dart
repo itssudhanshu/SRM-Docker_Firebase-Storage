@@ -7,7 +7,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:srm_notes/components/appbar.dart';
 import 'package:srm_notes/components/models/loading.dart';
-
+import 'package:flutter/services.dart' show rootBundle;
 import '../constants.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
@@ -28,7 +28,7 @@ class _UploadPageState extends State<UploadPage> {
 
   String _fileName;
   File _path;
-  List<File> _paths_multiple;
+  List<File> multifile;
   Map<String, String> _paths;
   String _extension;
   bool _loadingPath = false;
@@ -58,8 +58,8 @@ class _UploadPageState extends State<UploadPage> {
     try {
       if (_multiPick) {
         // _path = await FilePicker.getMultiFilePath(allowedExtensions: ['pdf']),
-        _path = null;
-        _paths_multiple = await FilePicker.getMultiFile(
+        _paths = null;
+        multifile = await FilePicker.getMultiFile(
             type: _pickingType,
             allowedExtensions: [
               'jpg',
@@ -72,7 +72,8 @@ class _UploadPageState extends State<UploadPage> {
               'ppt',
               'pptx'
             ]);
-        print(_fileName);
+
+        for (File _file in multifile) print(_file.path.toString());
         // (_extension?.isNotEmpty ?? false) ? _extension?.replaceAll(' ', '')?.split('OOOO') : null);
       } else {
         _paths = null;
@@ -97,10 +98,6 @@ class _UploadPageState extends State<UploadPage> {
     if (!mounted) return;
     setState(() {
       _loadingPath = false;
-
-      _fileName = _path != null
-          ? _path.toString().split('/').last
-          : _paths != null ? _paths.keys.toString() : '...';
     });
   }
 
@@ -115,20 +112,22 @@ class _UploadPageState extends State<UploadPage> {
     }
   }
 
-  Future savedoc(List<int> asset, String name) async {
+  Future savedoc(File file, String name) async {
     print(selectedValue);
     print(name);
 
     final StorageReference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child(selectedValue);
+        FirebaseStorage.instance.ref().child(_fileName);
 
-    final StorageUploadTask task = firebaseStorageRef.putData(asset);
+    final StorageUploadTask task = firebaseStorageRef.putFile(file);
+    //  firebaseStorageRef.putData(file);
 
     StorageTaskSnapshot taskSnapshot = await task.onComplete;
+    print("upload complete");
     String url = await taskSnapshot.ref.getDownloadURL();
     url = url.replaceAll('//', '~');
     print(url);
-    var response = Firestore.instance
+    var response = await Firestore.instance
         .collection(selectedValue)
         .document("${DateTime.now()}")
         .setData({
@@ -137,11 +136,10 @@ class _UploadPageState extends State<UploadPage> {
       'url': url,
       'time': DateTime.now().toString().split('at')[0]
     });
-    setState(() {
-      uploading = false;
-      _clearCachedFiles();
-    });
-    print(url);
+    // setState(() {
+    //   uploading = false;
+    //   _clearCachedFiles();
+    // });
     // documentFileUpload(url);
     return url;
   }
@@ -299,7 +297,7 @@ class _UploadPageState extends State<UploadPage> {
                                                 ),
                                               ),
                                             )
-                                          : _path != null || _paths != null
+                                          : multifile != null || _paths != null
                                               ? new Container(
                                                   padding:
                                                       const EdgeInsets.only(
@@ -311,29 +309,29 @@ class _UploadPageState extends State<UploadPage> {
                                                   child: new Scrollbar(
                                                       child: new ListView
                                                           .separated(
-                                                    itemCount: _paths != null &&
-                                                            _paths.isNotEmpty
-                                                        ? _paths.length
+                                                    itemCount: multifile !=
+                                                                null &&
+                                                            multifile.isNotEmpty
+                                                        ? multifile.length
                                                         : 1,
                                                     itemBuilder:
                                                         (BuildContext context,
                                                             int index) {
                                                       final bool isMultiPath =
-                                                          _paths != null &&
-                                                              _paths.isNotEmpty;
+                                                          multifile != null &&
+                                                              multifile
+                                                                  .isNotEmpty;
                                                       final String name =
                                                           'File $index: ' +
-                                                              (isMultiPath
-                                                                  ? _paths.keys
-                                                                          .toList()[
-                                                                      index]
-                                                                  : _fileName ??
-                                                                      '...');
-                                                      final path = isMultiPath
-                                                          ? _paths.values
-                                                              .toList()[index]
-                                                              .toString()
-                                                          : _path;
+                                                              multifile[index]
+                                                                  .toString()
+                                                                  .split('/')
+                                                                  .last;
+                                                      // final path = isMultiPath
+                                                      //     ? _paths.values
+                                                      //         .toList()[index]
+                                                      //         .toString()
+                                                      //     : _path;
 
                                                       return
                                                           // Container(
@@ -406,28 +404,37 @@ class _UploadPageState extends State<UploadPage> {
                                 GestureDetector(
                                   onTap: () {
                                     // setState(() {
-                                    setState(() {
-                                      if (_path.readAsBytesSync() != null &&
-                                          selectedValue != null) {
-                                        uploading = true;
-                                        savedoc(
-                                            _path.readAsBytesSync(), _fileName);
-                                      } else {
-                                        _scaffoldKey.currentState.showSnackBar(
-                                          SnackBar(
-                                            backgroundColor: Colors.red,
-                                            content: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Text(
-                                                'Please Select Course',
+                                    setState(() async {
+                                      for (File file in multifile) {
+                                        // get file name
+                                        _fileName =
+                                            file.toString().split('/').last;
+
+                                        if (file != null &&
+                                            selectedValue != null) {
+                                          uploading = true;
+
+                                          //call uploading function
+                                          await savedoc(file, _fileName);
+                                        } else {
+                                          _scaffoldKey.currentState
+                                              .showSnackBar(
+                                            SnackBar(
+                                              backgroundColor: Colors.red,
+                                              content: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  'Please Select Course',
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        );
+                                          );
+                                        }
                                       }
+                                      uploading = false;
+                                      _clearCachedFiles();
                                     });
-                                    // });
                                   },
                                   child: Container(
                                     margin: EdgeInsets.symmetric(vertical: 10),
