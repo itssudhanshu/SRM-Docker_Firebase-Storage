@@ -10,8 +10,6 @@ import 'package:srm_notes/constants.dart';
 import 'package:srm_notes/pages/editprofile.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:srm_notes/screens/login.dart';
-import 'package:srm_notes/screens/welcome.dart';
 
 
 
