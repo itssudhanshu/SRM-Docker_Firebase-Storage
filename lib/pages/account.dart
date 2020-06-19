@@ -11,8 +11,6 @@ import 'package:srm_notes/pages/editprofile.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
-
-
 FirebaseUser loggedInUser;
 bool _doneLoading = false;
 var userName;
@@ -28,7 +26,6 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-
   final _fireStore = Firestore.instance;
   final store = FirebaseStorage.instance;
   final _auth = FirebaseAuth.instance;
@@ -36,44 +33,39 @@ class _AccountPageState extends State<AccountPage> {
   File sampleImage;
   bool _uploadingImage = false;
 
-
   Future getimagefromgallery() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
-   try{
-     setState(() {
-       sampleImage = tempImage;
-       _uploadingImage = true;
-     });
-     var name = DateTime.now();
-     final StorageReference firebaseStorageRef =
-     store.ref().child(loggedInUser.email);
-     final StorageUploadTask task =
-     await firebaseStorageRef.putFile(sampleImage);
-     StorageTaskSnapshot taskSnapshot = await task.onComplete;
-     var url = await taskSnapshot.ref.getDownloadURL();
-     setState(() {
-       profilePic = url;
-     });
-     url = url.replaceAll('//', '~');
-     print(url);
-     var response = _fireStore
-         .collection('users')
-         .document(loggedInUser.email)
-         .updateData({
-       'profilepic' : url.toString()
-     });
-     setState(() {
-       _uploadingImage = false;
-     });
-   }
-   catch(e){
-     setState(() {
-       _uploadingImage = false;
-       displayDialog(context, 'Error', 'Some error occured.');
-     });
-   }
+    try {
+      setState(() {
+        sampleImage = tempImage;
+        _uploadingImage = true;
+      });
+      var name = DateTime.now();
+      final StorageReference firebaseStorageRef =
+          store.ref().child(loggedInUser.email);
+      final StorageUploadTask task =
+          await firebaseStorageRef.putFile(sampleImage);
+      StorageTaskSnapshot taskSnapshot = await task.onComplete;
+      var url = await taskSnapshot.ref.getDownloadURL();
+      setState(() {
+        profilePic = url;
+      });
+      url = url.replaceAll('//', '~');
+      print(url);
+      var response = _fireStore
+          .collection('users')
+          .document(loggedInUser.email)
+          .updateData({'profilepic': url.toString()});
+      setState(() {
+        _uploadingImage = false;
+      });
+    } catch (e) {
+      setState(() {
+        _uploadingImage = false;
+        displayDialog(context, 'Error', 'Some error occured.');
+      });
+    }
   }
-
 
   Future<void> getCurrentUser() async {
     print('getCurrentUserCalled');
@@ -85,14 +77,18 @@ class _AccountPageState extends State<AccountPage> {
         });
         print('document');
         print(loggedInUser.toString());
-        var document = await _fireStore.collection('users').document(loggedInUser.email).get().then((value){
+        var document = await _fireStore
+            .collection('users')
+            .document(loggedInUser.email)
+            .get()
+            .then((value) {
           setState(() {
             userName = value.data['name'];
             uploads = value.data['uploads'];
             likes = value.data['likes'];
             regId = value.data['regno'];
             profilePic = value.data['profilepic'].toString();
-            profilePic = profilePic.replaceAll('~','//');
+            profilePic = profilePic.replaceAll('~', '//');
             _doneLoading = true;
             print(userName);
             print(uploads);
@@ -117,15 +113,15 @@ class _AccountPageState extends State<AccountPage> {
   void checkCached() async {
     print('cache called');
     var _bool = storage.read(key: 'profileData');
-    print( _bool);
-    if( _bool == 'true')   {
+    print(_bool);
+    if (_bool == 'true') {
       setState(() {
         email = storage.read(key: 'email');
         userName = storage.read(key: 'username');
         uploads = storage.read(key: 'uploads');
-        likes =  storage.read(key: 'likes');
-        regId =  storage.read(key: 'regid');
-        profilePic =  storage.read(key: 'profilepic');
+        likes = storage.read(key: 'likes');
+        regId = storage.read(key: 'regid');
+        profilePic = storage.read(key: 'profilepic');
         _doneLoading = true;
       });
     }
@@ -140,354 +136,390 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return _doneLoading ? ModalProgressHUD(
-      inAsyncCall: _uploadingImage,
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        endDrawer: Container(
-          width: MediaQuery.of(context).size.width * 0.70,
-          height: size.height * 0.9,
-          margin: EdgeInsets.only(top: 20),
-          child: Drawer(
-            child: SafeArea(
-              maintainBottomViewPadding: false,
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.topLeft,
-                    padding: EdgeInsets.only(left: 10),
-                    child: ListTile(
-                      title: Text(
-                        "$userName",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Divider(thickness: 1.5),
-                  Expanded(
-                    child: ListView(
-                      padding: EdgeInsets.zero,
+    return _doneLoading
+        ? ModalProgressHUD(
+            inAsyncCall: _uploadingImage,
+            child: Scaffold(
+              extendBodyBehindAppBar: true,
+              endDrawer: Container(
+                width: MediaQuery.of(context).size.width * 0.70,
+                height: size.height * 0.9,
+                margin: EdgeInsets.only(top: 20),
+                child: Drawer(
+                  child: SafeArea(
+                    maintainBottomViewPadding: false,
+                    child: Column(
                       children: <Widget>[
-                        ListTile(
-                          title: Text('Edit Profile'),
-                          leading: Icon(Icons.edit),
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute<Null>(
-                                builder: (BuildContext context) {
-                                  return Edit();
+                        Container(
+                          alignment: Alignment.topLeft,
+                          padding: EdgeInsets.only(left: 10),
+                          child: ListTile(
+                            title: Text(
+                              "$userName",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Divider(thickness: 1.5),
+                        Expanded(
+                          child: ListView(
+                            padding: EdgeInsets.zero,
+                            children: <Widget>[
+                              ListTile(
+                                title: Text('Edit Profile'),
+                                leading: Icon(Icons.edit),
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute<Null>(
+                                      builder: (BuildContext context) {
+                                        return Edit();
+                                      },
+                                    ),
+                                  );
                                 },
                               ),
-                            );
-                          },
+                              ListTile(
+                                title: Text('My Uploads'),
+                                leading: Icon(Icons.file_upload),
+                                onTap: () {},
+                              ),
+                              ExpansionTile(
+                                leading: Icon(Icons.apps),
+                                title: const Text('How to use this App?'),
+                                children: <Widget>[
+                                  ListTile(
+                                      title: Text(
+                                          '1.Add tasks or notes through + sign below.')),
+                                  ListTile(title: Text('2.Share your notes.')),
+                                  ListTile(
+                                      title: Text('3.Mark Important notes.')),
+                                  ListTile(
+                                      title: Text(
+                                          '4.Edit tasks pressing long to your previous input.')),
+                                  ListTile(
+                                      title: Text(
+                                          '5.Remove tasks on sliding to block from left to right.')),
+                                  ListTile(
+                                      title: Text(
+                                          '6.Differentiate your tasks by colors.')),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                        ListTile(
-                          title: Text('My Uploads'),
-                          leading: Icon(Icons.file_upload),
-                          onTap: () {},
-                        ),
-                        ExpansionTile(
-                          leading: Icon(Icons.apps),
-                          title: const Text('How to use this App?'),
-                          children: <Widget>[
-                            ListTile(
-                                title: Text(
-                                    '1.Add tasks or notes through + sign below.')),
-                            ListTile(title: Text('2.Share your notes.')),
-                            ListTile(title: Text('3.Mark Important notes.')),
-                            ListTile(
-                                title: Text(
-                                    '4.Edit tasks pressing long to your previous input.')),
-                            ListTile(
-                                title: Text(
-                                    '5.Remove tasks on sliding to block from left to right.')),
-                            ListTile(
-                                title: Text(
-                                    '6.Differentiate your tasks by colors.')),
-                          ],
+                        Container(
+                          // This align moves the children to the bottom
+                          child: Align(
+                            alignment: FractionalOffset.bottomCenter,
+                            // This container holds all the children that will be aligned
+                            // on the bottom and should not scroll with the above ListView
+                            child: Container(
+                              child: Column(
+                                children: <Widget>[
+                                  Divider(thickness: 1.5),
+                                  ListTile(
+                                      title: Text('Logout'),
+                                      leading: Icon(Icons.exit_to_app),
+                                      onTap: () async {
+                                        await _auth.signOut();
+                                        await storage.write(
+                                            key: 'isLogged', value: 'false');
+                                        await storage.write(
+                                            key: 'profileData', value: 'false');
+                                      }),
+                                  ListTile(
+                                    leading: Icon(Icons.help),
+                                    onTap: () async {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute<Null>(
+                                          builder: (BuildContext context) {
+                                            return new Mail();
+                                          },
+                                        ),
+                                      );
+                                    },
+                                    title: Text('Help and Feedback'),
+                                  ),
+                                  SizedBox(height: 20),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Container(
-                    // This align moves the children to the bottom
-                    child: Align(
-                      alignment: FractionalOffset.bottomCenter,
-                      // This container holds all the children that will be aligned
-                      // on the bottom and should not scroll with the above ListView
-                      child: Container(
-                        child: Column(
-                          children: <Widget>[
-                            Divider(thickness: 1.5),
-                            ListTile(
-                                title: Text('Logout'),
-                                leading: Icon(Icons.exit_to_app),
-                                onTap: () async {
-                                  await _auth.signOut();
-                                  await storage.write(key: 'isLogged', value: 'false');
-                                  await storage.write(key: 'profileData', value: 'false');
-                                }),
-                            ListTile(
-                              leading: Icon(Icons.help),
-                              onTap: ()async {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute<Null>(
-                                    builder: (BuildContext context) {
-                                      return new Mail();
-                                    },
-                                  ),
-                                );
-                              },
-                              title: Text('Help and Feedback'),
-                            ),
-                            SizedBox(height: 20),
-                          ],
-                        ),
+                ),
+              ),
+              appBar: AppBar(
+                actions: <Widget>[
+                  Builder(
+                    builder: (context) => IconButton(
+                      icon: Icon(
+                        Icons.dehaze,
+                        size: 25,
                       ),
+                      onPressed: () => Scaffold.of(context).openEndDrawer(),
+                      tooltip: MaterialLocalizations.of(context)
+                          .openAppDrawerTooltip,
                     ),
                   ),
                 ],
-              ),
-            ),
-          ),
-        ),
-        appBar: AppBar(
-          actions: <Widget>[
-            Builder(
-              builder: (context) => IconButton(
-                icon: Icon(
-                  Icons.dehaze,
-                  size: 25,
+                centerTitle: true,
+                elevation: 0,
+                title: Text(
+                  "Profile",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2.0,
+                  ),
                 ),
-                onPressed: () => Scaffold.of(context).openEndDrawer(),
-                tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+                backgroundColor: Colors.transparent,
               ),
-            ),
-          ],
-          centerTitle: true,
-          elevation: 0,
-          title: Text(
-            "Profile",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 2.0,
-            ),
-          ),
-          backgroundColor: Colors.transparent,
-        ),
-        body: Container(
-          height: size.height,
-          width: double.infinity,
-          child: Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              Positioned(
-                top: 0,
-                left: 0,
-                child: Image.asset(
-                  "assets/images/signup_top.png",
-                  width: size.width * 0.35,
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                child: Image.asset(
-                  "assets/images/main_bottom.png",
-                  width: size.width * 0.25,
-                ),
-              ),
-              Material(
-                elevation: 10.0,
-                child: ClipPath(
-                  child: Container(color: Color(0xFF6F35A5).withOpacity(0.8)),
-                  clipper: GetClipper(),
-                ),
-              ),
-              Positioned(
-                width: 350.0,
-                top: MediaQuery.of(context).size.height / 5,
-                child: Column(
+              body: Container(
+                height: size.height,
+                width: double.infinity,
+                child: Stack(
+                  alignment: Alignment.center,
                   children: <Widget>[
-                    Stack(
-                      children: <Widget>[
-                        Positioned(child:         profilePic == null || profilePic == 'null' ? Container
-                          (
-                            child: Icon(Icons.person,size: 70,color: Colors.white,),
-                            width: 130.0,
-                            height: 130.0,
-                            decoration: BoxDecoration(
-                                color: kPrimaryLightColor,
-                                borderRadius: BorderRadius.all(Radius.circular(75.0)),
-                                boxShadow: [
-                                  BoxShadow(blurRadius: 5.0, color: Colors.black)
-                                ])): Container(
-                            width: 130.0,
-                            height: 130.0,
-                            decoration: BoxDecoration(
-                                color: kPrimaryLightColor,
-                                image: DecorationImage(
-                                    image: NetworkImage( profilePic),
-                                    fit: BoxFit.cover),
-                                borderRadius: BorderRadius.all(Radius.circular(75.0)),
-                                boxShadow: [
-                                  BoxShadow(blurRadius: 5.0, color: Colors.black)
-                                ])),),
-                        Positioned(
-                          right: 5,
-                          bottom: 1,
-                          child: GestureDetector(
-                            child: Icon(Icons.camera_alt,size: 40,color: Colors.white70,),
-                            onTap: getimagefromgallery,
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height / 25),
-                    Text(
-                      userName,
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Montserrat',
-                        letterSpacing: 2.0,
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      child: Image.asset(
+                        "assets/images/signup_top.png",
+                        width: size.width * 0.35,
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height / 40),
-                    Card(
-                      margin:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-                      clipBehavior: Clip.antiAlias,
-                      color: Colors.white,
-                      elevation: 5.0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10.0, vertical: 15.0),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: Column(
-                                children: <Widget>[
-                                  Text(
-                                    "Uploads",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 22.0,
-                                      // fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(height: 10.0),
-                                  Text(
-                                    '$uploads',
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                children: <Widget>[
-                                  Text(
-                                    "Rank",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 22.0,
-                                      // fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(height: 10.0),
-                                  Text(
-                                    "28.5K",
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                children: <Widget>[
-                                  Text(
-                                    "Likes",
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 22.0,
-                                      // fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(height: 10.0),
-                                  Text(
-                                    "$likes",
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      color: kPrimaryColor,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      child: Image.asset(
+                        "assets/images/main_bottom.png",
+                        width: size.width * 0.25,
                       ),
                     ),
-                    // SizedBox(height: MediaQuery.of(context).size.height / 35),
-                    Container(
-                      padding: EdgeInsets.all(20.0),
+                    Material(
+                      elevation: 10.0,
+                      child: ClipPath(
+                        child: Container(
+                            color: Color(0xFF6F35A5).withOpacity(0.8)),
+                        clipper: GetClipper(),
+                      ),
+                    ),
+                    Positioned(
+                      width: 350.0,
+                      top: MediaQuery.of(context).size.height / 5,
                       child: Column(
                         children: <Widget>[
-                          Details(
-                            icon: Icons.email,
-                            details: loggedInUser.email,
-                          ),
-                          SizedBox(height: 10),
-                          Details(
-                            icon: Icons.format_color_text,
-                            details: "$regId",
+                          Stack(
+                            children: <Widget>[
+                              Positioned(
+                                child: profilePic == null ||
+                                        profilePic == 'null'
+                                    ? Container(
+                                        child: Icon(
+                                          Icons.person,
+                                          size: 70,
+                                          color: Colors.white,
+                                        ),
+                                        width: 130.0,
+                                        height: 130.0,
+                                        decoration: BoxDecoration(
+                                            color: kPrimaryLightColor,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(75.0)),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  blurRadius: 5.0,
+                                                  color: Colors.black)
+                                            ]))
+                                    : Container(
+                                        width: 130.0,
+                                        height: 130.0,
+                                        decoration: BoxDecoration(
+                                            color: kPrimaryLightColor,
+                                            image: DecorationImage(
+                                                image: NetworkImage(profilePic),
+                                                fit: BoxFit.cover),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(75.0)),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  blurRadius: 5.0,
+                                                  color: Colors.black)
+                                            ])),
+                              ),
+                              Positioned(
+                                right: 5,
+                                bottom: 1,
+                                child: GestureDetector(
+                                  child: Icon(
+                                    Icons.camera_alt,
+                                    size: 40,
+                                    color: Colors.white70,
+                                  ),
+                                  onTap: getimagefromgallery,
+                                ),
+                              )
+                            ],
                           ),
                           SizedBox(
-                              height: MediaQuery.of(context).size.height / 30),
+                              height: MediaQuery.of(context).size.height / 25),
+                          Text(
+                            userName,
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Montserrat',
+                              letterSpacing: 2.0,
+                            ),
+                          ),
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height / 40),
+                          Card(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 20.0, vertical: 5.0),
+                            clipBehavior: Clip.antiAlias,
+                            color: Colors.white,
+                            elevation: 5.0,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0, vertical: 15.0),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text(
+                                          "Uploads",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 22.0,
+                                            // fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 10.0),
+                                        Text(
+                                          '$uploads',
+                                          style: TextStyle(
+                                            fontSize: 20.0,
+                                            color: kPrimaryColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text(
+                                          "Rank",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 22.0,
+                                            // fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 10.0),
+                                        Text(
+                                          "28.5K",
+                                          style: TextStyle(
+                                            fontSize: 20.0,
+                                            color: kPrimaryColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text(
+                                          "Likes",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 22.0,
+                                            // fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 10.0),
+                                        Text(
+                                          "$likes",
+                                          style: TextStyle(
+                                            fontSize: 20.0,
+                                            color: kPrimaryColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // SizedBox(height: MediaQuery.of(context).size.height / 35),
                           Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            padding: EdgeInsets.all(20.0),
+                            child: Column(
                               children: <Widget>[
-                                Card(
-                                  clipBehavior: Clip.antiAlias,
-                                  color: Colors.white,
-                                  elevation: 5.0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text("Year: 1st"),
-                                  ),
+                                Details(
+                                  icon: Icons.email,
+                                  details: loggedInUser.email,
                                 ),
-                                Card(
-                                  clipBehavior: Clip.antiAlias,
-                                  color: Colors.white,
-                                  elevation: 5.0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text("Dept: B-tech"),
-                                  ),
+                                SizedBox(height: 10),
+                                Details(
+                                  icon: Icons.format_color_text,
+                                  details: "$regId",
                                 ),
-                                Card(
-                                  clipBehavior: Clip.antiAlias,
-                                  color: Colors.white,
-                                  elevation: 5.0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text("Branch: CSE"),
+                                SizedBox(
+                                    height: MediaQuery.of(context).size.height /
+                                        30),
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: <Widget>[
+                                      GestureDetector(
+                                        onTap: () {
+                                          showReview(context, "Hello");
+                                        },
+                                        child: Card(
+                                          clipBehavior: Clip.antiAlias,
+                                          color: Colors.white,
+                                          elevation: 5.0,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Text("Year: 1st"),
+                                          ),
+                                        ),
+                                      ),
+                                      Card(
+                                        clipBehavior: Clip.antiAlias,
+                                        color: Colors.white,
+                                        elevation: 5.0,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Text("Dept: B-tech"),
+                                        ),
+                                      ),
+                                      Card(
+                                        clipBehavior: Clip.antiAlias,
+                                        color: Colors.white,
+                                        elevation: 5.0,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Text("Branch: CSE"),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -499,12 +531,10 @@ class _AccountPageState extends State<AccountPage> {
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-        // ),
-      ),
-    ) : Loading();
+              // ),
+            ),
+          )
+        : Loading();
   }
 }
 
@@ -554,4 +584,87 @@ class GetClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) {
     return true;
   }
+}
+
+Future<bool> showReview(context, review) {
+  return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
+            child: Container(
+                height: 350.0,
+                width: 200.0,
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
+                child: Column(
+                  children: <Widget>[
+                    Stack(
+                      children: <Widget>[
+                        Container(height: 150.0),
+                        Container(
+                          height: 100.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10.0),
+                              topRight: Radius.circular(10.0),
+                            ),
+                            color: kPrimaryColor,
+                          ),
+                        ),
+                        Positioned(
+                            top: 50.0,
+                            left: 94.0,
+                            child: Container(
+                              height: 90.0,
+                              width: 90.0,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(45.0),
+                                  border: Border.all(
+                                      color: Colors.white,
+                                      style: BorderStyle.solid,
+                                      width: 2.0),
+                                  image: DecorationImage(
+                                      image: NetworkImage(
+                                          'https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg'),
+                                      fit: BoxFit.cover)),
+                            ))
+                      ],
+                    ),
+                    SizedBox(height: 20.0),
+                    Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Text(
+                          "Hey Sudhanshu!!!",
+                          style: TextStyle(
+                            fontFamily: 'Quicksand',
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        )),
+                    SizedBox(height: 15.0),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 60),
+                      child: FlatButton(
+                        color: kPrimaryColor,
+                        child: Center(
+                          child: Text(
+                            'Submit',
+                            style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontSize: 14.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    )
+                  ],
+                )));
+      });
 }
