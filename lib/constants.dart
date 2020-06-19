@@ -25,7 +25,7 @@ void displayDialog(context, title, text) => showDialog(
                 textAlign: TextAlign.center,
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                padding: const EdgeInsets.fromLTRB(0, 25, 0, 20),
                 child: Text(
                   'Please try again',
                   style: TextStyle(color: Colors.redAccent),

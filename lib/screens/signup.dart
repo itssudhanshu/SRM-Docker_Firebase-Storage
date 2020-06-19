@@ -49,7 +49,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     var response = await _fireStore
         .collection('users')
         .document('$_email')
-        .setData({'name': _name, 'email': _email, 'regno': _reg});
+        .setData({'name': _name, 'email': _email, 'regno': _reg, 'uploads': '0', 'likes': '0'});
   }
 
   void _toggle() {

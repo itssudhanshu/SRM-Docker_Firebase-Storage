@@ -41,6 +41,7 @@ dependencies:
   file_picker: ^1.11.0+2
   url_launcher: ^5.4.10
   flutter_progress_button: ^1.0.0
+  image_picker: ^0.6.7+2
 
 
 
