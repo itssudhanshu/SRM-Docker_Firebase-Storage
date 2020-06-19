@@ -177,12 +177,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.pushReplacementNamed(
                                   context, '/bottomnav');
                             } else {
+                              setState(() {
                               isSpinner = false;
+                              });
                               displayDialog(context, 'Error',
                                   'No user found with corresponding email and password');
                             }
                           } catch (e) {
-                            isSpinner = false;
+                            setState(() {
+                              isSpinner = false;
+                              });
                             displayDialog(
                                 context, 'Error', 'Some error occured.');
                             print(e);
