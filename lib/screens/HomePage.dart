@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                     //   backgroundColor: Colors.white,
                     child: Icon(
                       Icons.folder,
-                      size: 60,
+                      size: 40,
                       color: kPrimaryColor,
                     ),
                   ),

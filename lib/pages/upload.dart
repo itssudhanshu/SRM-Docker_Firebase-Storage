@@ -1,17 +1,17 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_progress_button/flutter_progress_button.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:srm_notes/components/appbar.dart';
-import 'package:srm_notes/components/models/loading.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import '../constants.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:http/http.dart' as http;
 
 FirebaseUser loggedInUser;
 
@@ -44,12 +44,31 @@ class _UploadPageState extends State<UploadPage> {
   String selectedValue;
   String preselectedValue = "dolor sit";
   bool uploading = false;
-  List<String> _items = ['Machine Learning', 'Maths'];
+  // List<String> _items = ['Machine Learning', 'Maths'];
   Map<String, Widget> widgets;
+  final String url =
+      "https://firebasestorage.googleapis.com/v0/b/srm-helper-3223e.appspot.com/o/data.json?alt=media&token=625decfd-a0b4-44d6-86b0-16c972a8a680";
+
+  List data = List(); //edited line
+
+  Future<String> getSWData() async {
+    var res = await http
+        .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
+    var resBody = json.decode(res.body);
+
+    setState(() {
+      data = resBody;
+    });
+
+    print(resBody);
+
+    return "Sucess";
+  }
 
   @override
   void initState() {
     getCurrentUser();
+    getSWData();
     _controller.addListener(() => _extension = _controller.text);
 
     super.initState();
@@ -137,7 +156,8 @@ class _UploadPageState extends State<UploadPage> {
       'name': _fileName,
       'sender': loggedInUser.email,
       'url': url,
-      'time': DateTime.now().toString().split('at')[0]
+      'time': DateTime.now().toString().split('at')[0],
+      'doc': preselectedValue,
     });
     // setState(() {
     //   uploading = false;
@@ -236,12 +256,18 @@ class _UploadPageState extends State<UploadPage> {
                         underline: SizedBox(width: 20),
                         iconEnabledColor: kPrimaryColor,
                         iconDisabledColor: Colors.black,
-                        items: _items.map((item) {
-                          return DropdownMenuItem(
-                            child: new Text(item),
-                            value: item,
+                        items: data.map((item) {
+                          return new DropdownMenuItem(
+                            child: new Text(item['Course Title']),
+                            value: item['Course Title'].toString(),
                           );
                         }).toList(),
+                        // _items.map((item) {
+                        //   return DropdownMenuItem(
+                        //     child: new Text(item),
+                        //     value: item,
+                        //   );
+                        // }).toList(),
                         value: selectedValue,
                         hint: Padding(
                           padding: const EdgeInsets.all(12.0),
@@ -261,6 +287,7 @@ class _UploadPageState extends State<UploadPage> {
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 20, right: 20),
+                    ///change radiobutton and use [preselectedValue] as the changed [value]
                     child: CustomRadioButton(
                       enableShape: true,
                       elevation: 5.0,
@@ -273,7 +300,11 @@ class _UploadPageState extends State<UploadPage> {
                         "Notes",
                         "Question_Paper",
                       ],
-                      radioButtonValue: (value) => print(value),
+                      radioButtonValue: (value) => {
+                        setState(() {
+                          preselectedValue = value;
+                        }),
+                      },
                       selectedColor: kPrimaryColor,
                     ),
                   ),

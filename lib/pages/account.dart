@@ -7,7 +7,7 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:srm_notes/components/mail.dart';
 import 'package:srm_notes/components/models/loading.dart';
 import 'package:srm_notes/constants.dart';
-import 'package:srm_notes/pages/editprofile.dart';
+// import 'package:srm_notes/pages/editprofile.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
@@ -32,10 +32,10 @@ class _AccountPageState extends State<AccountPage> {
   var storage = FlutterSecureStorage();
   File sampleImage;
   bool _uploadingImage = false;
-  List<String> dept = ["btech", "Mba", "Arch", "Medical"];
-  List<String> branch = ["Cse", "Mechanical", "software", "It", "ECE", "EEE"];
+  List<String> dept = ["B.tech.", "MBA", "Arch", "Medical"];
+  List<String> branch = ["CSE", "MECH.", "SWE", "IT", "ECE", "EEE"];
   List<String> year = ["1st", "2nd", "3rd", "4th", "5th"];
-  String _dept, _branch, _year;
+  String _dept="Dept", _branch="Branch", _year="Year";
 
   Future getimagefromgallery() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -131,6 +131,11 @@ class _AccountPageState extends State<AccountPage> {
     }
     getCurrentUser();
   }
+  @override
+  void initState() {
+    super.initState();
+    checkCached();
+  }
 
   Future<bool> showReview(
       context, List<String> dept, List<String> branch, List<String> year) {
@@ -149,6 +154,7 @@ class _AccountPageState extends State<AccountPage> {
                   child: Column(
                     children: <Widget>[
                       Stack(
+                        // alignment: Alignment.center,
                         children: <Widget>[
                           Container(height: 150.0),
                           Container(
@@ -161,23 +167,61 @@ class _AccountPageState extends State<AccountPage> {
                               color: kPrimaryColor,
                             ),
                           ),
-                          Positioned(
-                              top: 50.0,
-                              left: 94.0,
-                              child: Container(
-                                height: 90.0,
-                                width: 90.0,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(45.0),
-                                    border: Border.all(
-                                        color: Colors.white,
-                                        style: BorderStyle.solid,
-                                        width: 2.0),
-                                    image: DecorationImage(
-                                        image: NetworkImage(
-                                            'https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg'),
-                                        fit: BoxFit.cover)),
-                              ))
+                          Row(
+                            // alignment: Alignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Positioned(
+                                child: profilePic == null ||
+                                        profilePic == 'null'
+                                    ? Container(
+                                        child: Icon(
+                                          Icons.person,
+                                          size: 70,
+                                          color: Colors.white,
+                                        ),
+                                        width: 130.0,
+                                        height: 130.0,
+                                        decoration: BoxDecoration(
+                                            color: kPrimaryLightColor,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(75.0)),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  blurRadius: 5.0,
+                                                  color: Colors.black)
+                                            ]))
+                                    : Container(
+                                        width: 130.0,
+                                        height: 130.0,
+                                        decoration: BoxDecoration(
+                                            color: kPrimaryLightColor,
+                                            image: DecorationImage(
+                                                image: NetworkImage(profilePic),
+                                                fit: BoxFit.cover),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(75.0)),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  blurRadius: 5.0,
+                                                  color: Colors.black)
+                                            ])),
+                              ),
+                              Positioned(
+                                right: 5,
+                                bottom: 1,
+                                child: GestureDetector(
+                                  child: Icon(
+                                    Icons.camera_alt,
+                                    size: 40,
+                                    color: Colors.white70,
+                                  ),
+                                  onTap: getimagefromgallery,
+                                ),
+                              )
+                            ],
+                          ),
+                        
                         ],
                       ),
                       Padding(
@@ -197,26 +241,40 @@ class _AccountPageState extends State<AccountPage> {
                                   color: kPrimaryLightColor,
                                 ),
                               ),
-                              child: DropdownButton(
+                              child: DropdownButton<String>(
                                 isExpanded: true,
-                                underline: SizedBox(width: 20),
-                                icon: Icon(Icons.keyboard_arrow_down),
-                                value: _dept,
-                                hint: Text("Select Department"),
                                 items: dept
-                                        ?.map((value) => DropdownMenuItem(
-                                              value: value,
-                                              child: Text(value),
-                                            ))
-                                        ?.toList() ??
-                                    [],
+                                    .map((String value) {
+                                  return new DropdownMenuItem<String>(
+                                    value: value,
+                                    child: new Text(value),
+                                  );
+                                }).toList(),
+                                hint:Text(_dept),
                                 onChanged: (value) {
-                                  setState(() {
                                     _dept = value;
-                                    print(_dept);
-                                  });
                                 },
                               ),
+                              // DropdownButton(
+                              //   isExpanded: true,
+                              //   underline: SizedBox(width: 20),
+                              //   icon: Icon(Icons.keyboard_arrow_down),
+                              //   value: _dept,
+                              //   hint: Text(_dept),
+                              //   items: dept
+                              //           ?.map((value) => DropdownMenuItem(
+                              //                 value: value,
+                              //                 child: Text(value),
+                              //               ))
+                              //           ?.toList() ??
+                              //       [],
+                              //   onChanged: (value) {
+                              //     setState(() {
+                              //       _dept = value;
+                              //       print(_dept);
+                              //     });
+                              //   },
+                              // ),
                             ),
                             SizedBox(height: 10),
                             Container(
@@ -232,24 +290,18 @@ class _AccountPageState extends State<AccountPage> {
                                   color: kPrimaryLightColor,
                                 ),
                               ),
-                              child: DropdownButton(
+                              child: DropdownButton<String>(
                                 isExpanded: true,
-                                underline: SizedBox(width: 20),
-                                icon: Icon(Icons.keyboard_arrow_down),
-                                value: _dept,
-                                hint: Text("Select Branch"),
+                                hint:Text(_branch),
                                 items: branch
-                                        ?.map((value) => DropdownMenuItem(
-                                              value: value,
-                                              child: Text(value),
-                                            ))
-                                        ?.toList() ??
-                                    [],
+                                    .map((String value) {
+                                  return new DropdownMenuItem<String>(
+                                    value: value,
+                                    child: new Text(value),
+                                  );
+                                }).toList(),
                                 onChanged: (value) {
-                                  setState(() {
                                     _branch = value;
-                                    print(_branch);
-                                  });
                                 },
                               ),
                             ),
@@ -267,24 +319,18 @@ class _AccountPageState extends State<AccountPage> {
                                   color: kPrimaryLightColor,
                                 ),
                               ),
-                              child: DropdownButton(
+                              child: DropdownButton<String>(
                                 isExpanded: true,
-                                underline: SizedBox(width: 20),
-                                icon: Icon(Icons.keyboard_arrow_down),
-                                value: _dept,
-                                hint: Text("Select Year"),
+                                hint:Text(_year),
                                 items: year
-                                        ?.map((value) => DropdownMenuItem(
-                                              value: value,
-                                              child: Text(value),
-                                            ))
-                                        ?.toList() ??
-                                    [],
+                                    .map((String value) {
+                                  return new DropdownMenuItem<String>(
+                                    value: value,
+                                    child: new Text(value),
+                                  );
+                                }).toList(),
                                 onChanged: (value) {
-                                  setState(() {
                                     _year = value;
-                                    print(_year);
-                                  });
                                 },
                               ),
                             ),
@@ -307,18 +353,15 @@ class _AccountPageState extends State<AccountPage> {
                             ),
                           ),
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            setState(() {
+                               Navigator.of(context).pop();
+                            });
                           },
                         ),
                       )
                     ],
                   )));
         });
-  }
-
-  void initState() {
-    super.initState();
-    checkCached();
   }
 
   @override
@@ -360,13 +403,14 @@ class _AccountPageState extends State<AccountPage> {
                                 title: Text('Edit Profile'),
                                 leading: Icon(Icons.edit),
                                 onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute<Null>(
-                                      builder: (BuildContext context) {
-                                        return Edit();
-                                      },
-                                    ),
-                                  );
+                                   showReview(context, dept, branch, year);
+                                  // Navigator.of(context).push(
+                                  //   MaterialPageRoute<Null>(
+                                  //     builder: (BuildContext context) {
+                                  //       return Edit();
+                                  //     },
+                                  //   ),
+                                  // );
                                 },
                               ),
                               ListTile(
@@ -686,7 +730,7 @@ class _AccountPageState extends State<AccountPage> {
                                           elevation: 5.0,
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
-                                            child: Text("Year: 1st"),
+                                            child: Text("Year: $_year"),
                                           ),
                                         ),
                                       ),
@@ -696,7 +740,7 @@ class _AccountPageState extends State<AccountPage> {
                                         elevation: 5.0,
                                         child: Padding(
                                           padding: const EdgeInsets.all(10.0),
-                                          child: Text("Dept: B-tech"),
+                                          child: Text("Dept: $_dept"),
                                         ),
                                       ),
                                       Card(
@@ -705,7 +749,7 @@ class _AccountPageState extends State<AccountPage> {
                                         elevation: 5.0,
                                         child: Padding(
                                           padding: const EdgeInsets.all(10.0),
-                                          child: Text("Branch: CSE"),
+                                          child: Text("Branch: $_branch"),
                                         ),
                                       ),
                                     ],
