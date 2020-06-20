@@ -32,6 +32,10 @@ class _AccountPageState extends State<AccountPage> {
   var storage = FlutterSecureStorage();
   File sampleImage;
   bool _uploadingImage = false;
+  List<String> dept = ["btech", "Mba", "Arch", "Medical"];
+  List<String> branch = ["Cse", "Mechanical", "software", "It", "ECE", "EEE"];
+  List<String> year = ["1st", "2nd", "3rd", "4th", "5th"];
+  String _dept, _branch, _year;
 
   Future getimagefromgallery() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -126,6 +130,190 @@ class _AccountPageState extends State<AccountPage> {
       });
     }
     getCurrentUser();
+  }
+
+  Future<bool> showReview(
+      context, List<String> dept, List<String> branch, List<String> year) {
+    return showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: Container(
+                  height: 420.0,
+                  width: 200.0,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
+                  child: Column(
+                    children: <Widget>[
+                      Stack(
+                        children: <Widget>[
+                          Container(height: 150.0),
+                          Container(
+                            height: 100.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10.0),
+                                topRight: Radius.circular(10.0),
+                              ),
+                              color: kPrimaryColor,
+                            ),
+                          ),
+                          Positioned(
+                              top: 50.0,
+                              left: 94.0,
+                              child: Container(
+                                height: 90.0,
+                                width: 90.0,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(45.0),
+                                    border: Border.all(
+                                        color: Colors.white,
+                                        style: BorderStyle.solid,
+                                        width: 2.0),
+                                    image: DecorationImage(
+                                        image: NetworkImage(
+                                            'https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg'),
+                                        fit: BoxFit.cover)),
+                              ))
+                        ],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.symmetric(horizontal: 10),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              height: 50,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: kPrimaryLightColor,
+                                ),
+                              ),
+                              child: DropdownButton(
+                                isExpanded: true,
+                                underline: SizedBox(width: 20),
+                                icon: Icon(Icons.keyboard_arrow_down),
+                                value: _dept,
+                                hint: Text("Select Department"),
+                                items: dept
+                                        ?.map((value) => DropdownMenuItem(
+                                              value: value,
+                                              child: Text(value),
+                                            ))
+                                        ?.toList() ??
+                                    [],
+                                onChanged: (value) {
+                                  setState(() {
+                                    _dept = value;
+                                    print(_dept);
+                                  });
+                                },
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Container(
+                              margin: EdgeInsets.symmetric(horizontal: 10),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              height: 50,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: kPrimaryLightColor,
+                                ),
+                              ),
+                              child: DropdownButton(
+                                isExpanded: true,
+                                underline: SizedBox(width: 20),
+                                icon: Icon(Icons.keyboard_arrow_down),
+                                value: _dept,
+                                hint: Text("Select Branch"),
+                                items: branch
+                                        ?.map((value) => DropdownMenuItem(
+                                              value: value,
+                                              child: Text(value),
+                                            ))
+                                        ?.toList() ??
+                                    [],
+                                onChanged: (value) {
+                                  setState(() {
+                                    _branch = value;
+                                    print(_branch);
+                                  });
+                                },
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Container(
+                              margin: EdgeInsets.symmetric(horizontal: 10),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 20),
+                              height: 50,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: kPrimaryLightColor,
+                                ),
+                              ),
+                              child: DropdownButton(
+                                isExpanded: true,
+                                underline: SizedBox(width: 20),
+                                icon: Icon(Icons.keyboard_arrow_down),
+                                value: _dept,
+                                hint: Text("Select Year"),
+                                items: year
+                                        ?.map((value) => DropdownMenuItem(
+                                              value: value,
+                                              child: Text(value),
+                                            ))
+                                        ?.toList() ??
+                                    [],
+                                onChanged: (value) {
+                                  setState(() {
+                                    _year = value;
+                                    print(_year);
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 15.0),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 60),
+                        child: FlatButton(
+                          color: kPrimaryColor,
+                          child: Center(
+                            child: Text(
+                              'Submit',
+                              style: TextStyle(
+                                fontFamily: 'Montserrat',
+                                fontSize: 14.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      )
+                    ],
+                  )));
+        });
   }
 
   void initState() {
@@ -489,7 +677,8 @@ class _AccountPageState extends State<AccountPage> {
                                     children: <Widget>[
                                       GestureDetector(
                                         onTap: () {
-                                          showReview(context, "Hello");
+                                          showReview(
+                                              context, dept, branch, year);
                                         },
                                         child: Card(
                                           clipBehavior: Clip.antiAlias,
@@ -584,87 +773,4 @@ class GetClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) {
     return true;
   }
-}
-
-Future<bool> showReview(context, review) {
-  return showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return Dialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
-            child: Container(
-                height: 350.0,
-                width: 200.0,
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
-                child: Column(
-                  children: <Widget>[
-                    Stack(
-                      children: <Widget>[
-                        Container(height: 150.0),
-                        Container(
-                          height: 100.0,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10.0),
-                              topRight: Radius.circular(10.0),
-                            ),
-                            color: kPrimaryColor,
-                          ),
-                        ),
-                        Positioned(
-                            top: 50.0,
-                            left: 94.0,
-                            child: Container(
-                              height: 90.0,
-                              width: 90.0,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(45.0),
-                                  border: Border.all(
-                                      color: Colors.white,
-                                      style: BorderStyle.solid,
-                                      width: 2.0),
-                                  image: DecorationImage(
-                                      image: NetworkImage(
-                                          'https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg'),
-                                      fit: BoxFit.cover)),
-                            ))
-                      ],
-                    ),
-                    SizedBox(height: 20.0),
-                    Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Text(
-                          "Hey Sudhanshu!!!",
-                          style: TextStyle(
-                            fontFamily: 'Quicksand',
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        )),
-                    SizedBox(height: 15.0),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 60),
-                      child: FlatButton(
-                        color: kPrimaryColor,
-                        child: Center(
-                          child: Text(
-                            'Submit',
-                            style: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontSize: 14.0,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    )
-                  ],
-                )));
-      });
 }
