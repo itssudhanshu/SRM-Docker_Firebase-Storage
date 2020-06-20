@@ -5,6 +5,7 @@ import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:srm_notes/components/appbar.dart';
@@ -19,6 +20,7 @@ class UploadPage extends StatefulWidget {
   @override
   _UploadPageState createState() => _UploadPageState();
 }
+
 
 class _UploadPageState extends State<UploadPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -47,7 +49,7 @@ class _UploadPageState extends State<UploadPage> {
   // List<String> _items = ['Machine Learning', 'Maths'];
   Map<String, Widget> widgets;
   final String url =
-      "https://firebasestorage.googleapis.com/v0/b/srm-helper-3223e.appspot.com/o/data.json?alt=media&token=625decfd-a0b4-44d6-86b0-16c972a8a680";
+      "https://firebasestorage.googleapis.com/v0/b/srm-helper-3223e.appspot.com/o/data.json?alt=media&token=c1502b1a-d58b-416a-be50-5fe1d203bd9a";
 
   List data = List(); //edited line
 
@@ -55,9 +57,9 @@ class _UploadPageState extends State<UploadPage> {
     var res = await http
         .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
     var resBody = json.decode(res.body);
-
     setState(() {
       data = resBody;
+      
     });
 
     print(resBody);
@@ -132,17 +134,30 @@ class _UploadPageState extends State<UploadPage> {
       print(e);
     }
   }
+Future savedoc1() async {
 
+
+    // final StorageReference firebaseStorageRef =
+    //     FirebaseStorage.instance.ref().child("1");
+    // final StorageUploadTask task = firebaseStorageRef.putFile(file);
+    //  firebaseStorageRef.putData(file);
+    // StorageTaskSnapshot taskSnapshot = await task.onComplete;
+    var response = await Firestore.instance
+        .collection("Subjects")
+        .document(selectedValue)
+        .setData({
+      'name': selectedValue,
+      'code' : "15CS314J"
+    });
+  }
   Future savedoc(File file, String name) async {
     print(selectedValue);
     print(name);
 
     final StorageReference firebaseStorageRef =
         FirebaseStorage.instance.ref().child(_fileName);
-
     final StorageUploadTask task = firebaseStorageRef.putFile(file);
     //  firebaseStorageRef.putData(file);
-
     StorageTaskSnapshot taskSnapshot = await task.onComplete;
     print("upload complete");
     _clearCachedFiles();
@@ -277,6 +292,7 @@ class _UploadPageState extends State<UploadPage> {
                         onChanged: (value) {
                           setState(() {
                             selectedValue = value;
+                            
                             color = kPrimaryColor;
                             // width_dropd = 2.0;
                           });
@@ -437,6 +453,7 @@ class _UploadPageState extends State<UploadPage> {
                                     // uploading = true;
 
                                     //call uploading function
+                                    await savedoc1();
                                     await savedoc(file, _fileName);
                                   } else {
                                     setState(() {
