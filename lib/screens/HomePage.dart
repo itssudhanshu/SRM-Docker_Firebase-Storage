@@ -37,9 +37,17 @@ class _HomePageState extends State<HomePage> {
         // height: 100,
         margin: EdgeInsets.all(5.0),
         decoration: BoxDecoration(
-          color: kPrimaryLightColor,
+          color: kPrimaryLightColor.withOpacity(0.7),
           borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(0, 6),
+              blurRadius: 10,
+              color: kPrimaryColor.withOpacity(0.4),
+            ),
+          ],
         ),
+
         child: Stack(
           alignment: Alignment.center,
           children: <Widget>[
@@ -61,17 +69,18 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  SizedBox(height: size.height * 0.02),
+                  SizedBox(height: size.height * 0.01),
                   ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.folder,
-                          // size: 40,
-                          color: kPrimaryColor,
-                        ),
-                      )),
+                    // borderRadius: BorderRadius.circular(10.0),
+                    // child: CircleAvatar(
+                    //   backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.folder,
+                      size: 60,
+                      color: kPrimaryColor,
+                    ),
+                  ),
+                  // )),
                   SizedBox(height: size.height * 0.01),
                   Expanded(
                     child: Column(

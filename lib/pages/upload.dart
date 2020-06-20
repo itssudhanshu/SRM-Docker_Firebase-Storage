@@ -233,7 +233,7 @@ class _UploadPageState extends State<UploadPage> {
                       child: SearchableDropdown(
                         key: dropdownKey,
                         //ese SearchableDropdown.single for suffix icon
-                        underline: "",
+                        underline: SizedBox(width: 20),
                         iconEnabledColor: kPrimaryColor,
                         iconDisabledColor: Colors.black,
                         items: _items.map((item) {
@@ -243,8 +243,11 @@ class _UploadPageState extends State<UploadPage> {
                           );
                         }).toList(),
                         value: selectedValue,
-                        hint: "Select Course",
-                        searchHint: "Select one",
+                        hint: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text("Select Course"),
+                        ),
+                        searchHint: Text("Select one"),
                         onChanged: (value) {
                           setState(() {
                             selectedValue = value;
@@ -359,10 +362,7 @@ class _UploadPageState extends State<UploadPage> {
                                                         Icons.check,
                                                         color: Colors.green,
                                                       ),
-                                                      title: new Text(
-                                                        name
-                                                      ),
-                                                     
+                                                      title: new Text(name),
                                                     ),
                                                   );
                                                 },
