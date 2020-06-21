@@ -135,7 +135,7 @@ class _UploadPageState extends State<UploadPage> {
     var response = await Firestore.instance
         .collection("Subjects")
         .document(selectedSub)
-        .setData({'name': selectedSub, 'code': "15CS314J"});
+        .setData({'name': selectedSub, 'code': selectedSubCode});
   }
 
   Future savedoc(File file, String name) async {
