@@ -162,6 +162,16 @@ class _UploadPageState extends State<UploadPage> {
       'time': DateTime.now().toString().split('at')[0],
       'doc': preSelectedDoc,
     });
+    var temp;
+    await _fireStore.collection('users').document(loggedInUser.email).get().
+    then((value){
+      temp = value.data['uploads'];
+    });
+    var uploads = int.parse(temp);
+    uploads = uploads + 1 ;
+    await _fireStore.collection('users').document(loggedInUser.email).updateData({
+      'uploads' : uploads.toString()
+    });
     return url;
   }
 

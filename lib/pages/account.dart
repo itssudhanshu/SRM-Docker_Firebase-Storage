@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -20,6 +22,7 @@ var regId;
 var profilePic;
 var email;
 var year;
+var rank;
 
 class AccountPage extends StatefulWidget {
   @override
@@ -30,6 +33,7 @@ class _AccountPageState extends State<AccountPage> {
   final _fireStore = Firestore.instance;
   final store = FirebaseStorage.instance;
   final _auth = FirebaseAuth.instance;
+  Timer timer;
   var storage = FlutterSecureStorage();
   File sampleImage;
   bool _uploadingImage = false;
@@ -37,6 +41,16 @@ class _AccountPageState extends State<AccountPage> {
   List<String> branch = ["CSE", "MECH.", "SWE", "IT", "ECE", "EEE"];
   List<String> year = ["1st", "2nd", "3rd", "4th", "5th"];
   String _dept = "Dept", _branch = "Branch", _year="year";
+
+  @override
+  initState () {
+    super.initState();
+    checkCached();
+    timer = Timer.periodic(Duration(seconds: 10), (timer) async {
+      print('timer called');
+      this.getCurrentUser();
+    });
+  }
 
   Future getimagefromgallery() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -70,6 +84,7 @@ class _AccountPageState extends State<AccountPage> {
       });
     }
   }
+
   Future<void> update() async{
     setState(() {
       
@@ -79,6 +94,7 @@ class _AccountPageState extends State<AccountPage> {
           .document(loggedInUser.email)
           .updateData({'year': _year.toString(),'branch':_branch.toString(),'dept':_dept.toString()});
   }
+
   Future<void> getCurrentUser() async {
     print('getCurrentUserCalled');
 
@@ -106,16 +122,11 @@ class _AccountPageState extends State<AccountPage> {
             _year = value.data['year'];
             _dept = value.data['dept'];
             _branch = value.data['branch'];
-
+            rank = value.data['rank'];
             _doneLoading = true;
-            print(userName);
-            print(uploads);
-            print(likes);
-            print(regId);
-            print(profilePic);
-            print(_year);
           });
         });
+        await storage.write(key: 'rank', value: rank);
         await storage.write(key: 'profileData', value: 'true');
         await storage.write(key: 'email', value: loggedInUser.email);
         await storage.write(key: 'username', value: userName);
@@ -139,6 +150,7 @@ class _AccountPageState extends State<AccountPage> {
     print(_bool);
     if (_bool == 'true') {
       setState(() {
+        rank = storage.read(key: 'rank');
         email = storage.read(key: 'email');
         userName = storage.read(key: 'username');
         uploads = storage.read(key: 'uploads');
@@ -150,12 +162,6 @@ class _AccountPageState extends State<AccountPage> {
       });
     }
     getCurrentUser();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    checkCached();
   }
 
   Future<bool> showReview(
@@ -611,7 +617,7 @@ class _AccountPageState extends State<AccountPage> {
                               height: MediaQuery.of(context).size.height / 40),
                           Card(
                             margin: EdgeInsets.symmetric(
-                                horizontal: 20.0, vertical: 5.0),
+                                horizontal: 65.0, vertical: 5.0),
                             clipBehavior: Clip.antiAlias,
                             color: Colors.white,
                             elevation: 5.0,
@@ -656,7 +662,7 @@ class _AccountPageState extends State<AccountPage> {
                                         ),
                                         SizedBox(height: 10.0),
                                         Text(
-                                          "28.5K",
+                                          "$rank",
                                           style: TextStyle(
                                             fontSize: 20.0,
                                             color: kPrimaryColor,
@@ -666,29 +672,29 @@ class _AccountPageState extends State<AccountPage> {
                                       ],
                                     ),
                                   ),
-                                  Expanded(
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text(
-                                          "Likes",
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 22.0,
-                                            // fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 10.0),
-                                        Text(
-                                          "$likes",
-                                          style: TextStyle(
-                                            fontSize: 20.0,
-                                            color: kPrimaryColor,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+//                                  Expanded(
+//                                    child: Column(
+//                                      children: <Widget>[
+//                                        Text(
+//                                          "Likes",
+//                                          style: TextStyle(
+//                                            color: Colors.black,
+//                                            fontSize: 22.0,
+//                                            // fontWeight: FontWeight.bold,
+//                                          ),
+//                                        ),
+//                                        SizedBox(height: 10.0),
+//                                        Text(
+//                                          "$likes",
+//                                          style: TextStyle(
+//                                            fontSize: 20.0,
+//                                            color: kPrimaryColor,
+//                                            fontWeight: FontWeight.bold,
+//                                          ),
+//                                        ),
+//                                      ],
+//                                    ),
+//                                  ),
                                 ],
                               ),
                             ),

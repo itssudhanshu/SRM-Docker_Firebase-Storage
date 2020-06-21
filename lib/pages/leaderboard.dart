@@ -1,8 +1,11 @@
 import 'dart:ui' as ui;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:srm_notes/components/appbar.dart';
 import 'package:srm_notes/constants.dart';
+import 'package:srm_notes/pages/account.dart';
 
 class Leaderboard extends StatefulWidget {
   @override
@@ -14,6 +17,165 @@ class _LeaderboardState extends State<Leaderboard>
   bool _isAppbar = true;
   ScrollController _scrollController = new ScrollController();
 
+  final _fireStore = Firestore.instance;
+  final _auth = FirebaseAuth.instance;
+
+  Widget cardWidget({name, regno,uploads,rank}) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Stack(
+          children: <Widget>[
+            Container(
+              height: 110,
+              decoration: BoxDecoration(
+                borderRadius:
+                BorderRadius.circular(_borderRadius),
+                gradient: LinearGradient(
+                    colors: [
+                      // items[index].startColor,
+                      // items[index].endColor
+                      kPrimaryColor,
+                      kPrimaryLightColor
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight),
+                boxShadow: [
+                  BoxShadow(
+                    color:
+                    kPrimaryLightColor, //items[index].endColor,
+                    blurRadius: 12,
+                    offset: Offset(0, 6),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              right: 0,
+              bottom: 0,
+              top: 0,
+              child: CustomPaint(
+                size: Size(100, 150),
+                painter: CustomCardShapePainter(
+                    _borderRadius,
+                    // items[index].startColor, items[index].endColor
+                    kPrimaryColor,
+                    kPrimaryLightColor),
+              ),
+            ),
+            Positioned.fill(
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: CircleAvatar(
+                      backgroundColor:
+                      kPrimaryLightColor.withOpacity(0.8),
+                      radius: 30,
+                      child: ClipOval(
+                        child: Image.network(
+                          'https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg',
+                          // height: 50,
+                          width: 60,
+                          // fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                    flex: 2,
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    flex: 4,
+                    child: Column(
+                      // mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment:
+                      MainAxisAlignment.center,
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Flexible(
+                          child: Text(
+                            name,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontFamily: 'Avenir',
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          regno,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Avenir',
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            // SizedBox(width: 20),
+                            Container(
+                              child: Text(
+                                "Total Uploads : ",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15.0,
+                                  // fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              child: Text(
+                                uploads,
+                                style: TextStyle(
+                                  color: kPrimaryColor,
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      mainAxisAlignment:
+                      MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "Rank",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Avenir',
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Text(
+                          rank.toString(),
+                          style: TextStyle(
+                            color: kPrimaryColor,
+                            fontFamily: 'Avenir',
+                            fontSize: 35,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
   @override
   void initState() {
     super.initState();
@@ -36,29 +198,6 @@ class _LeaderboardState extends State<Leaderboard>
   }
 
   final double _borderRadius = 24;
-
-  var items = [
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
-        'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
-        'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
-        'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
-        'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
-        'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
-        'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
-        'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
-        'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
-        'RA171102011424', 500, 1500),
-    PlaceInfo('Sudhanshu Kushwaha', Color(0xff6DC8F3), Color(0xff73A1F9), 1,
-        'RA171102011424', 500, 1500),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -95,165 +234,44 @@ class _LeaderboardState extends State<Leaderboard>
               ),
             ),
             Container(
-              child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Stack(
-                          children: <Widget>[
-                            Container(
-                              height: 110,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(_borderRadius),
-                                gradient: LinearGradient(
-                                    colors: [
-                                      // items[index].startColor,
-                                      // items[index].endColor
-                                      kPrimaryColor,
-                                      kPrimaryLightColor
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color:
-                                        kPrimaryLightColor, //items[index].endColor,
-                                    blurRadius: 12,
-                                    offset: Offset(0, 6),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Positioned(
-                              right: 0,
-                              bottom: 0,
-                              top: 0,
-                              child: CustomPaint(
-                                size: Size(100, 150),
-                                painter: CustomCardShapePainter(
-                                    _borderRadius,
-                                    // items[index].startColor, items[index].endColor
-                                    kPrimaryColor,
-                                    kPrimaryLightColor),
-                              ),
-                            ),
-                            Positioned.fill(
-                              child: Row(
-                                children: <Widget>[
-                                  Expanded(
-                                    child: CircleAvatar(
-                                      backgroundColor:
-                                          kPrimaryLightColor.withOpacity(0.8),
-                                      radius: 30,
-                                      child: ClipOval(
-                                        child: Image.network(
-                                          'https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg',
-                                          // height: 50,
-                                          width: 60,
-                                          // fit: BoxFit.fill,
-                                        ),
-                                      ),
-                                    ),
-                                    flex: 2,
-                                  ),
-                                  SizedBox(width: 10),
-                                  Expanded(
-                                    flex: 4,
-                                    child: Column(
-                                      // mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          items[index].name,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontFamily: 'Avenir',
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                          items[index].regno,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: 'Avenir',
-                                          ),
-                                        ),
-                                        SizedBox(height: 16),
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            // SizedBox(width: 20),
-                                            Container(
-                                              child: Text(
-                                                "Total Uploads : ",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 15.0,
-                                                  // fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              child: Text(
-                                                items[index]
-                                                    .uploadno
-                                                    .toString(),
-                                                style: TextStyle(
-                                                  color: kPrimaryColor,
-                                                  fontSize: 20.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text(
-                                          "Rank",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: 'Avenir',
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                        Text(
-                                          items[index].rank.toString(),
-                                          style: TextStyle(
-                                            color: kPrimaryColor,
-                                            fontFamily: 'Avenir',
-                                            fontSize: 35,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  }),
+              child: Column(
+                children: <Widget>[
+                  StreamBuilder<QuerySnapshot>(
+                    stream: _fireStore.collection('users').snapshots(),
+                    builder: (context,snapshot) {
+                      if (snapshot.data == null) {
+                        return Icon(
+                          Icons.flight_takeoff,
+
+                          ///[logo]
+                          size: 40,
+                        );
+                      }
+                      final usersdata = snapshot.data.documents.toList();
+                      usersdata.sort((a, b) => b['uploads'].compareTo(a['uploads']));
+                      List<Widget> wid = [];
+                      int rank = 0;
+                      for (var user in usersdata) {
+                        rank = rank + 1;
+                        final name = user.data['name'];
+                        final email = user.data['email'];
+                        _fireStore.collection('users').document(email).updateData({
+                          'rank' : rank.toString()
+                        });
+                        final regid = user.data['regno'];
+                        final uploads = user.data['uploads'];
+                        final mw = cardWidget(name: name,regno: regid,uploads: uploads, rank :rank );
+                        wid.add(mw);
+                      }
+                        return Expanded(
+                          child: ListView(
+                            children: wid,
+                          ),
+                        );
+                    },
+                  )
+                ],
+              ),
             ),
           ],
         ),
