@@ -36,7 +36,7 @@ class _AccountPageState extends State<AccountPage> {
   List<String> dept = ["B.tech.", "MBA", "Arch", "Medical"];
   List<String> branch = ["CSE", "MECH.", "SWE", "IT", "ECE", "EEE"];
   List<String> year = ["1st", "2nd", "3rd", "4th", "5th"];
-  String _dept = "Dept", _branch = "Branch", _year;
+  String _dept = "Dept", _branch = "Branch", _year="year";
 
   Future getimagefromgallery() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
