@@ -131,12 +131,7 @@ class _UploadPageState extends State<UploadPage> {
     }
   }
 
-  Future savedoc1() async {
-    // final StorageReference firebaseStorageRef =
-    //     FirebaseStorage.instance.ref().child("1");
-    // final StorageUploadTask task = firebaseStorageRef.putFile(file);
-    //  firebaseStorageRef.putData(file);
-    // StorageTaskSnapshot taskSnapshot = await task.onComplete;
+  Future makefolder() async {
     var response = await Firestore.instance
         .collection("Subjects")
         .document(selectedSub)
@@ -167,11 +162,6 @@ class _UploadPageState extends State<UploadPage> {
       'time': DateTime.now().toString().split('at')[0],
       'doc': preSelectedDoc,
     });
-    // setState(() {
-    //   uploading = false;
-    //   _clearCachedFiles();
-    // });
-    // documentFileUpload(url);
     return url;
   }
 
@@ -292,6 +282,7 @@ class _UploadPageState extends State<UploadPage> {
                               }
                             }
                             color = kPrimaryColor;
+
                             // width_dropd = 2.0;
                           });
                         },
@@ -452,7 +443,7 @@ class _UploadPageState extends State<UploadPage> {
                                     // uploading = true;
 
                                     //call uploading function
-                                    await savedoc1();
+                                    await makefolder();
                                     await savedoc(file, _fileName);
                                   } else {
                                     setState(() {
