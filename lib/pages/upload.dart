@@ -21,7 +21,6 @@ class UploadPage extends StatefulWidget {
   _UploadPageState createState() => _UploadPageState();
 }
 
-
 class _UploadPageState extends State<UploadPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -43,15 +42,16 @@ class _UploadPageState extends State<UploadPage> {
   File image;
   bool notes = true;
   bool asTabs = false;
-  String selectedValue;
-  String preselectedValue = "dolor sit";
+  String selectedSub;
+  String selectedSubCode;
+  String preSelectedDoc = "Notes";
   bool uploading = false;
   // List<String> _items = ['Machine Learning', 'Maths'];
   Map<String, Widget> widgets;
   final String url =
       "https://firebasestorage.googleapis.com/v0/b/srm-helper-3223e.appspot.com/o/data.json?alt=media&token=c1502b1a-d58b-416a-be50-5fe1d203bd9a";
 
-  List data = List(); //edited line
+  List<dynamic> data = []; //edited line
 
   Future<String> getSWData() async {
     var res = await http
@@ -59,11 +59,7 @@ class _UploadPageState extends State<UploadPage> {
     var resBody = json.decode(res.body);
     setState(() {
       data = resBody;
-      
     });
-
-    print(resBody);
-
     return "Sucess";
   }
 
@@ -134,9 +130,8 @@ class _UploadPageState extends State<UploadPage> {
       print(e);
     }
   }
-Future savedoc1() async {
 
-
+  Future savedoc1() async {
     // final StorageReference firebaseStorageRef =
     //     FirebaseStorage.instance.ref().child("1");
     // final StorageUploadTask task = firebaseStorageRef.putFile(file);
@@ -144,14 +139,12 @@ Future savedoc1() async {
     // StorageTaskSnapshot taskSnapshot = await task.onComplete;
     var response = await Firestore.instance
         .collection("Subjects")
-        .document(selectedValue)
-        .setData({
-      'name': selectedValue,
-      'code' : "15CS314J"
-    });
+        .document(selectedSub)
+        .setData({'name': selectedSub, 'code': "15CS314J"});
   }
+
   Future savedoc(File file, String name) async {
-    print(selectedValue);
+    print(selectedSub);
     print(name);
 
     final StorageReference firebaseStorageRef =
@@ -165,14 +158,14 @@ Future savedoc1() async {
     url = url.replaceAll('//', '~');
     print(url);
     var response = await Firestore.instance
-        .collection(selectedValue)
+        .collection(selectedSub)
         .document("${DateTime.now()}")
         .setData({
       'name': _fileName,
       'sender': loggedInUser.email,
       'url': url,
       'time': DateTime.now().toString().split('at')[0],
-      'doc': preselectedValue,
+      'doc': preSelectedDoc,
     });
     // setState(() {
     //   uploading = false;
@@ -257,7 +250,7 @@ Future savedoc1() async {
             SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  SizedBox(height: size.height * 0.04),
+                  // SizedBox(height: size.height * 0.02),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Container(
@@ -283,7 +276,7 @@ Future savedoc1() async {
                         //     value: item,
                         //   );
                         // }).toList(),
-                        value: selectedValue,
+                        value: selectedSub,
                         hint: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: Text("Select Course"),
@@ -291,8 +284,13 @@ Future savedoc1() async {
                         searchHint: Text("Select one"),
                         onChanged: (value) {
                           setState(() {
-                            selectedValue = value;
-                            
+                            selectedSub = value;
+
+                            for (dynamic items in data) {
+                              if (items['Course Title'] == value) {
+                                selectedSubCode = items['Course Code'];
+                              }
+                            }
                             color = kPrimaryColor;
                             // width_dropd = 2.0;
                           });
@@ -303,7 +301,8 @@ Future savedoc1() async {
                   ),
                   Container(
                     padding: EdgeInsets.only(left: 20, right: 20),
-                    ///change radiobutton and use [preselectedValue] as the changed [value]
+
+                    ///change radiobutton and use [preSelectedDoc] as the changed [value]
                     child: CustomRadioButton(
                       enableShape: true,
                       elevation: 5.0,
@@ -318,7 +317,7 @@ Future savedoc1() async {
                       ],
                       radioButtonValue: (value) => {
                         setState(() {
-                          preselectedValue = value;
+                          preSelectedDoc = value;
                         }),
                       },
                       selectedColor: kPrimaryColor,
@@ -449,7 +448,7 @@ Future savedoc1() async {
                                   // get file name
                                   _fileName = file.toString().split('/').last;
 
-                                  if (file != null && selectedValue != null) {
+                                  if (file != null && selectedSub != null) {
                                     // uploading = true;
 
                                     //call uploading function

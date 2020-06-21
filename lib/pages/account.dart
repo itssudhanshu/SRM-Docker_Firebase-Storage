@@ -35,7 +35,7 @@ class _AccountPageState extends State<AccountPage> {
   List<String> dept = ["B.tech.", "MBA", "Arch", "Medical"];
   List<String> branch = ["CSE", "MECH.", "SWE", "IT", "ECE", "EEE"];
   List<String> year = ["1st", "2nd", "3rd", "4th", "5th"];
-  String _dept="Dept", _branch="Branch", _year="Year";
+  String _dept = "Dept", _branch = "Branch", _year = "Year";
 
   Future getimagefromgallery() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -47,8 +47,7 @@ class _AccountPageState extends State<AccountPage> {
       var name = DateTime.now();
       final StorageReference firebaseStorageRef =
           store.ref().child(loggedInUser.email);
-      final StorageUploadTask task =
-          await firebaseStorageRef.putFile(sampleImage);
+      final StorageUploadTask task = firebaseStorageRef.putFile(sampleImage);
       StorageTaskSnapshot taskSnapshot = await task.onComplete;
       var url = await taskSnapshot.ref.getDownloadURL();
       setState(() {
@@ -131,6 +130,7 @@ class _AccountPageState extends State<AccountPage> {
     }
     getCurrentUser();
   }
+
   @override
   void initState() {
     super.initState();
@@ -144,223 +144,217 @@ class _AccountPageState extends State<AccountPage> {
         barrierDismissible: true,
         builder: (BuildContext context) {
           return Dialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)),
-              child: Container(
-                  height: 420.0,
-                  width: 200.0,
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
-                  child: Column(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
+            child: Container(
+              height: 420.0,
+              width: 200.0,
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
+              child: Column(
+                children: <Widget>[
+                  Stack(
+                    // alignment: Alignment.center,
                     children: <Widget>[
-                      Stack(
-                        // alignment: Alignment.center,
-                        children: <Widget>[
-                          Container(height: 150.0),
-                          Container(
-                            height: 100.0,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10.0),
-                                topRight: Radius.circular(10.0),
-                              ),
-                              color: kPrimaryColor,
-                            ),
+                      Container(height: 150.0),
+                      Container(
+                        height: 100.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10.0),
+                            topRight: Radius.circular(10.0),
                           ),
-                          Row(
-                            // alignment: Alignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Positioned(
-                                child: profilePic == null ||
-                                        profilePic == 'null'
-                                    ? Container(
-                                        child: Icon(
-                                          Icons.person,
-                                          size: 70,
-                                          color: Colors.white,
-                                        ),
-                                        width: 130.0,
-                                        height: 130.0,
-                                        decoration: BoxDecoration(
-                                            color: kPrimaryLightColor,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(75.0)),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  blurRadius: 5.0,
-                                                  color: Colors.black)
-                                            ]))
-                                    : Container(
-                                        width: 130.0,
-                                        height: 130.0,
-                                        decoration: BoxDecoration(
-                                            color: kPrimaryLightColor,
-                                            image: DecorationImage(
-                                                image: NetworkImage(profilePic),
-                                                fit: BoxFit.cover),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(75.0)),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  blurRadius: 5.0,
-                                                  color: Colors.black)
-                                            ])),
-                              ),
-                              Positioned(
-                                right: 5,
-                                bottom: 1,
-                                child: GestureDetector(
-                                  child: Icon(
-                                    Icons.camera_alt,
-                                    size: 40,
-                                    color: Colors.white70,
-                                  ),
-                                  onTap: getimagefromgallery,
-                                ),
-                              )
-                            ],
-                          ),
-                        
-                        ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              height: 50,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: kPrimaryLightColor,
-                                ),
-                              ),
-                              child: DropdownButton<String>(
-                                isExpanded: true,
-                                items: dept
-                                    .map((String value) {
-                                  return new DropdownMenuItem<String>(
-                                    value: value,
-                                    child: new Text(value),
-                                  );
-                                }).toList(),
-                                hint:Text(_dept),
-                                onChanged: (value) {
-                                    _dept = value;
-                                },
-                              ),
-                              // DropdownButton(
-                              //   isExpanded: true,
-                              //   underline: SizedBox(width: 20),
-                              //   icon: Icon(Icons.keyboard_arrow_down),
-                              //   value: _dept,
-                              //   hint: Text(_dept),
-                              //   items: dept
-                              //           ?.map((value) => DropdownMenuItem(
-                              //                 value: value,
-                              //                 child: Text(value),
-                              //               ))
-                              //           ?.toList() ??
-                              //       [],
-                              //   onChanged: (value) {
-                              //     setState(() {
-                              //       _dept = value;
-                              //       print(_dept);
-                              //     });
-                              //   },
-                              // ),
-                            ),
-                            SizedBox(height: 10),
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              height: 50,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: kPrimaryLightColor,
-                                ),
-                              ),
-                              child: DropdownButton<String>(
-                                isExpanded: true,
-                                hint:Text(_branch),
-                                items: branch
-                                    .map((String value) {
-                                  return new DropdownMenuItem<String>(
-                                    value: value,
-                                    child: new Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                    _branch = value;
-                                },
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 20),
-                              height: 50,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color: kPrimaryLightColor,
-                                ),
-                              ),
-                              child: DropdownButton<String>(
-                                isExpanded: true,
-                                hint:Text(_year),
-                                items: year
-                                    .map((String value) {
-                                  return new DropdownMenuItem<String>(
-                                    value: value,
-                                    child: new Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                    _year = value;
-                                },
-                              ),
-                            ),
-                          ],
+                          color: kPrimaryColor,
                         ),
                       ),
-                      SizedBox(height: 15.0),
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 60),
-                        child: FlatButton(
-                          color: kPrimaryColor,
-                          child: Center(
-                            child: Text(
-                              'Submit',
-                              style: TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontSize: 14.0,
-                                color: Colors.white,
-                              ),
-                            ),
+                      Positioned(
+                        top: 40.0,
+                        left: 94.0,
+                        child: profilePic == null || profilePic == 'null'
+                            ? Container(
+                                child: Icon(
+                                  Icons.person,
+                                  size: 70,
+                                  color: Colors.white,
+                                ),
+                                width: 100.0,
+                                height: 100.0,
+                                decoration: BoxDecoration(
+                                    color: kPrimaryLightColor,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(75.0)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          blurRadius: 5.0, color: Colors.black)
+                                    ]))
+                            : Container(
+                                width: 100.0,
+                                height: 100.0,
+                                decoration: BoxDecoration(
+                                    color: kPrimaryLightColor,
+                                    image: DecorationImage(
+                                        image: NetworkImage(profilePic),
+                                        fit: BoxFit.cover),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(75.0)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          blurRadius: 5.0, color: Colors.black)
+                                    ])),
+                      ),
+                      Positioned(
+                        top: 100.0,
+                        left: 170.0,
+                        child: GestureDetector(
+                          child: Icon(
+                            Icons.camera_alt,
+                            size: 30,
+                            color: kPrimaryColor.withOpacity(0.5),
                           ),
-                          onPressed: () {
-                            setState(() {
-                               Navigator.of(context).pop();
-                            });
-                          },
+                          onTap: getimagefromgallery,
                         ),
                       )
                     ],
-                  )));
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          height: 50,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: kPrimaryLightColor,
+                            ),
+                          ),
+                          child: DropdownButton<String>(
+                            underline: SizedBox(width: 20),
+                            isExpanded: true,
+                            items: dept.map((String value) {
+                              return new DropdownMenuItem<String>(
+                                value: value,
+                                child: new Text(value),
+                              );
+                            }).toList(),
+                            hint: Text(_dept),
+                            onChanged: (value) {
+                              _dept = value;
+                            },
+                          ),
+                          // DropdownButton(
+                          //   isExpanded: true,
+                          //   underline: SizedBox(width: 20),
+                          //   icon: Icon(Icons.keyboard_arrow_down),
+                          //   value: _dept,
+                          //   hint: Text(_dept),
+                          //   items: dept
+                          //           ?.map((value) => DropdownMenuItem(
+                          //                 value: value,
+                          //                 child: Text(value),
+                          //               ))
+                          //           ?.toList() ??
+                          //       [],
+                          //   onChanged: (value) {
+                          //     setState(() {
+                          //       _dept = value;
+                          //       print(_dept);
+                          //     });
+                          //   },
+                          // ),
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          height: 50,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: kPrimaryLightColor,
+                            ),
+                          ),
+                          child: DropdownButton<String>(
+                            underline: SizedBox(width: 20),
+                            isExpanded: true,
+                            hint: Text(_branch),
+                            items: branch.map((String value) {
+                              return new DropdownMenuItem<String>(
+                                value: value,
+                                child: new Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              _branch = value;
+                            },
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          height: 50,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: kPrimaryLightColor,
+                            ),
+                          ),
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            underline: SizedBox(width: 20),
+                            hint: Text(_year),
+                            items: year.map((String value) {
+                              return new DropdownMenuItem<String>(
+                                value: value,
+                                child: new Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              _year = value;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 15.0),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 60),
+                    child: FlatButton(
+                      color: kPrimaryColor,
+                      child: Center(
+                        child: Text(
+                          'Submit',
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontSize: 14.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          Navigator.of(context).pop();
+                        });
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
         });
   }
 
@@ -403,7 +397,7 @@ class _AccountPageState extends State<AccountPage> {
                                 title: Text('Edit Profile'),
                                 leading: Icon(Icons.edit),
                                 onTap: () {
-                                   showReview(context, dept, branch, year);
+                                  showReview(context, dept, branch, year);
                                   // Navigator.of(context).push(
                                   //   MaterialPageRoute<Null>(
                                   //     builder: (BuildContext context) {
@@ -699,7 +693,7 @@ class _AccountPageState extends State<AccountPage> {
                           ),
                           // SizedBox(height: MediaQuery.of(context).size.height / 35),
                           Container(
-                            padding: EdgeInsets.all(20.0),
+                            padding: EdgeInsets.all(10.0),
                             child: Column(
                               children: <Widget>[
                                 Details(
@@ -730,7 +724,13 @@ class _AccountPageState extends State<AccountPage> {
                                           elevation: 5.0,
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
-                                            child: Text("Year: $_year"),
+                                            child: Row(
+                                              children: <Widget>[
+                                                Text("Year: $_year"),
+                                                SizedBox(width: 5),
+                                                Icon(Icons.edit, size: 15),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -740,7 +740,13 @@ class _AccountPageState extends State<AccountPage> {
                                         elevation: 5.0,
                                         child: Padding(
                                           padding: const EdgeInsets.all(10.0),
-                                          child: Text("Dept: $_dept"),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Text("Dept: $_dept"),
+                                              SizedBox(width: 5),
+                                              Icon(Icons.edit, size: 15),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                       Card(
@@ -749,7 +755,13 @@ class _AccountPageState extends State<AccountPage> {
                                         elevation: 5.0,
                                         child: Padding(
                                           padding: const EdgeInsets.all(10.0),
-                                          child: Text("Branch: $_branch"),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Text("Branch: $_branch"),
+                                              SizedBox(width: 5),
+                                              Icon(Icons.edit, size: 15),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],
