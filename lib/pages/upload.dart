@@ -134,14 +134,7 @@ class _UploadPageState extends State<UploadPage> {
       print(e);
     }
   }
-Future savedoc1() async {
-
-
-    // final StorageReference firebaseStorageRef =
-    //     FirebaseStorage.instance.ref().child("1");
-    // final StorageUploadTask task = firebaseStorageRef.putFile(file);
-    //  firebaseStorageRef.putData(file);
-    // StorageTaskSnapshot taskSnapshot = await task.onComplete;
+Future makefolder() async {
     var response = await Firestore.instance
         .collection("Subjects")
         .document(selectedValue)
@@ -174,11 +167,6 @@ Future savedoc1() async {
       'time': DateTime.now().toString().split('at')[0],
       'doc': preselectedValue,
     });
-    // setState(() {
-    //   uploading = false;
-    //   _clearCachedFiles();
-    // });
-    // documentFileUpload(url);
     return url;
   }
 
@@ -291,9 +279,10 @@ Future savedoc1() async {
                         searchHint: Text("Select one"),
                         onChanged: (value) {
                           setState(() {
+
                             selectedValue = value;
-                            
                             color = kPrimaryColor;
+
                             // width_dropd = 2.0;
                           });
                         },
@@ -317,9 +306,7 @@ Future savedoc1() async {
                         "Question_Paper",
                       ],
                       radioButtonValue: (value) => {
-                        setState(() {
-                          preselectedValue = value;
-                        }),
+                          preselectedValue = value,
                       },
                       selectedColor: kPrimaryColor,
                     ),
@@ -453,7 +440,7 @@ Future savedoc1() async {
                                     // uploading = true;
 
                                     //call uploading function
-                                    await savedoc1();
+                                    await makefolder();
                                     await savedoc(file, _fileName);
                                   } else {
                                     setState(() {
