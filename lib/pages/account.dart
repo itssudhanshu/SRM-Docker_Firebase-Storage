@@ -19,6 +19,7 @@ var likes;
 var regId;
 var profilePic;
 var email;
+var year;
 
 class AccountPage extends StatefulWidget {
   @override
@@ -35,7 +36,7 @@ class _AccountPageState extends State<AccountPage> {
   List<String> dept = ["B.tech.", "MBA", "Arch", "Medical"];
   List<String> branch = ["CSE", "MECH.", "SWE", "IT", "ECE", "EEE"];
   List<String> year = ["1st", "2nd", "3rd", "4th", "5th"];
-  String _dept = "Dept", _branch = "Branch", _year = "Year";
+  String _dept = "Dept", _branch = "Branch", _year;
 
   Future getimagefromgallery() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
@@ -69,9 +70,18 @@ class _AccountPageState extends State<AccountPage> {
       });
     }
   }
-
+  Future<void> update() async{
+    setState(() {
+      
+    });
+     var response = _fireStore
+          .collection('users')
+          .document(loggedInUser.email)
+          .updateData({'year': _year.toString(),'branch':_branch.toString(),'dept':_dept.toString()});
+  }
   Future<void> getCurrentUser() async {
     print('getCurrentUserCalled');
+
     try {
       final user = await _auth.currentUser();
       if (user != null) {
@@ -80,6 +90,7 @@ class _AccountPageState extends State<AccountPage> {
         });
         print('document');
         print(loggedInUser.toString());
+        
         var document = await _fireStore
             .collection('users')
             .document(loggedInUser.email)
@@ -92,12 +103,17 @@ class _AccountPageState extends State<AccountPage> {
             regId = value.data['regno'];
             profilePic = value.data['profilepic'].toString();
             profilePic = profilePic.replaceAll('~', '//');
+            _year = value.data['year'];
+            _dept = value.data['dept'];
+            _branch = value.data['branch'];
+
             _doneLoading = true;
             print(userName);
             print(uploads);
             print(likes);
             print(regId);
             print(profilePic);
+            print(_year);
           });
         });
         await storage.write(key: 'profileData', value: 'true');
@@ -107,6 +123,10 @@ class _AccountPageState extends State<AccountPage> {
         await storage.write(key: 'likes', value: likes);
         await storage.write(key: 'regid', value: regId);
         await storage.write(key: 'profilepic', value: profilePic);
+        await storage.write(key: 'year', value: _year);
+        await storage.write(key: 'dept', value: _dept);
+        await storage.write(key: 'branch', value: _branch);
+
       }
     } catch (e) {
       print(e);
@@ -125,6 +145,7 @@ class _AccountPageState extends State<AccountPage> {
         likes = storage.read(key: 'likes');
         regId = storage.read(key: 'regid');
         profilePic = storage.read(key: 'profilepic');
+       
         _doneLoading = true;
       });
     }
@@ -247,26 +268,6 @@ class _AccountPageState extends State<AccountPage> {
                               _dept = value;
                             },
                           ),
-                          // DropdownButton(
-                          //   isExpanded: true,
-                          //   underline: SizedBox(width: 20),
-                          //   icon: Icon(Icons.keyboard_arrow_down),
-                          //   value: _dept,
-                          //   hint: Text(_dept),
-                          //   items: dept
-                          //           ?.map((value) => DropdownMenuItem(
-                          //                 value: value,
-                          //                 child: Text(value),
-                          //               ))
-                          //           ?.toList() ??
-                          //       [],
-                          //   onChanged: (value) {
-                          //     setState(() {
-                          //       _dept = value;
-                          //       print(_dept);
-                          //     });
-                          //   },
-                          // ),
                         ),
                         SizedBox(height: 10),
                         Container(
@@ -346,6 +347,7 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                       onPressed: () {
                         setState(() {
+                          update();
                           Navigator.of(context).pop();
                         });
                       },
@@ -727,8 +729,6 @@ class _AccountPageState extends State<AccountPage> {
                                             child: Row(
                                               children: <Widget>[
                                                 Text("Year: $_year"),
-                                                SizedBox(width: 5),
-                                                Icon(Icons.edit, size: 15),
                                               ],
                                             ),
                                           ),
@@ -743,8 +743,6 @@ class _AccountPageState extends State<AccountPage> {
                                           child: Row(
                                             children: <Widget>[
                                               Text("Dept: $_dept"),
-                                              SizedBox(width: 5),
-                                              Icon(Icons.edit, size: 15),
                                             ],
                                           ),
                                         ),
@@ -758,8 +756,6 @@ class _AccountPageState extends State<AccountPage> {
                                           child: Row(
                                             children: <Widget>[
                                               Text("Branch: $_branch"),
-                                              SizedBox(width: 5),
-                                              Icon(Icons.edit, size: 15),
                                             ],
                                           ),
                                         ),
