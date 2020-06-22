@@ -269,7 +269,7 @@ class _AccountPageState extends State<AccountPage> {
                                 child: new Text(value),
                               );
                             }).toList(),
-                            hint: Text(_dept),
+                            hint: Text(_dept != null ? _dept : "Select Dept"),
                             onChanged: (value) {
                               _dept = value;
                             },
@@ -292,7 +292,7 @@ class _AccountPageState extends State<AccountPage> {
                           child: DropdownButton<String>(
                             underline: SizedBox(width: 20),
                             isExpanded: true,
-                            hint: Text(_branch),
+                            hint: Text(_branch != null ? _branch : "Select Branch"),
                             items: branch.map((String value) {
                               return new DropdownMenuItem<String>(
                                 value: value,
@@ -321,7 +321,7 @@ class _AccountPageState extends State<AccountPage> {
                           child: DropdownButton<String>(
                             isExpanded: true,
                             underline: SizedBox(width: 20),
-                            hint: Text(_year),
+                            hint: Text(_year != null ? _year : "Select Year"),
                             items: year.map((String value) {
                               return new DropdownMenuItem<String>(
                                 value: value,
