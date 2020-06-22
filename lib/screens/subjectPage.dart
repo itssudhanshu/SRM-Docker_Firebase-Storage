@@ -114,9 +114,7 @@ class _SubjectPageState extends State<SubjectPage> {
                               ),
                             ],
                           ),
-                          SizedBox(
-                            height: 7,
-                          ),
+                          SizedBox(height: 7),
                           Container(
                             child: Text(
                               title,
