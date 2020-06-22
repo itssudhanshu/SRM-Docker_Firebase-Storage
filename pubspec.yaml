@@ -45,6 +45,10 @@ dependencies:
   # pdf_render: ^0.57.2
   # native_pdf_renderer: ^2.3.2
   http: ^0.12.1
+  pdftron_flutter:
+    git:
+     url: git://github.com/PDFTron/pdftron-flutter.git
+  permission_handler: '3.0.1'
 
 dev_dependencies:
   flutter_test:
