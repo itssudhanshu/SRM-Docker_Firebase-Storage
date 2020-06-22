@@ -29,7 +29,6 @@ class _SubjectPageState extends State<SubjectPage> {
   bool isSearchEmpty = true;
   Size size;
   var data;
-
   String _version = 'Unknown';
 
   Future<void> getFilteredList() async {}
