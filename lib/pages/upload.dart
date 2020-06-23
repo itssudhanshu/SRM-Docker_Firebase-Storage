@@ -163,15 +163,19 @@ class _UploadPageState extends State<UploadPage> {
       'doc': preSelectedDoc,
     });
     var temp;
-    await _fireStore.collection('users').document(loggedInUser.email).get().
-    then((value){
+    await _fireStore
+        .collection('users')
+        .document(loggedInUser.email)
+        .get()
+        .then((value) {
       temp = value.data['uploads'];
     });
     var uploads = int.parse(temp);
-    uploads = uploads + 1 ;
-    await _fireStore.collection('users').document(loggedInUser.email).updateData({
-      'uploads' : uploads.toString()
-    });
+    uploads = uploads + 1;
+    await _fireStore
+        .collection('users')
+        .document(loggedInUser.email)
+        .updateData({'uploads': uploads.toString()});
     return url;
   }
 
@@ -301,10 +305,12 @@ class _UploadPageState extends State<UploadPage> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.only(left: 20, right: 20),
-
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    
                     ///change radiobutton and use [preSelectedDoc] as the changed [value]
                     child: CustomRadioButton(
+                      autoWidth: false,
+                      width: 150,
                       enableShape: true,
                       elevation: 5.0,
                       buttonColor: Theme.of(context).canvasColor,
