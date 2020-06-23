@@ -18,6 +18,7 @@ class SubjectPage extends StatefulWidget {
 }
 
 class _SubjectPageState extends State<SubjectPage> {
+
   var _searchedText;
   var subject;
   _SubjectPageState(this.subject);
@@ -36,14 +37,15 @@ class _SubjectPageState extends State<SubjectPage> {
   Widget _cardWidget(title, uploader, time, url) {
     url = url.toString().replaceAll('~', '//');
     return GestureDetector(
-      onTap: () async {
+      onLongPress: () async {
+        print(url);
         if (await canLaunch(url)) {
           await launch(url);
         } else {
           throw 'Could not launch $url';
         }
       },
-      onLongPress: () {
+      onTap: () {
         if (Platform.isIOS) {
           // Open the document for iOS, no need for permission
           showViewer(url);
@@ -75,59 +77,122 @@ class _SubjectPageState extends State<SubjectPage> {
               ),
             ),
             Positioned.fill(
-              child: Row(
-                  // fit: StackFit.expand,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(width: size.width * 0.02),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.folder,
-                          // size: 50,
-                          color: kPrimaryColor,
+              child: url.contains("jpg") || url.contains("png")
+                  ? Row(children: <Widget>[
+                      Expanded(
+                        flex: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.network(url),
                         ),
                       ),
-                    ),
-                    SizedBox(width: size.width * 0.05),
-                    Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                uploader,
-                                style: TextStyle(color: kPrimaryColor),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
-                                child: Text(
-                                  time.toString().split(' ')[0],
-                                  style: TextStyle(color: Colors.grey[700]),
+                      Expanded(
+                        flex: 7,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Flexible(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Text(
+                                          uploader,
+                                          style:
+                                              TextStyle(color: kPrimaryColor),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 12, 0),
+                                          child: Text(
+                                            time.toString().split(' ')[0],
+                                            style: TextStyle(
+                                                color: Colors.grey[700]),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    // SizedBox(height: 7),
+                                    Container(
+                                      child: Text(
+                                        title,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          // fontWeight: FontWeight.bold,
+                                          fontSize: 17,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(height: 7),
-                          Container(
-                            child: Text(
-                              title,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                // fontWeight: FontWeight.bold,
-                                fontSize: 17,
+                        ),
+                      ),
+                    ])
+                  : 
+                  Row(
+                      // fit: StackFit.expand,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                          SizedBox(width: size.width * 0.02),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              child: Icon(
+                                Icons.folder,
+                                // size: 50,
+                                color: kPrimaryColor,
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ]),
+                          SizedBox(width: size.width * 0.05),
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      uploader,
+                                      style: TextStyle(color: kPrimaryColor),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 0, 12, 0),
+                                      child: Text(
+                                        time.toString().split(' ')[0],
+                                        style:
+                                            TextStyle(color: Colors.grey[700]),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 7),
+                                Container(
+                                  child: Text(
+                                    title,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      // fontWeight: FontWeight.bold,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ]),
             ),
           ],
         ),
@@ -179,7 +244,7 @@ class _SubjectPageState extends State<SubjectPage> {
     //  config.disabledElements = disabledElements;
     //  config.disabledTools = disabledTools;
     // config.customHeaders = {'headerName': 'headerValue'};
-    //  PdftronFlutter.openDocument(_document, config: config);
+    //  PdftronFlutter.openDocument(url, config: config);
 
     // Open document without a config file which will have all functionality enabled.
     PdftronFlutter.openDocument(url);
