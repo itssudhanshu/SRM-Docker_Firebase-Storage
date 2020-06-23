@@ -29,7 +29,9 @@ class _SubjectPageState extends State<SubjectPage> {
   bool isSearchEmpty = true;
   Size size;
   var data;
+
   String _version = 'Unknown';
+  String preview;
 
   Future<void> getFilteredList() async {}
 
@@ -42,6 +44,7 @@ class _SubjectPageState extends State<SubjectPage> {
         } else {
           throw 'Could not launch $url';
         }
+
       },
       onLongPress: () {
         if (Platform.isIOS) {
@@ -154,8 +157,7 @@ class _SubjectPageState extends State<SubjectPage> {
     String version;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      PdftronFlutter.initialize(
-          "Insert commercial license key here after purchase");
+      PdftronFlutter.initialize("");
       version = await PdftronFlutter.version;
     } on PlatformException {
       version = 'Failed to get platform version.';
@@ -175,14 +177,14 @@ class _SubjectPageState extends State<SubjectPage> {
     // Shows how to disable functionality. Uncomment to configure your viewer with a Config object.
     //  var disabledElements = [Buttons.shareButton, Buttons.searchButton];
     //  var disabledTools = [Tools.annotationCreateLine, Tools.annotationCreateRectangle];
-    //  var config = Config();
+    var config = Config();
     //  config.disabledElements = disabledElements;
     //  config.disabledTools = disabledTools;
     // config.customHeaders = {'headerName': 'headerValue'};
     //  PdftronFlutter.openDocument(_document, config: config);
 
     // Open document without a config file which will have all functionality enabled.
-    PdftronFlutter.openDocument(url);
+    PdftronFlutter.openDocument(url, config: config);
   }
 
   bool granted(PermissionStatus status) {
