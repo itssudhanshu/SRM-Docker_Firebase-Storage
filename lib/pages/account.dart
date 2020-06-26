@@ -463,7 +463,8 @@ class _AccountPageState extends State<AccountPage> {
                                             key: 'isLogged', value: 'false');
                                         await storage.write(
                                             key: 'profileData', value: 'false');
-                                      }),
+                                      }
+                                      ),
                                   ListTile(
                                     leading: Icon(Icons.help),
                                     onTap: () async {

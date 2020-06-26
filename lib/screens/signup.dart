@@ -18,7 +18,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _fireStore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
-  // List faculty = ["faculty","FACULTY"];
   bool isSpinner = false;
   String _name;
   String _reg;
