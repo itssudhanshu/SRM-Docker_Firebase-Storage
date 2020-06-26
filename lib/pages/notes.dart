@@ -10,17 +10,17 @@ import 'package:srm_notes/components/models/loading.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../constants.dart';
 
-void main() => runApp(Main());
-  var sub;
-class Main extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-            title: 'notes',
-            home: SubjectPage(sub)
-          );
-  }
-}
+// void main() => runApp(Main());
+//   var sub;
+// class Main extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//             title: 'notes',
+//             home: SubjectPage(sub)
+//           );
+//   }
+// }
 
 class SubjectPage extends StatefulWidget {
   var sub;
