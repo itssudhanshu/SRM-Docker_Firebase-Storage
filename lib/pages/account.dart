@@ -105,8 +105,6 @@ class _AccountPageState extends State<AccountPage> {
           loggedInUser = user;
         });
         print('document');
-        print(loggedInUser.toString());
-        
         var document = await _fireStore
             .collection('users')
             .document(loggedInUser.email)
@@ -115,6 +113,7 @@ class _AccountPageState extends State<AccountPage> {
           setState(() {
             userName = value.data['name'];
             uploads = value.data['uploads'];
+            print(uploads);
             likes = value.data['likes'];
             regId = value.data['regno'];
             profilePic = value.data['profilepic'].toString();
@@ -124,13 +123,14 @@ class _AccountPageState extends State<AccountPage> {
             _branch = value.data['branch'];
             rank = value.data['rank'];
             _doneLoading = true;
+            print('still working');
           });
         });
+        await storage.write(key: 'uploads', value: '$uploads');
         await storage.write(key: 'rank', value: rank);
         await storage.write(key: 'profileData', value: 'true');
         await storage.write(key: 'email', value: loggedInUser.email);
         await storage.write(key: 'username', value: userName);
-        await storage.write(key: 'uploads', value: uploads);
         await storage.write(key: 'likes', value: likes);
         await storage.write(key: 'regid', value: regId);
         await storage.write(key: 'profilepic', value: profilePic);
@@ -153,7 +153,7 @@ class _AccountPageState extends State<AccountPage> {
         rank = storage.read(key: 'rank');
         email = storage.read(key: 'email');
         userName = storage.read(key: 'username');
-        uploads = storage.read(key: 'uploads');
+        uploads = storage.read(key: 'uploads').toString();
         likes = storage.read(key: 'likes');
         regId = storage.read(key: 'regid');
         profilePic = storage.read(key: 'profilepic');
