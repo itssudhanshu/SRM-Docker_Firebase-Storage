@@ -318,18 +318,18 @@ class _SubjectPageState extends State<SubjectPage> {
                     border: InputBorder.none,
                   ),
                 ),
-          backgroundColor: kPrimaryColor,
-          leading: !isSearchEmpty
-              ? IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  color: Colors.white,
-                  onPressed: () {
-                    setState(() {
-                      _searchedText = null;
-                      this.isSearchEmpty = !this.isSearchEmpty;
-                    });
-                  })
-              : null,
+        backgroundColor: kPrimaryColor,
+        leading: !isSearchEmpty
+            ? IconButton(
+                icon: Icon(Icons.arrow_back),
+                color: Colors.white,
+                onPressed: () {
+                  setState(() {
+                    _searchedText = null;
+                    this.isSearchEmpty = !this.isSearchEmpty;
+                  });
+                })
+         : null,
           bottom: new TabBar(
             tabs: <Widget>[
               new Tab(
@@ -341,7 +341,6 @@ class _SubjectPageState extends State<SubjectPage> {
             ],
           ),
         ),
-
         body: new TabBarView(
           children: <Widget>[
             new Container(
@@ -535,12 +534,18 @@ class CustomCardShapePainter extends CustomPainter {
       ..lineTo(size.width - 1.5 * radius, 0)
       ..quadraticBezierTo(-radius, 2 * radius, 0, size.height)
       ..close();
-
     canvas.drawPath(path, paint);
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
+  }
+
+  Widget reported(){
+
+  }
+  void report(url){
+
   }
 }
