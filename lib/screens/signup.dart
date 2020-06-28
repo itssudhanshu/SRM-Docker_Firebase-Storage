@@ -18,6 +18,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _fireStore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
+  // List faculty = ["faculty","FACULTY"];
   bool isSpinner = false;
   String _name;
   String _reg;
@@ -48,7 +49,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     var response = await _fireStore
         .collection('users')
         .document('$_email')
-        .setData({'name': _name, 'email': _email, 'regno': _reg, 'uploads': '0', 'likes': '0' , 'rank' : 'Checking'});
+        .setData({'name': _name, 'email': _email, 'regno': _reg, 'uploads': 0 , 'likes': '0' , 'rank' : 'Checking', 'year' :'N/A' , 'dept' : "N/A" , 'branch' : 'N/A'});
   }
 
   void _toggle() {

@@ -128,7 +128,7 @@ class _LeaderboardState extends State<Leaderboard>
                             ),
                             Container(
                               child: Text(
-                                uploads,
+                                '$uploads',
                                 style: TextStyle(
                                   color: kPrimaryColor,
                                   fontSize: 20.0,
@@ -176,6 +176,7 @@ class _LeaderboardState extends State<Leaderboard>
       ),
     );
   }
+
   @override
   void initState() {
     super.initState();
@@ -259,7 +260,7 @@ class _LeaderboardState extends State<Leaderboard>
                           'rank' : rank.toString()
                         });
                         final regid = user.data['regno'];
-                        final uploads = user.data['uploads'];
+                        var uploads = user.data['uploads'];
                         final mw = cardWidget(name: name,regno: regid,uploads: uploads, rank :rank );
                         wid.add(mw);
                       }

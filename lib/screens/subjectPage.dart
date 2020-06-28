@@ -32,7 +32,6 @@ class _SubjectPageState extends State<SubjectPage> {
   var data;
 
   String _version = 'Unknown';
-  String preview;
 
   Future<void> share(value) async {
     await FlutterShare.share(
@@ -326,7 +325,8 @@ class _SubjectPageState extends State<SubjectPage> {
     String version;
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      PdftronFlutter.initialize("");
+      PdftronFlutter.initialize(
+          "Insert commercial license key here after purchase");
       version = await PdftronFlutter.version;
     } on PlatformException {
       version = 'Failed to get platform version.';
@@ -346,14 +346,14 @@ class _SubjectPageState extends State<SubjectPage> {
     // Shows how to disable functionality. Uncomment to configure your viewer with a Config object.
     //  var disabledElements = [Buttons.shareButton, Buttons.searchButton];
     //  var disabledTools = [Tools.annotationCreateLine, Tools.annotationCreateRectangle];
-    var config = Config();
+    //  var config = Config();
     //  config.disabledElements = disabledElements;
     //  config.disabledTools = disabledTools;
     // config.customHeaders = {'headerName': 'headerValue'};
-    //  PdftronFlutter.openDocument(url, config: config);
+    //  PdftronFlutter.openDocument(_document, config: config);
 
     // Open document without a config file which will have all functionality enabled.
-    PdftronFlutter.openDocument(url, config: config);
+    PdftronFlutter.openDocument(url);
   }
 
   bool granted(PermissionStatus status) {
@@ -389,30 +389,19 @@ class _SubjectPageState extends State<SubjectPage> {
                     border: InputBorder.none,
                   ),
                 ),
-          backgroundColor: kPrimaryColor,
-          leading: !isSearchEmpty
-              ? IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  color: Colors.white,
-                  onPressed: () {
-                    setState(() {
-                      _searchedText = null;
-                      this.isSearchEmpty = !this.isSearchEmpty;
-                    });
-                  })
-              : null,
-          actions: <Widget>[
-            IconButton(
-                icon: isSearchEmpty ? Icon(Icons.search) : Icon(Icons.cancel),
-                color: isSearchEmpty ? Colors.white : Colors.white,
+        backgroundColor: kPrimaryColor,
+        leading: !isSearchEmpty
+            ? IconButton(
+                icon: Icon(Icons.arrow_back),
+                color: Colors.white,
                 onPressed: () {
                   setState(() {
-                    cancelSearch();
                     _searchedText = null;
                     this.isSearchEmpty = !this.isSearchEmpty;
                   });
                 })
-          ],
+         : null,
+
           bottom: new TabBar(
             tabs: <Widget>[
               new Tab(
@@ -423,7 +412,8 @@ class _SubjectPageState extends State<SubjectPage> {
               ),
             ],
           ),
-        ),
+              ),
+        
 
         body: new TabBarView(
           children: <Widget>[
