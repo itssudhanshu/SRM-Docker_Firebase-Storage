@@ -401,7 +401,6 @@ class _SubjectPageState extends State<SubjectPage> {
                   });
                 })
          : null,
-
           bottom: new TabBar(
             tabs: <Widget>[
               new Tab(
@@ -412,9 +411,7 @@ class _SubjectPageState extends State<SubjectPage> {
               ),
             ],
           ),
-              ),
-        
-
+        ),
         body: new TabBarView(
           children: <Widget>[
             new Container(
@@ -608,12 +605,18 @@ class CustomCardShapePainter extends CustomPainter {
       ..lineTo(size.width - 1.5 * radius, 0)
       ..quadraticBezierTo(-radius, 2 * radius, 0, size.height)
       ..close();
-
     canvas.drawPath(path, paint);
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
+  }
+
+  Widget reported(){
+
+  }
+  void report(url){
+
   }
 }
