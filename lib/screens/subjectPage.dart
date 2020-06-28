@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:pdftron_flutter/pdftron_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:srm_notes/components/models/loading.dart';
@@ -18,7 +19,6 @@ class SubjectPage extends StatefulWidget {
 }
 
 class _SubjectPageState extends State<SubjectPage> {
-
   var _searchedText;
   var subject;
   _SubjectPageState(this.subject);
@@ -34,30 +34,38 @@ class _SubjectPageState extends State<SubjectPage> {
   String _version = 'Unknown';
   String preview;
 
+  Future<void> share(value) async {
+    await FlutterShare.share(
+        title: 'Share',
+        text: 'See what i found on DocBox ',
+        linkUrl: value,
+        chooserTitle: 'Share your doc.');
+  }
+
   Future<void> getFilteredList() async {}
 
   Widget _cardWidget(title, uploader, time, url) {
     url = url.toString().replaceAll('~', '//');
     return GestureDetector(
-      onLongPress: () async {
-        print(url);
-        if (await canLaunch(url)) {
-          await launch(url);
-        } else {
-          throw 'Could not launch $url';
-        }
-      },
-      onTap: () {
-        if (Platform.isIOS) {
-          // Open the document for iOS, no need for permission
-          showViewer(url);
-        } else {
-          // Request for permissions for android before opening document
-          launchWithPermission(url);
-        }
-      },
+      // onLongPress: () async {
+      //   print(url);
+      //   if (await canLaunch(url)) {
+      //     await launch(url);
+      //   } else {
+      //     throw 'Could not launch $url';
+      //   }
+      // },
+      // onTap: () {
+      //   if (Platform.isIOS) {
+      //     // Open the document for iOS, no need for permission
+      //     showViewer(url);
+      //   } else {
+      //     // Request for permissions for android before opening document
+      //     launchWithPermission(url);
+      //   }
+      // },
       child: Container(
-        height: 70,
+        height: 200,
         margin: EdgeInsets.all(5.0),
         decoration: BoxDecoration(
           color: kPrimaryLightColor,
@@ -80,16 +88,39 @@ class _SubjectPageState extends State<SubjectPage> {
             ),
             Positioned.fill(
               child: url.contains("jpg") || url.contains("png")
-                  ? Row(children: <Widget>[
+                  ? Column(children: <Widget>[
                       Expanded(
-                        flex: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Image.network(url),
+                        flex: 6,
+                        child: GestureDetector(
+                          onLongPress: () async {
+                            print(url);
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              throw 'Could not launch $url';
+                            }
+                          },
+                          onTap: () {
+                            if (Platform.isIOS) {
+                              // Open the document for iOS, no need for permission
+                              showViewer(url);
+                            } else {
+                              // Request for permissions for android before opening document
+                              launchWithPermission(url);
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.network(
+                              url,
+                              fit: BoxFit.cover,
+                              width: size.width,
+                            ),
+                          ),
                         ),
                       ),
                       Expanded(
-                        flex: 7,
+                        flex: 4,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
@@ -120,15 +151,40 @@ class _SubjectPageState extends State<SubjectPage> {
                                       ],
                                     ),
                                     // SizedBox(height: 7),
-                                    Container(
-                                      child: Text(
-                                        title,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          // fontWeight: FontWeight.bold,
-                                          fontSize: 17,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          flex: 6,
+                                          child: Container(
+                                            child: Text(
+                                              title,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                // fontWeight: FontWeight.bold,
+                                                fontSize: 17,
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: IconButton(
+                                              icon: Icon(Icons.report),
+                                              onPressed: () {
+                                                share(url);
+                                              }),
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: IconButton(
+                                              icon: Icon(Icons.share),
+                                              onPressed: () {
+                                                share(url);
+                                              }),
+                                        )
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -138,70 +194,118 @@ class _SubjectPageState extends State<SubjectPage> {
                         ),
                       ),
                     ])
-                  : 
-                  Row(
-                      // fit: StackFit.expand,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                          SizedBox(width: size.width * 0.02),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: CircleAvatar(
-                              backgroundColor: Colors.white,
-                              child: Icon(
-                                Icons.folder,
-                                // size: 50,
-                                color: kPrimaryColor,
-                              ),
+                  : Column(children: <Widget>[
+                      Expanded(
+                        flex: 6,
+                        child: GestureDetector(
+                          onLongPress: () async {
+                            print(url);
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              throw 'Could not launch $url';
+                            }
+                          },
+                          onTap: () {
+                            if (Platform.isIOS) {
+                              // Open the document for iOS, no need for permission
+                              showViewer(url);
+                            } else {
+                              // Request for permissions for android before opening document
+                              launchWithPermission(url);
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.network(
+                              url,
+                              fit: BoxFit.cover,
+                              width: size.width,
                             ),
                           ),
-                          SizedBox(width: size.width * 0.05),
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Flexible(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    Text(
-                                      uploader,
-                                      style: TextStyle(color: kPrimaryColor),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Text(
+                                          uploader,
+                                          style:
+                                              TextStyle(color: kPrimaryColor),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              0, 0, 12, 0),
+                                          child: Text(
+                                            time.toString().split(' ')[0],
+                                            style: TextStyle(
+                                                color: Colors.grey[700]),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 12, 0),
-                                      child: Text(
-                                        time.toString().split(' ')[0],
-                                        style:
-                                            TextStyle(color: Colors.grey[700]),
-                                      ),
+                                    // SizedBox(height: 7),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          flex: 6,
+                                          child: Container(
+                                            child: Text(
+                                              title,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                // fontWeight: FontWeight.bold,
+                                                fontSize: 17,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: IconButton(
+                                              icon: Icon(Icons.report),
+                                              onPressed: () {
+                                                share(url);
+                                              }),
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: IconButton(
+                                              icon: Icon(Icons.share),
+                                              onPressed: () {
+                                                share(url);
+                                              }),
+                                        )
+                                      ],
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 7),
-                                Container(
-                                  child: Text(
-                                    title,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      // fontWeight: FontWeight.bold,
-                                      fontSize: 17,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ]),
+                        ),
+                      ),
+                    ]),
             ),
           ],
         ),
       ),
     );
   }
-
 
   @override
   void initState() {
@@ -260,9 +364,8 @@ class _SubjectPageState extends State<SubjectPage> {
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
     return DefaultTabController(
-      
       length: 2,
-          child: Scaffold(
+      child: Scaffold(
         // extendBodyBehindAppBar: true,
         appBar: AppBar(
           centerTitle: true,
@@ -310,7 +413,7 @@ class _SubjectPageState extends State<SubjectPage> {
                   });
                 })
           ],
-           bottom: new TabBar(
+          bottom: new TabBar(
             tabs: <Widget>[
               new Tab(
                 text: "Notes",
@@ -325,140 +428,144 @@ class _SubjectPageState extends State<SubjectPage> {
         body: new TabBarView(
           children: <Widget>[
             new Container(
-          height: size.height,
-          width: double.infinity,
-          child: Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              Positioned(
-                top: 0,
-                left: 0,
-                child: Image.asset(
-                  "assets/images/signup_top.png",
-                  width: size.width * 0.35,
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                child: Image.asset(
-                  "assets/images/main_bottom.png",
-                  width: size.width * 0.25,
-                ),
-              ),
-              Container(
-                // extendBodyBehindAppBar: true,
-
-                child: Column(
-                  // onChanged: (text) => _searchUser(text),
-                  children: <Widget>[
-                    StreamBuilder<QuerySnapshot>(
-                      stream: _fireStore.collection(subject).snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) {
-                          return Expanded(child: Center(child: Loading()));
-                        }
-                        var doc = snapshot.data;
-                        final messages = snapshot.data.documents.reversed;
-                        List<Widget> wid = [];
-
-                        for (var message in messages) {
-                          final name = message.data['name'];
-                          final uploader = message.data['sender'];
-                          final url = message.data['url'];
-                          final time = message.data['time'];
-                          final doc = message.data['doc'];
-                          final mw = _cardWidget(name, uploader, time, url);
-
-                          if ((_searchedText == null ||
-                              name.toLowerCase().contains(_searchedText) ) && doc == "Notes") {
-                            wid.add(mw);
-                          }
-                        }
-                        return Expanded(
-                          child: ListView(
-                            padding: EdgeInsets.all(10.0),
-                            children: wid,
-                          ),
-                        );
-                      },
+              height: size.height,
+              width: double.infinity,
+              child: Stack(
+                alignment: Alignment.center,
+                children: <Widget>[
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    child: Image.asset(
+                      "assets/images/signup_top.png",
+                      width: size.width * 0.35,
                     ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    child: Image.asset(
+                      "assets/images/main_bottom.png",
+                      width: size.width * 0.25,
+                    ),
+                  ),
+                  Container(
+                    // extendBodyBehindAppBar: true,
 
+                    child: Column(
+                      // onChanged: (text) => _searchUser(text),
+                      children: <Widget>[
+                        StreamBuilder<QuerySnapshot>(
+                          stream: _fireStore.collection(subject).snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.data == null) {
+                              return Expanded(child: Center(child: Loading()));
+                            }
+                            var doc = snapshot.data;
+                            final messages = snapshot.data.documents.reversed;
+                            List<Widget> wid = [];
+
+                            for (var message in messages) {
+                              final name = message.data['name'];
+                              final uploader = message.data['sender'];
+                              final url = message.data['url'];
+                              final time = message.data['time'];
+                              final doc = message.data['doc'];
+                              final mw = _cardWidget(name, uploader, time, url);
+
+                              if ((_searchedText == null ||
+                                      name
+                                          .toLowerCase()
+                                          .contains(_searchedText)) &&
+                                  doc == "Notes") {
+                                wid.add(mw);
+                              }
+                            }
+                            return Expanded(
+                              child: ListView(
+                                padding: EdgeInsets.all(10.0),
+                                children: wid,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
             new Container(
-          height: size.height,
-          width: double.infinity,
-          child: Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              Positioned(
-                top: 0,
-                left: 0,
-                child: Image.asset(
-                  "assets/images/signup_top.png",
-                  width: size.width * 0.35,
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                child: Image.asset(
-                  "assets/images/main_bottom.png",
-                  width: size.width * 0.25,
-                ),
-              ),
-              Container(
-                // extendBodyBehindAppBar: true,
-
-                child: Column(
-                  // onChanged: (text) => _searchUser(text),
-                  children: <Widget>[
-                    StreamBuilder<QuerySnapshot>(
-                      stream: _fireStore.collection(subject).snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.data == null) {
-                          return Expanded(child: Center(child: Loading()));
-                        }
-                        var doc = snapshot.data;
-                        final messages = snapshot.data.documents.reversed;
-                        List<Widget> wid = [];
-
-                        for (var message in messages) {
-                          final name = message.data['name'];
-                          final uploader = message.data['sender'];
-                          final url = message.data['url'];
-                          final time = message.data['time'];
-                          final doc = message.data['doc'];
-
-                          final mw = _cardWidget(name, uploader, time, url);
-                          if ((_searchedText == null ||
-                              name.toLowerCase().contains(_searchedText)) && doc == "Question_Paper") {
-                            wid.add(mw);
-                          }
-                        }
-                        return Expanded(
-                          child: ListView(
-                            padding: EdgeInsets.all(10.0),
-                            children: wid,
-                          ),
-                        );
-                      },
+              height: size.height,
+              width: double.infinity,
+              child: Stack(
+                alignment: Alignment.center,
+                children: <Widget>[
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    child: Image.asset(
+                      "assets/images/signup_top.png",
+                      width: size.width * 0.35,
                     ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    child: Image.asset(
+                      "assets/images/main_bottom.png",
+                      width: size.width * 0.25,
+                    ),
+                  ),
+                  Container(
+                    // extendBodyBehindAppBar: true,
 
+                    child: Column(
+                      // onChanged: (text) => _searchUser(text),
+                      children: <Widget>[
+                        StreamBuilder<QuerySnapshot>(
+                          stream: _fireStore.collection(subject).snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.data == null) {
+                              return Expanded(child: Center(child: Loading()));
+                            }
+                            var doc = snapshot.data;
+                            final messages = snapshot.data.documents.reversed;
+                            List<Widget> wid = [];
+
+                            for (var message in messages) {
+                              final name = message.data['name'];
+                              final uploader = message.data['sender'];
+                              final url = message.data['url'];
+                              final time = message.data['time'];
+                              final doc = message.data['doc'];
+
+                              final mw = _cardWidget(name, uploader, time, url);
+                              if ((_searchedText == null ||
+                                      name
+                                          .toLowerCase()
+                                          .contains(_searchedText)) &&
+                                  doc == "Question_Paper") {
+                                wid.add(mw);
+                              }
+                            }
+                            return Expanded(
+                              child: ListView(
+                                padding: EdgeInsets.all(10.0),
+                                children: wid,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
-              ),
+      ),
     );
   }
 
