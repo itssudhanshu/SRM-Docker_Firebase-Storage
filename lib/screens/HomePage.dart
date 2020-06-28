@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
       // extendBodyBehindAppBar: true,
       appBar: AppBar(
         centerTitle: true,
-        elevation: 0,
+        elevation: 5,
         title: isSearchEmpty
             ? Text("Home", style: TextStyle(color: Colors.white))
             : TextField(

@@ -143,7 +143,7 @@ class _UploadPageState extends State<UploadPage> {
     print(name);
 
     final StorageReference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child(_fileName);
+        FirebaseStorage.instance.ref().child(selectedSub+'/'+preSelectedDoc+'/'+_fileName);
     final StorageUploadTask task = firebaseStorageRef.putFile(file);
     //  firebaseStorageRef.putData(file);
     StorageTaskSnapshot taskSnapshot = await task.onComplete;

@@ -1,12 +1,9 @@
-import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_share/flutter_share.dart';
-import 'package:pdftron_flutter/pdftron_flutter.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:srm_notes/components/models/loading.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../constants.dart';
@@ -30,8 +27,6 @@ class _SubjectPageState extends State<SubjectPage> {
   bool isSearchEmpty = true;
   Size size;
   var data;
-
-  String _version = 'Unknown';
 
   Future<void> share(value) async {
     await FlutterShare.share(
@@ -91,7 +86,7 @@ class _SubjectPageState extends State<SubjectPage> {
                       Expanded(
                         flex: 6,
                         child: GestureDetector(
-                          onLongPress: () async {
+                          onTap: () async {
                             print(url);
                             if (await canLaunch(url)) {
                               await launch(url);
@@ -99,15 +94,7 @@ class _SubjectPageState extends State<SubjectPage> {
                               throw 'Could not launch $url';
                             }
                           },
-                          onTap: () {
-                            if (Platform.isIOS) {
-                              // Open the document for iOS, no need for permission
-                              showViewer(url);
-                            } else {
-                              // Request for permissions for android before opening document
-                              launchWithPermission(url);
-                            }
-                          },
+                         
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Image.network(
@@ -197,21 +184,12 @@ class _SubjectPageState extends State<SubjectPage> {
                       Expanded(
                         flex: 6,
                         child: GestureDetector(
-                          onLongPress: () async {
+                          onTap: () async {
                             print(url);
                             if (await canLaunch(url)) {
                               await launch(url);
                             } else {
                               throw 'Could not launch $url';
-                            }
-                          },
-                          onTap: () {
-                            if (Platform.isIOS) {
-                              // Open the document for iOS, no need for permission
-                              showViewer(url);
-                            } else {
-                              // Request for permissions for android before opening document
-                              launchWithPermission(url);
                             }
                           },
                           child: Padding(
@@ -308,56 +286,7 @@ class _SubjectPageState extends State<SubjectPage> {
 
   @override
   void initState() {
-    initPlatformState();
     super.initState();
-  }
-
-  Future<void> launchWithPermission(String url) async {
-    Map<PermissionGroup, PermissionStatus> permissions =
-        await PermissionHandler().requestPermissions([PermissionGroup.storage]);
-    if (granted(permissions[PermissionGroup.storage])) {
-      showViewer(url);
-    }
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String version;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      PdftronFlutter.initialize(
-          "Insert commercial license key here after purchase");
-      version = await PdftronFlutter.version;
-    } on PlatformException {
-      version = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _version = version;
-    });
-  }
-
-  void showViewer(String url) {
-    // Shows how to disable functionality. Uncomment to configure your viewer with a Config object.
-    //  var disabledElements = [Buttons.shareButton, Buttons.searchButton];
-    //  var disabledTools = [Tools.annotationCreateLine, Tools.annotationCreateRectangle];
-    //  var config = Config();
-    //  config.disabledElements = disabledElements;
-    //  config.disabledTools = disabledTools;
-    // config.customHeaders = {'headerName': 'headerValue'};
-    //  PdftronFlutter.openDocument(_document, config: config);
-
-    // Open document without a config file which will have all functionality enabled.
-    PdftronFlutter.openDocument(url);
-  }
-
-  bool granted(PermissionStatus status) {
-    return status == PermissionStatus.granted;
   }
 
   @override
@@ -369,7 +298,7 @@ class _SubjectPageState extends State<SubjectPage> {
         // extendBodyBehindAppBar: true,
         appBar: AppBar(
           centerTitle: true,
-          elevation: 0,
+          elevation: 5,
           title: isSearchEmpty
               ? Text("$subject", style: TextStyle(color: Colors.white))
               : TextField(
@@ -389,19 +318,18 @@ class _SubjectPageState extends State<SubjectPage> {
                     border: InputBorder.none,
                   ),
                 ),
-        backgroundColor: kPrimaryColor,
-        leading: !isSearchEmpty
-            ? IconButton(
-                icon: Icon(Icons.arrow_back),
-                color: Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _searchedText = null;
-                    this.isSearchEmpty = !this.isSearchEmpty;
-                  });
-                })
-         : null,
-
+          backgroundColor: kPrimaryColor,
+          leading: !isSearchEmpty
+              ? IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  color: Colors.white,
+                  onPressed: () {
+                    setState(() {
+                      _searchedText = null;
+                      this.isSearchEmpty = !this.isSearchEmpty;
+                    });
+                  })
+              : null,
           bottom: new TabBar(
             tabs: <Widget>[
               new Tab(
@@ -412,8 +340,7 @@ class _SubjectPageState extends State<SubjectPage> {
               ),
             ],
           ),
-              ),
-        
+        ),
 
         body: new TabBarView(
           children: <Widget>[

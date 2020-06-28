@@ -43,13 +43,8 @@ dependencies:
   flutter_progress_button: ^1.0.0
   image_picker: ^0.6.7+2
   flutter_share: ^1.0.2+1
-  # pdf_render: ^0.57.2
-  native_pdf_renderer: ^2.3.2
+  open_file: ^3.0.1
   http: ^0.12.1
-  pdftron_flutter:
-    git:
-     url: git://github.com/PDFTron/pdftron-flutter.git
-  permission_handler: '3.0.1'
 
 dev_dependencies:
   flutter_test:
