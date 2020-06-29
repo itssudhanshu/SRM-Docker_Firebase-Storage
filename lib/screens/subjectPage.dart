@@ -1,11 +1,12 @@
 import 'dart:ui' as ui;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:open_file/open_file.dart';
 import 'package:srm_notes/components/models/loading.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../constants.dart';
 
 class SubjectPage extends StatefulWidget {
@@ -27,6 +28,22 @@ class _SubjectPageState extends State<SubjectPage> {
   bool isSearchEmpty = true;
   Size size;
   var data;
+  Dio dio = Dio();
+
+// file name that you desire to keep
+
+  // downloading logic is handled by this method
+
+  Future<void> downloadFile(String uri, String fileName, String doc) async {
+    // String savePath = await getFilePath(fileName);
+    print(fileName.toString().replaceAll("'", ""));
+    String _sub = subject.toString().replaceAll(" ", "_");
+    String savePath = "/storage/emulated/0/SRM_Helper/$_sub/$doc/" +
+        fileName.toString().replaceAll("'", "");
+    print(savePath);
+    await dio.download(uri, savePath);
+    OpenFile.open(savePath);
+  }
 
   Future<void> share(value) async {
     await FlutterShare.share(
@@ -38,7 +55,7 @@ class _SubjectPageState extends State<SubjectPage> {
 
   Future<void> getFilteredList() async {}
 
-  Widget _cardWidget(title, uploader, time, url) {
+  Widget _cardWidget(title, uploader, time, url, doc) {
     url = url.toString().replaceAll('~', '//');
     return GestureDetector(
       // onLongPress: () async {
@@ -88,13 +105,14 @@ class _SubjectPageState extends State<SubjectPage> {
                         child: GestureDetector(
                           onTap: () async {
                             print(url);
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              throw 'Could not launch $url';
-                            }
+                            downloadFile(url, title, doc);
+
+                            // if (await canLaunch(url)) {
+                            //   await launch(url);
+                            // } else {
+                            //   throw 'Could not launch $url';
+                            // }
                           },
-                         
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Image.network(
@@ -186,11 +204,12 @@ class _SubjectPageState extends State<SubjectPage> {
                         child: GestureDetector(
                           onTap: () async {
                             print(url);
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              throw 'Could not launch $url';
-                            }
+                            // if (await canLaunch(url)) {
+                            //   await launch(url);
+                            // } else {
+                            //   throw 'Could not launch $url';
+                            // }
+                            downloadFile(url, title, doc);
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -318,18 +337,18 @@ class _SubjectPageState extends State<SubjectPage> {
                     border: InputBorder.none,
                   ),
                 ),
-        backgroundColor: kPrimaryColor,
-        leading: !isSearchEmpty
-            ? IconButton(
-                icon: Icon(Icons.arrow_back),
-                color: Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _searchedText = null;
-                    this.isSearchEmpty = !this.isSearchEmpty;
-                  });
-                })
-         : null,
+          backgroundColor: kPrimaryColor,
+          leading: !isSearchEmpty
+              ? IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  color: Colors.white,
+                  onPressed: () {
+                    setState(() {
+                      _searchedText = null;
+                      this.isSearchEmpty = !this.isSearchEmpty;
+                    });
+                  })
+              : null,
           bottom: new TabBar(
             tabs: <Widget>[
               new Tab(
@@ -387,7 +406,8 @@ class _SubjectPageState extends State<SubjectPage> {
                               final url = message.data['url'];
                               final time = message.data['time'];
                               final doc = message.data['doc'];
-                              final mw = _cardWidget(name, uploader, time, url);
+                              final mw =
+                                  _cardWidget(name, uploader, time, url, doc);
 
                               if ((_searchedText == null ||
                                       name
@@ -456,7 +476,8 @@ class _SubjectPageState extends State<SubjectPage> {
                               final time = message.data['time'];
                               final doc = message.data['doc'];
 
-                              final mw = _cardWidget(name, uploader, time, url);
+                              final mw =
+                                  _cardWidget(name, uploader, time, url, doc);
                               if ((_searchedText == null ||
                                       name
                                           .toLowerCase()
@@ -542,10 +563,6 @@ class CustomCardShapePainter extends CustomPainter {
     return true;
   }
 
-  Widget reported(){
-
-  }
-  void report(url){
-
-  }
+  Widget reported() {}
+  void report(url) {}
 }
