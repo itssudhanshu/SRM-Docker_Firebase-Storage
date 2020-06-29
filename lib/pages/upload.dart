@@ -1,11 +1,10 @@
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
@@ -54,30 +53,43 @@ class _UploadPageState extends State<UploadPage> {
   bool uploading = false;
   // List<String> _items = ['Machine Learning', 'Maths'];
   Map<String, Widget> widgets;
-  final String url =
-      "https://firebasestorage.googleapis.com/v0/b/srm-helper-3223e.appspot.com/o/data.json?alt=media&token=d0da47b6-4b9b-4e5c-8637-42528b710465";
-
+  String url;
   List<dynamic> data = []; //edited line
   ///
   Future<void> _pickImage() async {
-    File selected = await ImagePicker.pickImage(source: ImageSource.camera,imageQuality: 85);
+    File selected = await ImagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 85);
     setState(() {
       _imagefile = selected;
-      if(selected != null){
+      if (selected != null) {
         cameraimage = true;
       }
     });
   }
-  
 
   ///
   Future<String> getSWData() async {
-    var res = await http
-        .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
-    var resBody = json.decode(res.body);
-    setState(() {
-      data = resBody;
-    });
+    //Get Latest version info from firebase config
+    final RemoteConfig remoteConfig = await RemoteConfig.instance;
+    try {
+      // Using default duration to force fetching from remote server.
+      await remoteConfig.fetch(expiration: const Duration(seconds: 0));
+      await remoteConfig.activateFetched();
+      url = remoteConfig.getString('subject_list');
+      var res = await http
+          .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
+      var resBody = json.decode(res.body);
+      setState(() {
+        data = resBody;
+      });
+    } on FetchThrottledException catch (exception) {
+      // Fetch throttled.
+      print(exception);
+    } catch (exception) {
+      print('Unable to fetch remote config. Cached or default values will be '
+          'used');
+    }
+
     return "Sucess";
   }
 
@@ -217,7 +229,7 @@ class _UploadPageState extends State<UploadPage> {
   }
 
   void _clearCachedFiles() {
-    setState(() => {_loadingPath = true,cameraimage = false});
+    setState(() => {_loadingPath = true, cameraimage = false});
     FilePicker.clearTemporaryFiles().then((result) {
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(
@@ -366,7 +378,9 @@ class _UploadPageState extends State<UploadPage> {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(top: 15),
-                        child: cameraimage ? null : Text("Tap on Image to select File❓"),
+                        child: cameraimage
+                            ? null
+                            : Text("Tap on Image to select File❓"),
                       ),
                       Container(
                         child: cameraimage
@@ -376,9 +390,8 @@ class _UploadPageState extends State<UploadPage> {
                                   builder: (BuildContext context) =>
                                       GestureDetector(
                                           child: Container(
-                                    child:  Image.file(_imagefile),
-                                  )
-                                  ),
+                                    child: Image.file(_imagefile),
+                                  )),
                                 ))
                             : Container(
                                 height: size.height * 0.30,
@@ -527,10 +540,8 @@ class _UploadPageState extends State<UploadPage> {
                                           openDropdown();
                                         });
                                       }
-                                      
                                     });
                                     _clearCachedFiles();
-                                   
                                   },
                                   child: Container(
                                     margin: EdgeInsets.symmetric(vertical: 10),

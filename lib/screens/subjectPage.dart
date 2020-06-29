@@ -30,12 +30,13 @@ class _SubjectPageState extends State<SubjectPage> {
   Size size;
   var data;
   Dio dio = Dio();
+  String savePath;
 
   Future<void> downloadFile(String uri, String fileName, String doc) async {
     // String savePath = await getFilePath(fileName);
     print(fileName.toString().replaceAll("'", ""));
     String _sub = subject.toString().replaceAll(" ", "_");
-    String savePath = "/storage/emulated/0/SRM_Helper/$_sub/$doc/" +
+    savePath = "/storage/emulated/0/SRM_Helper/$_sub/$doc/" +
         fileName.toString().replaceAll("'", "");
     dio.download(uri, savePath);
     setState(() {
@@ -46,14 +47,14 @@ class _SubjectPageState extends State<SubjectPage> {
           content: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'Find it in SRM_Helper/$_sub/$doc/',
+              'File Downloaded into your storage - SRM_Helper/$_sub/$doc/',
             ),
           ),
         ),
       );
     });
-    print(savePath);
-    OpenFile.open(savePath);
+    // print(savePath);
+    // OpenFile.open(savePath);
   }
 
   Future<void> share(value) async {
@@ -115,7 +116,9 @@ class _SubjectPageState extends State<SubjectPage> {
                   child: GestureDetector(
                     onTap: () async {
                       print(url);
-                      downloadFile(url, title, doc);
+                      await downloadFile(url, title, doc);
+                      print(savePath);
+                      OpenFile.open(savePath);
                     },
                     child: Padding(
                         padding: const EdgeInsets.all(8.0),
