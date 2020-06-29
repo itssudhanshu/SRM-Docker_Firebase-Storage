@@ -17,6 +17,8 @@ class SubjectPage extends StatefulWidget {
 }
 
 class _SubjectPageState extends State<SubjectPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  var thumbnailImage = "pdf.png";
   var _searchedText;
   var subject;
   _SubjectPageState(this.subject);
@@ -30,18 +32,28 @@ class _SubjectPageState extends State<SubjectPage> {
   var data;
   Dio dio = Dio();
 
-// file name that you desire to keep
-
-  // downloading logic is handled by this method
-
   Future<void> downloadFile(String uri, String fileName, String doc) async {
     // String savePath = await getFilePath(fileName);
     print(fileName.toString().replaceAll("'", ""));
     String _sub = subject.toString().replaceAll(" ", "_");
     String savePath = "/storage/emulated/0/SRM_Helper/$_sub/$doc/" +
         fileName.toString().replaceAll("'", "");
+    dio.download(uri, savePath);
+    setState(() {
+      _scaffoldKey.currentState.showSnackBar(
+        SnackBar(
+          // duration: Duration(milliseconds: 50),
+          backgroundColor: Colors.green,
+          content: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Find it in SRM_Helper/$_sub/$doc/',
+            ),
+          ),
+        ),
+      );
+    });
     print(savePath);
-    await dio.download(uri, savePath);
     OpenFile.open(savePath);
   }
 
@@ -54,6 +66,30 @@ class _SubjectPageState extends State<SubjectPage> {
   }
 
   Future<void> getFilteredList() async {}
+
+  void getthumbnailImage(url) {
+    if (url.contains("pdf")) {
+      setState(() {
+        thumbnailImage = "pdf.png";
+      });
+    } else if (url.contains("doc") || url.contains("docx")) {
+      setState(() {
+        thumbnailImage = "doc.png";
+      });
+    } else if (url.contains("ppt") || url.contains("pptx")) {
+      setState(() {
+        thumbnailImage = "ppt.png";
+      });
+    } else if (url.contains("xlsx")) {
+      setState(() {
+        thumbnailImage = "pdf.png";
+      });
+    } else if (url.contains("txt")) {
+      setState(() {
+        thumbnailImage = "txt.png";
+      });
+    }
+  }
 
   Widget _cardWidget(title, uploader, time, url, doc) {
     url = url.toString().replaceAll('~', '//');
@@ -98,204 +134,105 @@ class _SubjectPageState extends State<SubjectPage> {
               ),
             ),
             Positioned.fill(
-              child: url.contains("jpg") || url.contains("png")
-                  ? Column(children: <Widget>[
-                      Expanded(
-                        flex: 6,
-                        child: GestureDetector(
-                          onTap: () async {
-                            print(url);
-                            downloadFile(url, title, doc);
-
-                            // if (await canLaunch(url)) {
-                            //   await launch(url);
-                            // } else {
-                            //   throw 'Could not launch $url';
-                            // }
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.network(
-                              url,
-                              fit: BoxFit.cover,
-                              width: size.width,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 4,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+              child: Column(children: <Widget>[
+                Expanded(
+                  flex: 6,
+                  child: GestureDetector(
+                    onTap: () async {
+                      print(url);
+                      downloadFile(url, title, doc);
+                    },
+                    child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: url.contains("jpg") || url.contains("png")
+                            ? Image.network(
+                                url,
+                                fit: BoxFit.cover,
+                                width: size.width,
+                              )
+                            : url.contains("doc") || url.contains("docx")
+                                ? Image.asset("assets/images/doc.png")
+                                : url.contains("ppt") || url.contains("pptx")
+                                    ? Image.asset("assets/images/ppt.png")
+                                    : url.contains("pdf")
+                                        ? Image.asset("assets/images/pdf.png")
+                                        : Image.asset(
+                                            "assets/images/xlsx.png")),
+                  ),
+                ),
+                Expanded(
+                  flex: 4,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Flexible(
                           child: Column(
-                            children: [
-                              Flexible(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Text(
-                                          uploader,
-                                          style:
-                                              TextStyle(color: kPrimaryColor),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 12, 0),
-                                          child: Text(
-                                            time.toString().split(' ')[0],
-                                            style: TextStyle(
-                                                color: Colors.grey[700]),
-                                          ),
-                                        ),
-                                      ],
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    uploader,
+                                    style: TextStyle(color: kPrimaryColor),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                                    child: Text(
+                                      time.toString().split(' ')[0],
+                                      style: TextStyle(color: Colors.grey[700]),
                                     ),
-                                    // SizedBox(height: 7),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          flex: 6,
-                                          child: Container(
-                                            child: Text(
-                                              title,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                // fontWeight: FontWeight.bold,
-                                                fontSize: 17,
-                                              ),
-                                            ),
-                                          ),
+                                  ),
+                                ],
+                              ),
+                              // SizedBox(height: 7),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    flex: 6,
+                                    child: Container(
+                                      child: Text(
+                                        title,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          // fontWeight: FontWeight.bold,
+                                          fontSize: 17,
                                         ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: IconButton(
-                                              icon: Icon(Icons.report),
-                                              onPressed: () {
-                                                share(url);
-                                              }),
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: IconButton(
-                                              icon: Icon(Icons.share),
-                                              onPressed: () {
-                                                share(url);
-                                              }),
-                                        )
-                                      ],
+                                      ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: IconButton(
+                                        icon: Icon(Icons.report),
+                                        onPressed: () {
+                                          share(url);
+                                        }),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: IconButton(
+                                        icon: Icon(Icons.share),
+                                        onPressed: () {
+                                          share(url);
+                                        }),
+                                  )
+                                ],
                               ),
                             ],
                           ),
                         ),
-                      ),
-                    ])
-                  : Column(children: <Widget>[
-                      Expanded(
-                        flex: 6,
-                        child: GestureDetector(
-                          onTap: () async {
-                            print(url);
-                            // if (await canLaunch(url)) {
-                            //   await launch(url);
-                            // } else {
-                            //   throw 'Could not launch $url';
-                            // }
-                            downloadFile(url, title, doc);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.network(
-                              url,
-                              fit: BoxFit.cover,
-                              width: size.width,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 4,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Flexible(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Text(
-                                          uploader,
-                                          style:
-                                              TextStyle(color: kPrimaryColor),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              0, 0, 12, 0),
-                                          child: Text(
-                                            time.toString().split(' ')[0],
-                                            style: TextStyle(
-                                                color: Colors.grey[700]),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    // SizedBox(height: 7),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          flex: 6,
-                                          child: Container(
-                                            child: Text(
-                                              title,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                // fontWeight: FontWeight.bold,
-                                                fontSize: 17,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: IconButton(
-                                              icon: Icon(Icons.report),
-                                              onPressed: () {
-                                                share(url);
-                                              }),
-                                        ),
-                                        Expanded(
-                                          flex: 2,
-                                          child: IconButton(
-                                              icon: Icon(Icons.share),
-                                              onPressed: () {
-                                                share(url);
-                                              }),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ]),
+                      ],
+                    ),
+                  ),
+                ),
+              ]),
             ),
           ],
         ),
@@ -314,6 +251,7 @@ class _SubjectPageState extends State<SubjectPage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        key: _scaffoldKey,
         // extendBodyBehindAppBar: true,
         appBar: AppBar(
           centerTitle: true,

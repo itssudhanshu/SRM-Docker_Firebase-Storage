@@ -1,9 +1,11 @@
 import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
@@ -53,20 +55,20 @@ class _UploadPageState extends State<UploadPage> {
   // List<String> _items = ['Machine Learning', 'Maths'];
   Map<String, Widget> widgets;
   final String url =
-      "https://firebasestorage.googleapis.com/v0/b/srm-helper-3223e.appspot.com/o/data.json?alt=media&token=c1502b1a-d58b-416a-be50-5fe1d203bd9a";
+      "https://firebasestorage.googleapis.com/v0/b/srm-helper-3223e.appspot.com/o/data.json?alt=media&token=d0da47b6-4b9b-4e5c-8637-42528b710465";
 
-  List<dynamic> data = ["Machine Learning"]; //edited line
+  List<dynamic> data = []; //edited line
   ///
   Future<void> _pickImage() async {
-    File selected = await ImagePicker.pickImage(
-        source: ImageSource.camera, imageQuality: 85);
+    File selected = await ImagePicker.pickImage(source: ImageSource.camera,imageQuality: 85);
     setState(() {
       _imagefile = selected;
-      if (selected != null) {
+      if(selected != null){
         cameraimage = true;
       }
     });
   }
+  
 
   ///
   Future<String> getSWData() async {
@@ -82,7 +84,7 @@ class _UploadPageState extends State<UploadPage> {
   @override
   void initState() {
     getCurrentUser();
-    // getSWData();
+    getSWData();
     _controller.addListener(() => _extension = _controller.text);
 
     super.initState();
@@ -158,9 +160,8 @@ class _UploadPageState extends State<UploadPage> {
     print(selectedSub);
     print(name);
 
-    final StorageReference firebaseStorageRef = FirebaseStorage.instance
-        .ref()
-        .child(selectedSub + '/' + preSelectedDoc + '/' + _fileName);
+    final StorageReference firebaseStorageRef =
+        FirebaseStorage.instance.ref().child(_fileName);
     final StorageUploadTask task = firebaseStorageRef.putFile(file);
     //  firebaseStorageRef.putData(file);
     StorageTaskSnapshot taskSnapshot = await task.onComplete;
@@ -179,7 +180,7 @@ class _UploadPageState extends State<UploadPage> {
       'time': DateTime.now().toString().split('at')[0],
       'doc': preSelectedDoc,
     });
-    String temp;
+    var temp;
     await _fireStore
         .collection('users')
         .document(loggedInUser.email)
@@ -216,7 +217,7 @@ class _UploadPageState extends State<UploadPage> {
   }
 
   void _clearCachedFiles() {
-    setState(() => {_loadingPath = true, cameraimage = false});
+    setState(() => {_loadingPath = true,cameraimage = false});
     FilePicker.clearTemporaryFiles().then((result) {
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(
@@ -299,10 +300,8 @@ class _UploadPageState extends State<UploadPage> {
                         iconDisabledColor: Colors.black,
                         items: data.map((item) {
                           return new DropdownMenuItem(
-                            // child: new Text(item['Course Title']),
-                            // value: item['Course Title'].toString(),
-                            child: Text(item),
-                            value: item,
+                            child: new Text(item['Course Title']),
+                            value: item['Course Title'].toString(),
                           );
                         }).toList(),
                         // _items.map((item) {
@@ -321,12 +320,11 @@ class _UploadPageState extends State<UploadPage> {
                           setState(() {
                             selectedSub = value;
 
-                            // for (dynamic items in data) {
-                            //   if (items['Course Title'] == value) {
-                                // selectedSubCode = items['Course Code'];
-                            //   }
-                            // }
-                                selectedSubCode = "15ML302E";
+                            for (dynamic items in data) {
+                              if (items['Course Title'] == value) {
+                                selectedSubCode = items['Course Code'];
+                              }
+                            }
                             color = kPrimaryColor;
 
                             // width_dropd = 2.0;
@@ -368,9 +366,7 @@ class _UploadPageState extends State<UploadPage> {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(top: 15),
-                        child: cameraimage
-                            ? null
-                            : Text("Tap on Image to select File❓"),
+                        child: cameraimage ? null : Text("Tap on Image to select File❓"),
                       ),
                       Container(
                         child: cameraimage
@@ -380,8 +376,9 @@ class _UploadPageState extends State<UploadPage> {
                                   builder: (BuildContext context) =>
                                       GestureDetector(
                                           child: Container(
-                                    child: Image.file(_imagefile),
-                                  )),
+                                    child:  Image.file(_imagefile),
+                                  )
+                                  ),
                                 ))
                             : Container(
                                 height: size.height * 0.30,
@@ -530,8 +527,10 @@ class _UploadPageState extends State<UploadPage> {
                                           openDropdown();
                                         });
                                       }
+                                      
                                     });
                                     _clearCachedFiles();
+                                   
                                   },
                                   child: Container(
                                     margin: EdgeInsets.symmetric(vertical: 10),
