@@ -18,7 +18,6 @@ class SubjectPage extends StatefulWidget {
 
 class _SubjectPageState extends State<SubjectPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  var thumbnailImage = "pdf.png";
   var _searchedText;
   var subject;
   _SubjectPageState(this.subject);
@@ -66,30 +65,6 @@ class _SubjectPageState extends State<SubjectPage> {
   }
 
   Future<void> getFilteredList() async {}
-
-  void getthumbnailImage(url) {
-    if (url.contains("pdf")) {
-      setState(() {
-        thumbnailImage = "pdf.png";
-      });
-    } else if (url.contains("doc") || url.contains("docx")) {
-      setState(() {
-        thumbnailImage = "doc.png";
-      });
-    } else if (url.contains("ppt") || url.contains("pptx")) {
-      setState(() {
-        thumbnailImage = "ppt.png";
-      });
-    } else if (url.contains("xlsx")) {
-      setState(() {
-        thumbnailImage = "pdf.png";
-      });
-    } else if (url.contains("txt")) {
-      setState(() {
-        thumbnailImage = "txt.png";
-      });
-    }
-  }
 
   Widget _cardWidget(title, uploader, time, url, doc) {
     url = url.toString().replaceAll('~', '//');
