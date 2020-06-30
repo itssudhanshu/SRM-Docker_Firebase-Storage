@@ -19,11 +19,7 @@ class _LeaderboardState extends State<Leaderboard>
   final _fireStore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
 
-<<<<<<< HEAD
-  Widget cardWidget({name, regno, uploads, rank, url}) {
-=======
   Widget cardWidget({name, regno,uploads,rank,profilepic}) {
->>>>>>> 7ad8c37e1b28720da515b99587f355400b2103cc
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -69,25 +65,12 @@ class _LeaderboardState extends State<Leaderboard>
                       backgroundColor: kPrimaryLightColor.withOpacity(0.8),
                       radius: 30,
                       child: ClipOval(
-<<<<<<< HEAD
-                        child: url != null
-                            ? Image.network(
-                                url,
-                                width: 60,
-                              )
-                            : Icon(
-                                Icons.person,
-                                size: 70,
-                                color: Colors.white,
-                              ),
-=======
                         child: profilepic == null ? Icon(Icons.person,size : 40,color: Colors.purple,) : Image.network(
                           'https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg',
                           // height: 50,
                           width: 60,
                           // fit: BoxFit.fill,
                         )
->>>>>>> 7ad8c37e1b28720da515b99587f355400b2103cc
                       ),
                     ),
                     flex: 2,
@@ -270,19 +253,8 @@ class _LeaderboardState extends State<Leaderboard>
                             .updateData({'rank': rank.toString()});
                         final regid = user.data['regno'];
                         var uploads = user.data['uploads'];
-<<<<<<< HEAD
-                        final url = user.data['profilepic'];
-                        final mw = cardWidget(
-                          name: name,
-                          regno: regid,
-                          uploads: uploads,
-                          rank: rank,
-                          url: url,
-                        );
-=======
                         var profile = user.data['profilepic'];
                         final mw = cardWidget(name: name,regno: regid,uploads: uploads, rank :rank, profilepic : profile);
->>>>>>> 7ad8c37e1b28720da515b99587f355400b2103cc
                         wid.add(mw);
                       }
                       return Expanded(
