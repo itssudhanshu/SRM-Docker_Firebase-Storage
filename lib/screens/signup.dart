@@ -376,7 +376,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           );
                                           print('inside');
                                           await createUser();
-                                          await addUser();
+                                          // await addUser();
                                           setState(
                                             () {
                                               isSpinner = false;

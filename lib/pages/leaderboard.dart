@@ -30,7 +30,23 @@ class _LeaderboardState extends State<Leaderboard>
           children: <Widget>[
             Container(
               height: 90,
-              decoration: BoxDecoration(
+              decoration: rank == 1 ? BoxDecoration(
+                borderRadius: BorderRadius.circular(_borderRadius),
+                gradient: LinearGradient(colors: [
+                  Colors.red,
+                  Colors.blue,
+                //  Color.fromRGBO(189, 147, 122,0),
+                //  Color.fromRGBO(229, 214, 114,0),
+                 
+                ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                boxShadow: [
+                  BoxShadow(
+                    color: kPrimaryLightColor, //items[index].endColor,
+                    blurRadius: 12,
+                    offset: Offset(0, 6),
+                  ),
+                ],
+              ) : BoxDecoration(
                 borderRadius: BorderRadius.circular(_borderRadius),
                 gradient: LinearGradient(colors: [
                   // items[index].startColor,
