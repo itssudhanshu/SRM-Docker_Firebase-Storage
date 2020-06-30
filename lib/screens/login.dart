@@ -300,23 +300,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                 isSpinner = true;
                               },
                             );
-                            final user = await _auth.signInWithEmailAndPassword(
-                                email: _email, password: _pass);
-                            if (user != null) {
-                              await storage.write(
-                                  key: 'isLogged', value: 'true');
-
-                              Navigator.pushReplacementNamed(
-                                  context, '/bottomnav');
-                            } else {
+                            final user = await _auth.sendPasswordResetEmail(email: _email);
+                            displaySuccessBox(context, 'Success', 'Check your email to reset password.');
+                            setState(() {
                               isSpinner = false;
-                              displayDialog(context, 'Error',
-                                  'No user found with corresponding email and password');
-                            }
+                              forgpass = false;
+                            });
                           } catch (e) {
-                            isSpinner = false;
-                            displayDialog(
-                                context, 'Error', 'Some error occured.');
+                            if(e.toString().contains('ERROR_USER_NOT_FOUND')){
+                              displayDialog(
+                                  context, 'Error', 'Email not found');
+                            } else {
+                              displayDialog(
+                                  context, 'Error', 'Some error occured.');
+                            }
+                            setState(() {
+                              isSpinner = false;
+                            });
                             print(e);
                           }
                         },
