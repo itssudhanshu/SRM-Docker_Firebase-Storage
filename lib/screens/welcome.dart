@@ -38,7 +38,7 @@ class WelcomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "WELCOME TO SRM-HELPER",
+                    "WELCOME TO SRM DOCKER",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: size.height * 0.05),
