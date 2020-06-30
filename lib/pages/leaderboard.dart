@@ -20,7 +20,7 @@ class _LeaderboardState extends State<Leaderboard>
   final _fireStore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
 
-  Widget cardWidget({name, regno,uploads,rank}) {
+  Widget cardWidget({name, regno,uploads,rank,profilepic}) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -72,12 +72,12 @@ class _LeaderboardState extends State<Leaderboard>
                       kPrimaryLightColor.withOpacity(0.8),
                       radius: 30,
                       child: ClipOval(
-                        child: Image.network(
+                        child: profilepic == null ? Icon(Icons.person,size : 40,color: Colors.purple,) : Image.network(
                           'https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg',
                           // height: 50,
                           width: 60,
                           // fit: BoxFit.fill,
-                        ),
+                        )
                       ),
                     ),
                     flex: 2,
@@ -261,7 +261,8 @@ class _LeaderboardState extends State<Leaderboard>
                         });
                         final regid = user.data['regno'];
                         var uploads = user.data['uploads'];
-                        final mw = cardWidget(name: name,regno: regid,uploads: uploads, rank :rank );
+                        var profile = user.data['profilepic'];
+                        final mw = cardWidget(name: name,regno: regid,uploads: uploads, rank :rank, profilepic : profile);
                         wid.add(mw);
                       }
                         return Expanded(
