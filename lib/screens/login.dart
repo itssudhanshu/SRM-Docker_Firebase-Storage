@@ -170,6 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                             final user = await _auth.signInWithEmailAndPassword(
                                 email: _email, password: _pass);
+
                             if (user != null) {
                               await storage.write(
                                   key: 'isLogged', value: 'true');
@@ -178,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   context, '/bottomnav');
                             } else {
                               setState(() {
-                              isSpinner = false;
+                                isSpinner = false;
                               });
                               displayDialog(context, 'Error',
                                   'No user found with corresponding email and password');
@@ -186,9 +187,41 @@ class _LoginScreenState extends State<LoginScreen> {
                           } catch (e) {
                             setState(() {
                               isSpinner = false;
-                              });
-                            displayDialog(
-                                context, 'Error', 'Some error occured.');
+                            });
+                            switch (e.code) {
+                              case "ERROR_INVALID_EMAIL":
+                                displayDialog(context, 'Error',
+                                    'Your email address appears to be malformed.');
+                                break;
+                              case "ERROR_WRONG_PASSWORD":
+                                displayDialog(context, 'Error',
+                                    'Your password is wrong.');
+
+                                break;
+                              case "ERROR_USER_NOT_FOUND":
+                                displayDialog(context, 'Error',
+                                    'User with this email doesn\'t exist.');
+
+                                break;
+                              case "ERROR_USER_DISABLED":
+                                displayDialog(context, 'Error',
+                                    'User with this email has been disabled.');
+
+                                break;
+                              case "ERROR_TOO_MANY_REQUESTS":
+                                displayDialog(context, 'Error',
+                                    'Too many requests. Try again later.');
+
+                                break;
+                              case "ERROR_OPERATION_NOT_ALLOWED":
+                                displayDialog(context, 'Error',
+                                    'Signing in with Email and Password is not enabled.');
+
+                                break;
+                              default:
+                                displayDialog(context, 'Error',
+                                    'An undefined Error happened.');
+                            }
                             print(e);
                           }
                         },
@@ -300,14 +333,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                 isSpinner = true;
                               },
                             );
-                            final user = await _auth.sendPasswordResetEmail(email: _email);
-                            displaySuccessBox(context, 'Success', 'Check your email to reset password.');
+                            final user = await _auth.sendPasswordResetEmail(
+                                email: _email);
+                            displaySuccessBox(context, 'Success',
+                                'Check your email to reset password.');
                             setState(() {
                               isSpinner = false;
                               forgpass = false;
                             });
                           } catch (e) {
-                            if(e.toString().contains('ERROR_USER_NOT_FOUND')){
+                            if (e.toString().contains('ERROR_USER_NOT_FOUND')) {
                               displayDialog(
                                   context, 'Error', 'Email not found');
                             } else {

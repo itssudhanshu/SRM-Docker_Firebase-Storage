@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:srm_notes/components/appbar.dart';
 import 'package:srm_notes/constants.dart';
+import 'package:srm_notes/components/models/loading.dart';
 
 class Leaderboard extends StatefulWidget {
   @override
@@ -19,18 +20,16 @@ class _LeaderboardState extends State<Leaderboard>
   final _fireStore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
 
-<<<<<<< HEAD
-  Widget cardWidget({name, regno, uploads, rank, url}) {
-=======
-  Widget cardWidget({name, regno,uploads,rank,profilepic}) {
->>>>>>> 7ad8c37e1b28720da515b99587f355400b2103cc
+  Widget cardWidget({name, regno, uploads, rank, profilepic}) {
+
+    profilepic = profilepic.toString().replaceAll('~', '//');
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Stack(
           children: <Widget>[
             Container(
-              height: 110,
+              height: 90,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(_borderRadius),
                 gradient: LinearGradient(colors: [
@@ -69,26 +68,18 @@ class _LeaderboardState extends State<Leaderboard>
                       backgroundColor: kPrimaryLightColor.withOpacity(0.8),
                       radius: 30,
                       child: ClipOval(
-<<<<<<< HEAD
-                        child: url != null
-                            ? Image.network(
-                                url,
-                                width: 60,
-                              )
-                            : Icon(
-                                Icons.person,
-                                size: 70,
-                                color: Colors.white,
-                              ),
-=======
-                        child: profilepic == null ? Icon(Icons.person,size : 40,color: Colors.purple,) : Image.network(
-                          'https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg',
-                          // height: 50,
-                          width: 60,
-                          // fit: BoxFit.fill,
-                        )
->>>>>>> 7ad8c37e1b28720da515b99587f355400b2103cc
-                      ),
+                          child: profilepic == null
+                              ? Icon(
+                                  Icons.person,
+                                  size: 40,
+                                  color: Colors.purple,
+                                )
+                              : Image.network(
+                                  profilepic,
+                                  // height: 50,
+                                  width: 60,
+                                  // fit: BoxFit.fill,
+                                )),
                     ),
                     flex: 2,
                   ),
@@ -248,12 +239,7 @@ class _LeaderboardState extends State<Leaderboard>
                     stream: _fireStore.collection('users').snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.data == null) {
-                        return Icon(
-                          Icons.flight_takeoff,
-
-                          ///[logo]
-                          size: 40,
-                        );
+                        return Loading();
                       }
                       final usersdata = snapshot.data.documents.toList();
                       usersdata
@@ -270,19 +256,13 @@ class _LeaderboardState extends State<Leaderboard>
                             .updateData({'rank': rank.toString()});
                         final regid = user.data['regno'];
                         var uploads = user.data['uploads'];
-<<<<<<< HEAD
-                        final url = user.data['profilepic'];
-                        final mw = cardWidget(
-                          name: name,
-                          regno: regid,
-                          uploads: uploads,
-                          rank: rank,
-                          url: url,
-                        );
-=======
                         var profile = user.data['profilepic'];
-                        final mw = cardWidget(name: name,regno: regid,uploads: uploads, rank :rank, profilepic : profile);
->>>>>>> 7ad8c37e1b28720da515b99587f355400b2103cc
+                        final mw = cardWidget(
+                            name: name,
+                            regno: regid,
+                            uploads: uploads,
+                            rank: rank,
+                            profilepic: profile);
                         wid.add(mw);
                       }
                       return Expanded(

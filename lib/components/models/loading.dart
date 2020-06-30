@@ -8,11 +8,14 @@ class Loading extends StatelessWidget {
     return Container(
       color: kPrimaryLightColor,
       child: Center(
-        child: SpinKitChasingDots(
-          color: kPrimaryColor,
-          size: 50.0,
-          )
-      )
+        child:Image.asset(
+                "assets/images/docker_logo.png",
+              ),
+        // SpinKitChasingDots(
+        //   color: kPrimaryColor,
+        //   size: 50.0,
+        //   )
+      ),
     );
   }
 }

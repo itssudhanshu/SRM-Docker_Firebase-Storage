@@ -254,6 +254,17 @@ class _SubjectPageState extends State<SubjectPage> {
                   ),
                 ),
           backgroundColor: kPrimaryColor,
+           actions: <Widget>[
+          IconButton(
+              icon: isSearchEmpty ? Icon(Icons.search) : Icon(Icons.cancel),
+              color: isSearchEmpty ? Colors.white : Colors.white,
+              onPressed: () {
+                setState(() {
+                  cancelSearch();
+                  this.isSearchEmpty = !this.isSearchEmpty;
+                });
+              })
+        ],
           leading: !isSearchEmpty
               ? IconButton(
                   icon: Icon(Icons.arrow_back),
@@ -275,6 +286,7 @@ class _SubjectPageState extends State<SubjectPage> {
               ),
             ],
           ),
+
         ),
         body: new TabBarView(
           children: <Widget>[

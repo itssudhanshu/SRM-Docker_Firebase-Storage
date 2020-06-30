@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:srm_notes/components/models/loading.dart';
 import 'package:srm_notes/screens/subjectPage.dart';
 
 import '../constants.dart';
@@ -196,12 +196,7 @@ class _HomePageState extends State<HomePage> {
                     stream: _fireStore.collection('Subjects').snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.data == null) {
-                        return Icon(
-                          Icons.flight_takeoff,
-
-                          ///[logo]
-                          size: 40,
-                        );
+                        return Loading();
                       }
                       var doc = snapshot.data;
                       final messages = snapshot.data.documents.reversed;
