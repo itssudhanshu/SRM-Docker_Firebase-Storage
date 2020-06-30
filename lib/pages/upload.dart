@@ -173,7 +173,7 @@ class _UploadPageState extends State<UploadPage> {
     print(name);
     _fileName = name.toString().replaceAll("'", "");
     final StorageReference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child("Subjects/"+selectedSub+"/"+preSelectedDoc+"/"+_fileName);
+    FirebaseStorage.instance.ref().child("Subjects/"+selectedSub+"/"+preSelectedDoc+"/"+_fileName);
     final StorageUploadTask task = firebaseStorageRef.putFile(file);
     //  firebaseStorageRef.putData(file);
     StorageTaskSnapshot taskSnapshot = await task.onComplete;
@@ -192,20 +192,19 @@ class _UploadPageState extends State<UploadPage> {
       'time': DateTime.now().toString().split('at')[0],
       'doc': preSelectedDoc,
     });
-    var temp;
+    var uploads;
     await _fireStore
         .collection('users')
         .document(loggedInUser.email)
         .get()
         .then((value) {
-      temp = value.data['uploads'];
+      uploads = value.data['uploads'];
     });
-    var uploads = int.parse(temp);
     uploads = uploads + 1;
     await _fireStore
         .collection('users')
         .document(loggedInUser.email)
-        .updateData({'uploads': uploads.toString()});
+        .updateData({'uploads': uploads});
     return url;
   }
 
@@ -268,10 +267,10 @@ class _UploadPageState extends State<UploadPage> {
         ),
       ),
       body:
-          //  uploading
-          //     ? Loading()
-          //     :
-          Container(
+      //  uploading
+      //     ? Loading()
+      //     :
+      Container(
         height: size.height,
         width: double.infinity,
         child: Stack(
@@ -385,19 +384,19 @@ class _UploadPageState extends State<UploadPage> {
                       Container(
                         child: cameraimage
                             ? Container(
-                                height: size.height * 0.30,
-                                child: new Builder(
-                                  builder: (BuildContext context) =>
-                                      GestureDetector(
-                                          child: Container(
-                                    child: Image.file(_imagefile),
-                                  )),
-                                ))
+                            height: size.height * 0.30,
+                            child: new Builder(
+                              builder: (BuildContext context) =>
+                                  GestureDetector(
+                                      child: Container(
+                                        child: Image.file(_imagefile),
+                                      )),
+                            ))
                             : Container(
-                                height: size.height * 0.30,
-                                child: new Builder(
-                                  builder: (BuildContext context) =>
-                                      GestureDetector(
+                            height: size.height * 0.30,
+                            child: new Builder(
+                              builder: (BuildContext context) =>
+                                  GestureDetector(
                                     onTap: () {
                                       _openFileExplorer();
                                     },
@@ -412,96 +411,96 @@ class _UploadPageState extends State<UploadPage> {
                                       ),
                                       child: _loadingPath
                                           ? GestureDetector(
-                                              onTap: () {
-                                                _openFileExplorer();
-                                              },
-                                              // child: Container(
-                                              //   decoration: BoxDecoration(
-                                              //     image: DecorationImage(
-                                              //       image: AssetImage(
-                                              //         "assets/images/uploaddone.png",
-                                              //       ),
-                                              //       fit: BoxFit.contain,
-                                              //     ),
-                                              //   ),
-                                              // ),
-                                            )
+                                        onTap: () {
+                                          _openFileExplorer();
+                                        },
+                                        // child: Container(
+                                        //   decoration: BoxDecoration(
+                                        //     image: DecorationImage(
+                                        //       image: AssetImage(
+                                        //         "assets/images/uploaddone.png",
+                                        //       ),
+                                        //       fit: BoxFit.contain,
+                                        //     ),
+                                        //   ),
+                                        // ),
+                                      )
                                           : multifile != null || _paths != null
-                                              ? new Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 10.0),
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.50,
-                                                  child: new Scrollbar(
-                                                    child: new ListView.builder(
-                                                      itemCount: multifile !=
-                                                                  null &&
-                                                              multifile
-                                                                  .isNotEmpty
-                                                          ? multifile.length
-                                                          : 1,
-                                                      itemBuilder:
-                                                          (BuildContext context,
-                                                              int index) {
-                                                        final String name =
-                                                            'File $index: ' +
-                                                                multifile[index]
-                                                                    .toString()
-                                                                    .split('/')
-                                                                    .last;
-                                                        return Container(
-                                                          margin: EdgeInsets
-                                                              .fromLTRB(
-                                                                  8.0,
-                                                                  8.0,
-                                                                  8.0,
-                                                                  0.0),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color:
-                                                                kPrimaryLightColor,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15),
-                                                          ),
-                                                          child: new ListTile(
-                                                            leading:
-                                                                CircleAvatar(
-                                                              backgroundColor:
-                                                                  Colors.white,
-                                                              child: Icon(
-                                                                Icons
-                                                                    .attachment,
-                                                                color: Colors
-                                                                    .green,
-                                                              ),
-                                                            ),
-                                                            trailing: Icon(
-                                                              Icons.check,
-                                                              color:
-                                                                  Colors.green,
-                                                            ),
-                                                            title:
-                                                                new Text(name),
-                                                          ),
-                                                        );
-                                                      },
+                                          ? new Container(
+                                        padding:
+                                        const EdgeInsets.only(
+                                            bottom: 10.0),
+                                        height: MediaQuery.of(context)
+                                            .size
+                                            .height *
+                                            0.50,
+                                        child: new Scrollbar(
+                                          child: new ListView.builder(
+                                            itemCount: multifile !=
+                                                null &&
+                                                multifile
+                                                    .isNotEmpty
+                                                ? multifile.length
+                                                : 1,
+                                            itemBuilder:
+                                                (BuildContext context,
+                                                int index) {
+                                              final String name =
+                                                  'File $index: ' +
+                                                      multifile[index]
+                                                          .toString()
+                                                          .split('/')
+                                                          .last;
+                                              return Container(
+                                                margin: EdgeInsets
+                                                    .fromLTRB(
+                                                    8.0,
+                                                    8.0,
+                                                    8.0,
+                                                    0.0),
+                                                decoration:
+                                                BoxDecoration(
+                                                  color:
+                                                  kPrimaryLightColor,
+                                                  borderRadius:
+                                                  BorderRadius
+                                                      .circular(
+                                                      15),
+                                                ),
+                                                child: new ListTile(
+                                                  leading:
+                                                  CircleAvatar(
+                                                    backgroundColor:
+                                                    Colors.white,
+                                                    child: Icon(
+                                                      Icons
+                                                          .attachment,
+                                                      color: Colors
+                                                          .green,
                                                     ),
                                                   ),
-                                                )
-                                              : new Container(
-                                                  // child: Image.asset(
-                                                  //   "assets/images/upload.png",
-                                                  //   width: size.width * 0.70,
-                                                  // ),
+                                                  trailing: Icon(
+                                                    Icons.check,
+                                                    color:
+                                                    Colors.green,
                                                   ),
+                                                  title:
+                                                  new Text(name),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      )
+                                          : new Container(
+                                        // child: Image.asset(
+                                        //   "assets/images/upload.png",
+                                        //   width: size.width * 0.70,
+                                        // ),
+                                      ),
                                     ),
                                   ),
-                                )),
+                            )),
                       ),
                       SizedBox(height: size.height * 0.03),
                       new Column(
@@ -521,114 +520,114 @@ class _UploadPageState extends State<UploadPage> {
                           SizedBox(height: size.height * 0.02),
                           cameraimage
                               ? GestureDetector(
-                                  onTap: () {
-                                    // setState(() {
-                                    setState(() async {
-                                      // get file name
-                                      _fileName =
-                                          _imagefile.toString().split('/').last;
+                            onTap: () {
+                              // setState(() {
+                              setState(() async {
+                                // get file name
+                                _fileName =
+                                    _imagefile.toString().split('/').last;
 
-                                      if (_imagefile != null &&
-                                          selectedSub != null) {
-                                        // uploading = true;
+                                if (_imagefile != null &&
+                                    selectedSub != null) {
+                                  // uploading = true;
 
-                                        //call uploading function
-                                        await makefolder();
-                                        await savedoc(_imagefile, _fileName);
-                                      } else {
-                                        setState(() {
-                                          openDropdown();
-                                        });
-                                      }
-                                    });
-                                    _clearCachedFiles();
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.symmetric(vertical: 10),
-                                    width: size.width * 0.5,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(29),
-                                      child: Container(
-                                        color: kPrimaryColor,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 15, horizontal: 10),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text(
-                                              "Upload Image",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20.0),
-                                            ),
-                                            SizedBox(width: size.width * 0.02),
-                                            Icon(
-                                              Icons.file_upload,
-                                              color: Colors.white,
-                                            ),
-                                          ],
-                                        ),
+                                  //call uploading function
+                                  await makefolder();
+                                  await savedoc(_imagefile, _fileName);
+                                } else {
+                                  setState(() {
+                                    openDropdown();
+                                  });
+                                }
+                              });
+                              _clearCachedFiles();
+                            },
+                            child: Container(
+                              margin: EdgeInsets.symmetric(vertical: 10),
+                              width: size.width * 0.5,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(29),
+                                child: Container(
+                                  color: kPrimaryColor,
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 15, horizontal: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        "Upload Image",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20.0),
                                       ),
-                                    ),
-                                  ),
-                                )
-                              : GestureDetector(
-                                  onTap: () {
-                                    // setState(() {
-                                    setState(() async {
-                                      for (File file in multifile) {
-                                        // get file name
-                                        _fileName =
-                                            file.toString().split('/').last;
-
-                                        if (file != null &&
-                                            selectedSub != null) {
-                                          // uploading = true;
-
-                                          //call uploading function
-                                          await makefolder();
-                                          await savedoc(file, _fileName);
-                                        } else {
-                                          setState(() {
-                                            openDropdown();
-                                          });
-                                        }
-                                      }
-                                      // uploading = false;
-                                    });
-                                    _clearCachedFiles();
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.symmetric(vertical: 10),
-                                    width: size.width * 0.5,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(29),
-                                      child: Container(
-                                        color: kPrimaryColor,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 15, horizontal: 10),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text(
-                                              "Upload",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20.0),
-                                            ),
-                                            SizedBox(width: size.width * 0.02),
-                                            Icon(
-                                              Icons.file_upload,
-                                              color: Colors.white,
-                                            ),
-                                          ],
-                                        ),
+                                      SizedBox(width: size.width * 0.02),
+                                      Icon(
+                                        Icons.file_upload,
+                                        color: Colors.white,
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ),
+                              ),
+                            ),
+                          )
+                              : GestureDetector(
+                            onTap: () {
+                              // setState(() {
+                              setState(() async {
+                                for (File file in multifile) {
+                                  // get file name
+                                  _fileName =
+                                      file.toString().split('/').last;
+
+                                  if (file != null &&
+                                      selectedSub != null) {
+                                    // uploading = true;
+
+                                    //call uploading function
+                                    await makefolder();
+                                    await savedoc(file, _fileName);
+                                  } else {
+                                    setState(() {
+                                      openDropdown();
+                                    });
+                                  }
+                                }
+                                // uploading = false;
+                              });
+                              _clearCachedFiles();
+                            },
+                            child: Container(
+                              margin: EdgeInsets.symmetric(vertical: 10),
+                              width: size.width * 0.5,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(29),
+                                child: Container(
+                                  color: kPrimaryColor,
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 15, horizontal: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        "Upload",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20.0),
+                                      ),
+                                      SizedBox(width: size.width * 0.02),
+                                      Icon(
+                                        Icons.file_upload,
+                                        color: Colors.white,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                           SizedBox(height: size.height * 0.02),
                         ],
                       ),
