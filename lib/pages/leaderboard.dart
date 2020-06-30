@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:srm_notes/components/appbar.dart';
 import 'package:srm_notes/constants.dart';
+import 'package:srm_notes/components/models/loading.dart';
 
 class Leaderboard extends StatefulWidget {
   @override
@@ -19,15 +20,33 @@ class _LeaderboardState extends State<Leaderboard>
   final _fireStore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
 
-  Widget cardWidget({name, regno,uploads,rank,profilepic}) {
+  Widget cardWidget({name, regno, uploads, rank, profilepic}) {
+
+    profilepic = profilepic.toString().replaceAll('~', '//');
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Stack(
           children: <Widget>[
             Container(
-              height: 110,
-              decoration: BoxDecoration(
+              height: 90,
+              decoration: rank == 1 ? BoxDecoration(
+                borderRadius: BorderRadius.circular(_borderRadius),
+                gradient: LinearGradient(colors: [
+                  Colors.red,
+                  Colors.blue,
+                //  Color.fromRGBO(189, 147, 122,0),
+                //  Color.fromRGBO(229, 214, 114,0),
+                 
+                ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                boxShadow: [
+                  BoxShadow(
+                    color: kPrimaryLightColor, //items[index].endColor,
+                    blurRadius: 12,
+                    offset: Offset(0, 6),
+                  ),
+                ],
+              ) : BoxDecoration(
                 borderRadius: BorderRadius.circular(_borderRadius),
                 gradient: LinearGradient(colors: [
                   // items[index].startColor,
@@ -65,13 +84,18 @@ class _LeaderboardState extends State<Leaderboard>
                       backgroundColor: kPrimaryLightColor.withOpacity(0.8),
                       radius: 30,
                       child: ClipOval(
-                        child: profilepic == null ? Icon(Icons.person,size : 40,color: Colors.purple,) : Image.network(
-                          'https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg',
-                          // height: 50,
-                          width: 60,
-                          // fit: BoxFit.fill,
-                        )
-                      ),
+                          child: profilepic == null
+                              ? Icon(
+                                  Icons.person,
+                                  size: 40,
+                                  color: Colors.purple,
+                                )
+                              : Image.network(
+                                  profilepic,
+                                  // height: 50,
+                                  width: 60,
+                                  // fit: BoxFit.fill,
+                                )),
                     ),
                     flex: 2,
                   ),
@@ -231,12 +255,7 @@ class _LeaderboardState extends State<Leaderboard>
                     stream: _fireStore.collection('users').snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.data == null) {
-                        return Icon(
-                          Icons.flight_takeoff,
-
-                          ///[logo]
-                          size: 40,
-                        );
+                        return Loading();
                       }
                       final usersdata = snapshot.data.documents.toList();
                       usersdata
@@ -254,7 +273,12 @@ class _LeaderboardState extends State<Leaderboard>
                         final regid = user.data['regno'];
                         var uploads = user.data['uploads'];
                         var profile = user.data['profilepic'];
-                        final mw = cardWidget(name: name,regno: regid,uploads: uploads, rank :rank, profilepic : profile);
+                        final mw = cardWidget(
+                            name: name,
+                            regno: regid,
+                            uploads: uploads,
+                            rank: rank,
+                            profilepic: profile);
                         wid.add(mw);
                       }
                       return Expanded(

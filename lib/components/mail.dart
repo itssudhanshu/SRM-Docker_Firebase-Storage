@@ -13,14 +13,13 @@ class Mail extends StatefulWidget {
 class _MailState extends State<Mail> {
   Size size;
   final _recipientController = TextEditingController(
-    text: 'nirbhaynaruka@gmail.com',
-
+    text: 'heywhitepage@gmail.com',
   );
 
-  final _subjectController = TextEditingController(text: 'The subject');
+  final _subjectController = TextEditingController(text: 'RE:');
 
   final _bodyController = TextEditingController(
-    text: 'Mail body.',
+    text: 'Hello,',
   );
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -92,7 +91,7 @@ class _MailState extends State<Mail> {
         SingleChildScrollView(
           child: Container(
           // color: Color.fromRGBO(236, 240, 243, 1),
-            margin: EdgeInsets.only(top:80.0),
+            margin: EdgeInsets.only(top:50.0),
             child: Padding(
               
               padding: EdgeInsets.all(8.0),
@@ -101,6 +100,13 @@ class _MailState extends State<Mail> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  CircleAvatar(
+                              backgroundColor: kPrimaryLightColor,
+                              child: Image.asset("assets/images/docker_logo.png"),
+                              radius: 70,
+                              ),
+                                              SizedBox(height: 30),
+
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: TextField(

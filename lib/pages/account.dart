@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -11,6 +12,10 @@ import 'package:srm_notes/components/models/loading.dart';
 import 'package:srm_notes/constants.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'leaderboard.dart';
+import 'package:srm_notes/screens/login.dart';
 
 FirebaseUser loggedInUser;
 bool _doneLoading = false;
@@ -39,11 +44,39 @@ class _AccountPageState extends State<AccountPage> {
   List<String> dept = ["B.tech."];
   List<String> branch = ["CSE", "MECH.", "SWE", "IT", "ECE", "EEE"];
   List<String> year = ["1st", "2nd", "3rd", "4th"];
-  String _dept = "Dept", _branch = "Branch", _year="year";
+  String _dept = "Dept", _branch = "Branch", _year = "year";
+  String downloadlink;
+  String downloadlinkurl;
+
+  Future<String> getSWData() async {
+    //Get Latest version info from firebase config
+    final RemoteConfig remoteConfig = await RemoteConfig.instance;
+    try {
+      // Using default duration to force fetching from remote server.
+      await remoteConfig.fetch(expiration: const Duration(seconds: 0));
+      await remoteConfig.activateFetched();
+      downloadlinkurl = remoteConfig.getString('download_link');
+      // var res = await http
+      //     .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
+      // var resBody = json.decode(res.body);
+      setState(() {
+        downloadlink = downloadlinkurl;
+      });
+    } on FetchThrottledException catch (exception) {
+      // Fetch throttled.
+      print(exception);
+    } catch (exception) {
+      print('Unable to fetch remote config. Cached or default values will be '
+          'used');
+    }
+
+    return "Sucess";
+  }
 
   @override
-  initState () {
+  initState() {
     super.initState();
+    getSWData();
     checkCached();
     timer = Timer.periodic(Duration(seconds: 10), (timer) async {
       print('timer called');
@@ -86,15 +119,17 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
-  Future<void> update() async{
-    setState(() {
-      
+  Future<void> update() async {
+    setState(() {});
+    // ignore: unused_local_variable
+    var response = _fireStore
+        .collection('users')
+        .document(loggedInUser.email)
+        .updateData({
+      'year': _year.toString(),
+      'branch': _branch.toString(),
+      'dept': _dept.toString()
     });
-     // ignore: unused_local_variable
-     var response = _fireStore
-          .collection('users')
-          .document(loggedInUser.email)
-          .updateData({'year': _year.toString(),'branch':_branch.toString(),'dept':_dept.toString()});
   }
 
   Future<void> getCurrentUser() async {
@@ -139,7 +174,6 @@ class _AccountPageState extends State<AccountPage> {
         await storage.write(key: 'year', value: _year);
         await storage.write(key: 'dept', value: _dept);
         await storage.write(key: 'branch', value: _branch);
-
       }
     } catch (e) {
       print(e);
@@ -160,7 +194,7 @@ class _AccountPageState extends State<AccountPage> {
         likes = storage.read(key: 'likes');
         regId = storage.read(key: 'regid');
         profilePic = storage.read(key: 'profilepic');
-       
+
         _doneLoading = true;
       });
     }
@@ -295,7 +329,8 @@ class _AccountPageState extends State<AccountPage> {
                           child: DropdownButton<String>(
                             underline: SizedBox(width: 20),
                             isExpanded: true,
-                            hint: Text(_branch != null ? _branch : "Select Branch"),
+                            hint: Text(
+                                _branch != null ? _branch : "Select Branch"),
                             items: branch.map((String value) {
                               return new DropdownMenuItem<String>(
                                 value: value,
@@ -419,9 +454,11 @@ class _AccountPageState extends State<AccountPage> {
                                 },
                               ),
                               ListTile(
-                                title: Text('My Uploads'),
-                                leading: Icon(Icons.file_upload),
-                                onTap: () {},
+                                title: Text('My Rank'),
+                                leading: Icon(Icons.account_circle),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
                               ),
                               ExpansionTile(
                                 leading: Icon(Icons.apps),
@@ -429,20 +466,32 @@ class _AccountPageState extends State<AccountPage> {
                                 children: <Widget>[
                                   ListTile(
                                       title: Text(
-                                          '1.Add tasks or notes through + sign below.')),
-                                  ListTile(title: Text('2.Share your notes.')),
-                                  ListTile(
-                                      title: Text('3.Mark Important notes.')),
+                                          '1.Share the content with Srmites.')),
                                   ListTile(
                                       title: Text(
-                                          '4.Edit tasks pressing long to your previous input.')),
+                                          '2.Quick access to notes and previous year papers.')),
                                   ListTile(
                                       title: Text(
-                                          '5.Remove tasks on sliding to block from left to right.')),
+                                          '3.Quick upload of the first half papers.')),
                                   ListTile(
                                       title: Text(
-                                          '6.Differentiate your tasks by colors.')),
+                                          '4.Manage your downloaded notes and question papers in your file.')),
+                                  ListTile(
+                                      title: Text(
+                                          '5.Upload more genuine docs to have your profile showcased on top of the leaderboard.')),
                                 ],
+                              ),
+                              ListTile(
+                                title: Text('Review Us on Playstore'),
+                                leading: Icon(Icons.rate_review),
+                                onTap: () async {
+                                  // print(downloadlink);
+                                  if (await canLaunch(downloadlink)) {
+                                    await launch(downloadlink);
+                                  } else {
+                                    throw 'Could not launch $downloadlink';
+                                  }
+                                },
                               ),
                             ],
                           ),
@@ -466,6 +515,10 @@ class _AccountPageState extends State<AccountPage> {
                                             key: 'isLogged', value: 'false');
                                         await storage.write(
                                             key: 'profileData', value: 'false');
+                                        setState(() {
+                                          // Navigator.pushReplacementNamed(
+                                          // context, '/login');
+                                        });
                                       }),
                                   ListTile(
                                     leading: Icon(Icons.help),

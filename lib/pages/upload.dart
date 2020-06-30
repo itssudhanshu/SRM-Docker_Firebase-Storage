@@ -49,6 +49,10 @@ class _UploadPageState extends State<UploadPage> {
   bool asTabs = false;
   String selectedSub;
   String selectedSubCode;
+  String selectedSubyear;
+  String selectedSubbranch;
+  String selectedSubdept;
+
   String preSelectedDoc = "Notes";
   bool uploading = false;
   // List<String> _items = ['Machine Learning', 'Maths'];
@@ -165,7 +169,7 @@ class _UploadPageState extends State<UploadPage> {
     var response = await Firestore.instance
         .collection("Subjects")
         .document(selectedSub)
-        .setData({'name': selectedSub, 'code': selectedSubCode});
+        .setData({'name': selectedSub, 'code': selectedSubCode,'year':selectedSubyear,'branch':selectedSubbranch,'dept':selectedSubdept});
   }
 
   Future savedoc(File file, String name) async {
@@ -191,6 +195,7 @@ class _UploadPageState extends State<UploadPage> {
       'url': url,
       'time': DateTime.now().toString().split('at')[0],
       'doc': preSelectedDoc,
+      
     });
     var uploads;
     await _fireStore
@@ -334,6 +339,9 @@ class _UploadPageState extends State<UploadPage> {
                             for (dynamic items in data) {
                               if (items['Course Title'] == value) {
                                 selectedSubCode = items['Course Code'];
+                                selectedSubyear = items['Year'].toString();
+                                selectedSubbranch = items['Branch'];
+                                selectedSubdept = items['Dept'];
                               }
                             }
                             color = kPrimaryColor;

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
+// import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:srm_notes/components/already_have_an_account_acheck.dart';
 import 'package:srm_notes/components/models/loading.dart';
 import 'package:srm_notes/components/rounded_button.dart';
@@ -40,7 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         displayDialog(context, 'Error', 'Some error occured.');
       }
     } catch (e) {
-      displayDialog(context, 'Error', 'Some error occured.');
+      displayDialog(context, 'Error', 'The email address is already in use by another account.');
       print(e);
     }
   }
@@ -61,8 +61,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return ModalProgressHUD(
-      inAsyncCall: isSpinner,
+    return Container(
+      // inAsyncCall: isSpinner,
       child: isSpinner
           ? Loading()
           : Scaffold(
@@ -124,6 +124,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
+                            SizedBox(height: 40),
+                            CircleAvatar(
+                              backgroundColor: kPrimaryLightColor,
+                              child: Image.asset("assets/images/docker_logo.png"),
+                              radius: 70,
+                              ),
                             // Positioned(
                             //   top: 50,
                             //   left: 100,
@@ -132,13 +138,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             //     height: size.height * 0.25,
                             //   ),
                             // ),
-                            SizedBox(height: 70),
+                            SizedBox(height: 30),
                             Container(
                               width: size.width * 0.8,
                               child: Form(
                                 key: _formKey,
                                 child: Column(
                                   children: <Widget>[
+                                    
                                     SizedBox(height: 20.0),
                                     TextFormField(
                                         textInputAction: TextInputAction.next,
@@ -176,8 +183,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         ),
                                       ),
                                       validator: (val) =>
-                                          val.contains('faculty')
-                                              ? "Name must not contain FACULTY"
+                                          (val.contains('faculty') || val.isEmpty)
+                                              ? "Name must not empty"
                                               : null,
                                       onChanged: (val) {
                                         setState(() => _name = val);
@@ -369,7 +376,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           );
                                           print('inside');
                                           await createUser();
-                                          await addUser();
+                                          // await addUser();
                                           setState(
                                             () {
                                               isSpinner = false;

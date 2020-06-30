@@ -8,6 +8,7 @@ import 'package:flutter_share/flutter_share.dart';
 import 'package:open_file/open_file.dart';
 import 'package:srm_notes/components/models/loading.dart';
 import '../constants.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 
 class SubjectPage extends StatefulWidget {
   var sub;
@@ -18,6 +19,8 @@ class SubjectPage extends StatefulWidget {
 
 class _SubjectPageState extends State<SubjectPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _formKey = GlobalKey<FormState>();
+
   var _searchedText;
   var subject;
   _SubjectPageState(this.subject);
@@ -28,15 +31,131 @@ class _SubjectPageState extends State<SubjectPage> {
   TextEditingController searchController = TextEditingController();
   bool isSearchEmpty = true;
   Size size;
+  String downloadlinkurl;
   var data;
   Dio dio = Dio();
   String savePath;
+  String reason;
+  String regid;
+  String downloadlink;
+
+  Future report(uploader1, reason1, url, doc, sub) async {
+    var response = await Firestore.instance
+        .collection("Reports")
+        .document(uploader1)
+        .setData({
+      'reason': reason1,
+      'uploader': uploader1,
+      'url': url,
+      'doc': doc,
+      'sub': sub
+    });
+  }
+
+  Future<bool> reportdoc(uploader, url, doc, sub) {
+    return showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          child: Container(
+            height: 200.0,
+            width: 200.0,
+            decoration:
+                BoxDecoration(borderRadius: BorderRadius.circular(20.0)),
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextFormField(
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                        fillColor: kPrimaryLightColor,
+                        filled: true,
+                        contentPadding: new EdgeInsets.symmetric(
+                            vertical: 0.0, horizontal: 0.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(29),
+                          borderSide: BorderSide(width: 2, color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(29),
+                          borderSide:
+                              BorderSide(width: 2, color: Colors.purple),
+                        ),
+                        hintText: "Reason",
+                        labelText: "Reason Please...",
+                        prefixIcon: Padding(
+                          padding: EdgeInsets.all(0.0),
+                          child: Icon(
+                            Icons.report,
+                            color: kPrimaryColor,
+                          ),
+                        ),
+                      ),
+                      validator: (val) =>
+                          (val.isEmpty) ? "Please state your reason" : null,
+                      onChanged: (val) {
+                        setState(() => reason = val);
+                      },
+                    ),
+                    SizedBox(height: 15.0),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 60),
+                      child: FlatButton(
+                        color: kPrimaryColor,
+                        child: Center(
+                          child: Text(
+                            'Report',
+                            style: TextStyle(
+                              fontFamily: 'Montserrat',
+                              fontSize: 14.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        onPressed: () async {
+                          if (_formKey.currentState.validate()) {
+                            await report(uploader, reason, url, doc, sub);
+                            setState(
+                              () {
+                                _scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(
+                                    // duration: Duration(milliseconds: 50),
+                                    backgroundColor: Colors.green,
+                                    content: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("Reported"),
+                                    ),
+                                  ),
+                                );
+                                Navigator.of(context).pop();
+                              },
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   Future<void> downloadFile(String uri, String fileName, String doc) async {
     // String savePath = await getFilePath(fileName);
     print(fileName.toString().replaceAll("'", ""));
     String _sub = subject.toString().replaceAll(" ", "_");
-    savePath = "/storage/emulated/0/SRM_Helper/$_sub/$doc/" +
+    savePath = "/storage/emulated/0/SRM_Docker/$_sub/$doc/" +
         fileName.toString().replaceAll("'", "");
     dio.download(uri, savePath);
     setState(() {
@@ -47,7 +166,7 @@ class _SubjectPageState extends State<SubjectPage> {
           content: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'File Downloaded into your storage - SRM_Helper/$_sub/$doc/',
+              'File Downloaded into your storage - SRM_Docker/$_sub/$doc/',
             ),
           ),
         ),
@@ -57,10 +176,35 @@ class _SubjectPageState extends State<SubjectPage> {
     // OpenFile.open(savePath);
   }
 
+  Future<String> getSWData() async {
+    //Get Latest version info from firebase config
+    final RemoteConfig remoteConfig = await RemoteConfig.instance;
+    try {
+      // Using default duration to force fetching from remote server.
+      await remoteConfig.fetch(expiration: const Duration(seconds: 0));
+      await remoteConfig.activateFetched();
+      downloadlinkurl = remoteConfig.getString('download_link');
+      // var res = await http
+      //     .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
+      // var resBody = json.decode(res.body);
+      setState(() {
+        downloadlink = downloadlinkurl;
+      });
+    } on FetchThrottledException catch (exception) {
+      // Fetch throttled.
+      print(exception);
+    } catch (exception) {
+      print('Unable to fetch remote config. Cached or default values will be '
+          'used');
+    }
+
+    return "Sucess";
+  }
+
   Future<void> share(value) async {
     await FlutterShare.share(
         title: 'Share',
-        text: 'See what i found on DocBox ',
+        text: 'See what i found in Srm Docker.\nyou can also download Srm Docker from $downloadlink',
         linkUrl: value,
         chooserTitle: 'Share your doc.');
   }
@@ -190,7 +334,8 @@ class _SubjectPageState extends State<SubjectPage> {
                                     child: IconButton(
                                         icon: Icon(Icons.report),
                                         onPressed: () {
-                                          share(url);
+                                          reportdoc(
+                                              uploader, url, doc, subject);
                                         }),
                                   ),
                                   Expanded(
@@ -220,6 +365,7 @@ class _SubjectPageState extends State<SubjectPage> {
 
   @override
   void initState() {
+    getSWData();
     super.initState();
   }
 
@@ -254,6 +400,17 @@ class _SubjectPageState extends State<SubjectPage> {
                   ),
                 ),
           backgroundColor: kPrimaryColor,
+          actions: <Widget>[
+            IconButton(
+                icon: isSearchEmpty ? Icon(Icons.search) : Icon(Icons.cancel),
+                color: isSearchEmpty ? Colors.white : Colors.white,
+                onPressed: () {
+                  setState(() {
+                    cancelSearch();
+                    this.isSearchEmpty = !this.isSearchEmpty;
+                  });
+                })
+          ],
           leading: !isSearchEmpty
               ? IconButton(
                   icon: Icon(Icons.arrow_back),
@@ -478,7 +635,4 @@ class CustomCardShapePainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
   }
-
-  Widget reported() {}
-  void report(url) {}
 }
