@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:srm_notes/components/models/loading.dart';
 import '../constants.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -154,10 +156,11 @@ class _SubjectPageState extends State<SubjectPage> {
   Future<void> downloadFile(String uri, String fileName, String doc) async {
     // String savePath = await getFilePath(fileName);
     String _sub = subject.toString().replaceAll(" ", "_");
-    savePath = "/storage/emulated/0/SRM_Docker/$_sub/$doc/" +
+
+    Directory dir = await getApplicationDocumentsDirectory();
+    savePath = '${dir.path}/$_sub/$doc/' +
         fileName.toString().replaceAll("'", "");
-    print(savePath);
-    await dio.download(uri, savePath);
+
     setState(() {
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(
@@ -172,8 +175,8 @@ class _SubjectPageState extends State<SubjectPage> {
         ),
       );
     });
-    // print(savePath);
-    // OpenFile.open(savePath);
+
+    await dio.download(uri, savePath);
   }
 
   Future<String> getSWData() async {

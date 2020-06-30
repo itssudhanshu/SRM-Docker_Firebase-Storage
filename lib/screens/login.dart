@@ -86,9 +86,12 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SizedBox(height: size.height * 0.03),
-                SvgPicture.asset(
-                  "assets/icons/login.svg",
-                  height: size.height * 0.35,
+                // SvgPicture.asset(
+                //   "assets/icons/login.svg",
+                //   height: size.height * 0.35,
+                // ),
+                Container(
+                  child: Image.asset('assets/images/docker_logo.png'),
                 ),
                 SizedBox(height: size.height * 0.03),
                 Container(

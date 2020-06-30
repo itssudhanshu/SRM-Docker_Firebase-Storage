@@ -39,16 +39,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
         displayDialog(context, 'Error', 'Some error occured.');
       }
     } catch (e) {
-      displayDialog(context, 'Error', 'The email address is already in use by another account.');
+      displayDialog(context, 'Error',
+          'The email address is already in use by another account.');
       print(e);
     }
   }
 
   addUser() async {
-    var response = await _fireStore
-        .collection('users')
-        .document('$_email')
-        .setData({'name': _name, 'email': _email, 'regno': _reg, 'uploads': 0 , 'likes': '0' , 'rank' : 'Checking', 'year' :'N/A' , 'dept' : "N/A" , 'branch' : 'N/A'});
+    var response =
+        await _fireStore.collection('users').document('$_email').setData({
+      'name': _name,
+      'email': _email,
+      'regno': _reg,
+      'uploads': 0,
+      'likes': '0',
+      'rank': 'Checking',
+      'year': 'N/A',
+      'dept': "N/A",
+      'branch': 'N/A'
+    });
   }
 
   void _toggle() {
@@ -107,14 +116,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     Positioned(
-                      top: size.height / 3,
-                      left: 100,
+                      top: size.height / 4,
+                      // left: 100,
                       child: Opacity(
                         opacity: 0.6,
-                        child: SvgPicture.asset(
-                          "assets/icons/signup.svg",
-                          height: size.height * 0.35,
-                          colorBlendMode: BlendMode.modulate,
+                        child: Container(
+                          child: Image.asset(
+                            'assets/images/docker_logo.png',
+                            scale: 0.7,
+                          ),
                         ),
                       ),
                     ),
@@ -124,11 +134,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             SizedBox(height: 40),
-                            CircleAvatar(
-                              backgroundColor: kPrimaryLightColor,
-                              child: Image.asset("assets/images/docker_logo.png"),
-                              radius: 70,
-                              ),
+                            // CircleAvatar(
+                            //   backgroundColor: kPrimaryLightColor,
+                            //   child:
+                            //       Image.asset("assets/images/docker_logo.png"),
+                            //   radius: 70,
+                            // ),
                             // Positioned(
                             //   top: 50,
                             //   left: 100,
@@ -144,10 +155,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 key: _formKey,
                                 child: Column(
                                   children: <Widget>[
-                                    
                                     SizedBox(height: 20.0),
                                     TextFormField(
-                                        textInputAction: TextInputAction.next,
+                                      textInputAction: TextInputAction.next,
 
                                       //                     decoration: textInputDecoration.copyWith(hintText:'Your Name',labelText: "Name",prefixIcon: Icon(
                                       //                             Icons.person,
@@ -182,7 +192,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         ),
                                       ),
                                       validator: (val) =>
-                                          (val.contains('faculty') || val.isEmpty)
+                                          (val.contains('faculty') ||
+                                                  val.isEmpty)
                                               ? "Name must not empty"
                                               : null,
                                       onChanged: (val) {
@@ -191,8 +202,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     ),
                                     SizedBox(height: 20.0),
                                     TextFormField(
-                                        textInputAction: TextInputAction.next,
-
+                                      textInputAction: TextInputAction.next,
                                       decoration: InputDecoration(
                                         fillColor: kPrimaryLightColor,
                                         filled: true,
@@ -233,7 +243,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     SizedBox(height: 20.0),
                                     TextFormField(
                                         textInputAction: TextInputAction.next,
-
                                         decoration: InputDecoration(
                                           fillColor: kPrimaryLightColor,
                                           filled: true,
@@ -275,7 +284,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     SizedBox(height: 20.0),
                                     TextFormField(
                                         textInputAction: TextInputAction.next,
-
                                         decoration: InputDecoration(
                                           fillColor: kPrimaryLightColor,
                                           filled: true,
@@ -319,7 +327,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     SizedBox(height: 20.0),
                                     TextFormField(
                                         textInputAction: TextInputAction.done,
-
                                         decoration: InputDecoration(
                                           fillColor: kPrimaryLightColor,
                                           filled: true,
