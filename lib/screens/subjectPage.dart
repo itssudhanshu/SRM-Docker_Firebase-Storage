@@ -153,11 +153,11 @@ class _SubjectPageState extends State<SubjectPage> {
 
   Future<void> downloadFile(String uri, String fileName, String doc) async {
     // String savePath = await getFilePath(fileName);
-    print(fileName.toString().replaceAll("'", ""));
     String _sub = subject.toString().replaceAll(" ", "_");
     savePath = "/storage/emulated/0/SRM_Docker/$_sub/$doc/" +
         fileName.toString().replaceAll("'", "");
-    dio.download(uri, savePath);
+    print(savePath);
+    await dio.download(uri, savePath);
     setState(() {
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(
@@ -166,7 +166,7 @@ class _SubjectPageState extends State<SubjectPage> {
           content: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'File Downloaded into your storage - SRM_Docker/$_sub/$doc/',
+              'File Downloaded into your storage - $savePath',
             ),
           ),
         ),
@@ -204,7 +204,8 @@ class _SubjectPageState extends State<SubjectPage> {
   Future<void> share(value) async {
     await FlutterShare.share(
         title: 'Share',
-        text: 'See what i found in Srm Docker.\nyou can also download Srm Docker from $downloadlink',
+        text:
+            'See what i found in Srm Docker.\nyou can also download Srm Docker from $downloadlink',
         linkUrl: value,
         chooserTitle: 'Share your doc.');
   }
