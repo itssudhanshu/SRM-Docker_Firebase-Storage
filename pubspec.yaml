@@ -1,5 +1,5 @@
 name: srm_notes
-description: A new Flutter project.
+description: An Automated Cross-Platform for Documents
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -47,9 +47,15 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: "^0.7.3"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/docker_logo.png"
 
 # The following section is specific to Flutter.
 flutter:

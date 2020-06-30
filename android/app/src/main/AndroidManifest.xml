@@ -14,7 +14,7 @@
   <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
   
-  <application android:name="io.flutter.app.FlutterApplication" android:label="srm_notes" android:icon="@mipmap/ic_launcher" android:largeHeap="true" android:usesCleartextTraffic="true">
+  <application android:name="io.flutter.app.FlutterApplication" android:label="SRM Docker" android:icon="@mipmap/ic_launcher" android:largeHeap="true" android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

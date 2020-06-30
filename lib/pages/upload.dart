@@ -171,9 +171,9 @@ class _UploadPageState extends State<UploadPage> {
   Future savedoc(File file, String name) async {
     print(selectedSub);
     print(name);
-
+    _fileName = name.toString().replaceAll("'", "");
     final StorageReference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child(_fileName);
+        FirebaseStorage.instance.ref().child("Subjects/"+selectedSub+"/"+preSelectedDoc+"/"+_fileName);
     final StorageUploadTask task = firebaseStorageRef.putFile(file);
     //  firebaseStorageRef.putData(file);
     StorageTaskSnapshot taskSnapshot = await task.onComplete;
