@@ -9,7 +9,6 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:srm_notes/components/mail.dart';
 import 'package:srm_notes/components/models/loading.dart';
 import 'package:srm_notes/constants.dart';
-// import 'package:srm_notes/pages/editprofile.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
@@ -37,9 +36,9 @@ class _AccountPageState extends State<AccountPage> {
   var storage = FlutterSecureStorage();
   File sampleImage;
   bool _uploadingImage = false;
-  List<String> dept = ["B.tech.", "MBA", "Arch", "Medical"];
+  List<String> dept = ["B.tech."];
   List<String> branch = ["CSE", "MECH.", "SWE", "IT", "ECE", "EEE"];
-  List<String> year = ["1st", "2nd", "3rd", "4th", "5th"];
+  List<String> year = ["1st", "2nd", "3rd", "4th"];
   String _dept = "Dept", _branch = "Branch", _year="year";
 
   @override
@@ -59,6 +58,7 @@ class _AccountPageState extends State<AccountPage> {
         sampleImage = tempImage;
         _uploadingImage = true;
       });
+      // ignore: unused_local_variable
       var name = DateTime.now();
       final StorageReference firebaseStorageRef =
           store.ref().child(loggedInUser.email);
@@ -70,6 +70,7 @@ class _AccountPageState extends State<AccountPage> {
       });
       url = url.replaceAll('//', '~');
       print(url);
+      // ignore: unused_local_variable
       var response = _fireStore
           .collection('users')
           .document(loggedInUser.email)
@@ -89,6 +90,7 @@ class _AccountPageState extends State<AccountPage> {
     setState(() {
       
     });
+     // ignore: unused_local_variable
      var response = _fireStore
           .collection('users')
           .document(loggedInUser.email)
@@ -148,6 +150,7 @@ class _AccountPageState extends State<AccountPage> {
     print('cache called');
     var _bool = storage.read(key: 'profileData');
     print(_bool);
+    // ignore: unrelated_type_equality_checks
     if (_bool == 'true') {
       setState(() {
         rank = storage.read(key: 'rank');

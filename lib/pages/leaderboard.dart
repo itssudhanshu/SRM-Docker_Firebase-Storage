@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:srm_notes/components/appbar.dart';
 import 'package:srm_notes/constants.dart';
-import 'package:srm_notes/pages/account.dart';
 
 class Leaderboard extends StatefulWidget {
   @override
@@ -20,7 +19,7 @@ class _LeaderboardState extends State<Leaderboard>
   final _fireStore = Firestore.instance;
   final _auth = FirebaseAuth.instance;
 
-  Widget cardWidget({name, regno,uploads,rank}) {
+  Widget cardWidget({name, regno, uploads, rank, url}) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -29,21 +28,16 @@ class _LeaderboardState extends State<Leaderboard>
             Container(
               height: 110,
               decoration: BoxDecoration(
-                borderRadius:
-                BorderRadius.circular(_borderRadius),
-                gradient: LinearGradient(
-                    colors: [
-                      // items[index].startColor,
-                      // items[index].endColor
-                      kPrimaryColor,
-                      kPrimaryLightColor
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight),
+                borderRadius: BorderRadius.circular(_borderRadius),
+                gradient: LinearGradient(colors: [
+                  // items[index].startColor,
+                  // items[index].endColor
+                  kPrimaryColor,
+                  kPrimaryLightColor
+                ], begin: Alignment.topLeft, end: Alignment.bottomRight),
                 boxShadow: [
                   BoxShadow(
-                    color:
-                    kPrimaryLightColor, //items[index].endColor,
+                    color: kPrimaryLightColor, //items[index].endColor,
                     blurRadius: 12,
                     offset: Offset(0, 6),
                   ),
@@ -68,16 +62,19 @@ class _LeaderboardState extends State<Leaderboard>
                 children: <Widget>[
                   Expanded(
                     child: CircleAvatar(
-                      backgroundColor:
-                      kPrimaryLightColor.withOpacity(0.8),
+                      backgroundColor: kPrimaryLightColor.withOpacity(0.8),
                       radius: 30,
                       child: ClipOval(
-                        child: Image.network(
-                          'https://pixel.nymag.com/imgs/daily/vulture/2017/06/14/14-tom-cruise.w700.h700.jpg',
-                          // height: 50,
-                          width: 60,
-                          // fit: BoxFit.fill,
-                        ),
+                        child: url != null
+                            ? Image.network(
+                                url,
+                                width: 60,
+                              )
+                            : Icon(
+                                Icons.person,
+                                size: 70,
+                                color: Colors.white,
+                              ),
                       ),
                     ),
                     flex: 2,
@@ -87,10 +84,8 @@ class _LeaderboardState extends State<Leaderboard>
                     flex: 4,
                     child: Column(
                       // mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment:
-                      MainAxisAlignment.center,
-                      crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Flexible(
                           child: Text(
@@ -144,8 +139,7 @@ class _LeaderboardState extends State<Leaderboard>
                   Expanded(
                     flex: 2,
                     child: Column(
-                      mainAxisAlignment:
-                      MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
                           "Rank",
@@ -239,7 +233,7 @@ class _LeaderboardState extends State<Leaderboard>
                 children: <Widget>[
                   StreamBuilder<QuerySnapshot>(
                     stream: _fireStore.collection('users').snapshots(),
-                    builder: (context,snapshot) {
+                    builder: (context, snapshot) {
                       if (snapshot.data == null) {
                         return Icon(
                           Icons.flight_takeoff,
@@ -249,26 +243,35 @@ class _LeaderboardState extends State<Leaderboard>
                         );
                       }
                       final usersdata = snapshot.data.documents.toList();
-                      usersdata.sort((a, b) => b['uploads'].compareTo(a['uploads']));
+                      usersdata
+                          .sort((a, b) => b['uploads'].compareTo(a['uploads']));
                       List<Widget> wid = [];
                       int rank = 0;
                       for (var user in usersdata) {
                         rank = rank + 1;
                         final name = user.data['name'];
                         final email = user.data['email'];
-                        _fireStore.collection('users').document(email).updateData({
-                          'rank' : rank.toString()
-                        });
+                        _fireStore
+                            .collection('users')
+                            .document(email)
+                            .updateData({'rank': rank.toString()});
                         final regid = user.data['regno'];
                         var uploads = user.data['uploads'];
-                        final mw = cardWidget(name: name,regno: regid,uploads: uploads, rank :rank );
+                        final url = user.data['profilepic'];
+                        final mw = cardWidget(
+                          name: name,
+                          regno: regid,
+                          uploads: uploads,
+                          rank: rank,
+                          url: url,
+                        );
                         wid.add(mw);
                       }
-                        return Expanded(
-                          child: ListView(
-                            children: wid,
-                          ),
-                        );
+                      return Expanded(
+                        child: ListView(
+                          children: wid,
+                        ),
+                      );
                     },
                   )
                 ],
