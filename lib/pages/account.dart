@@ -76,7 +76,7 @@ class _AccountPageState extends State<AccountPage> {
     getSWData();
     checkCached();
     timer = Timer.periodic(Duration(seconds: 10), (timer) async {
-      print('timer called');
+      // print('timer called');
       this.getCurrentUser();
     });
   }
