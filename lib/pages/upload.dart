@@ -71,6 +71,8 @@ class _UploadPageState extends State<UploadPage> {
     });
   }
 
+  bool isLoading = false;
+
   ///
   Future<String> getSWData() async {
     //Get Latest version info from firebase config
@@ -237,7 +239,7 @@ class _UploadPageState extends State<UploadPage> {
     assert(detector != null);
     detector.onTap();
   }
-
+  double i=0;
   void _clearCachedFiles() {
     setState(() => {_loadingPath = true, cameraimage = false});
     FilePicker.clearTemporaryFiles().then((result) {
@@ -565,7 +567,7 @@ class _UploadPageState extends State<UploadPage> {
                                         color: kPrimaryColor,
                                         padding: EdgeInsets.symmetric(
                                             vertical: 15, horizontal: 10),
-                                        child: Row(
+                                        child:isLoading ?  Center(child : CircularProgressIndicator()) :  Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: <Widget>[
@@ -587,29 +589,35 @@ class _UploadPageState extends State<UploadPage> {
                                   ),
                                 )
                               : GestureDetector(
-                                  onTap: () {
+                                  onTap: () async {
                                     // setState(() {
-                                    setState(() async {
-                                      for (File file in multifile) {
-                                        // get file name
-                                        _fileName =
-                                            file.toString().split('/').last;
+                                    i = 0 ;
+                                    for (File file in multifile) {
+                                      setState(() {
+                                        isLoading = true;
+                                        i = i+1;
+                                      });
+                                      // get file name
+                                      _fileName =
+                                          file.toString().split('/').last;
 
-                                        if (file != null &&
-                                            selectedSub != null) {
-                                          // uploading = true;
+                                      if (file != null &&
+                                          selectedSub != null) {
+                                        // uploading = true;
 
-                                          //call uploading function
-                                          await makefolder();
-                                          await savedoc(file, _fileName);
-                                        } else {
-                                          setState(() {
-                                            openDropdown();
-                                          });
-                                        }
+                                        //call uploading function
+                                        await makefolder();
+                                        await savedoc(file, _fileName);
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          isLoading = false;
+                                          openDropdown();
+                                        });
                                       }
-                                      // uploading = false;
-                                    });
+                                    }
                                     _clearCachedFiles();
                                   },
                                   child: Container(
@@ -621,7 +629,7 @@ class _UploadPageState extends State<UploadPage> {
                                         color: kPrimaryColor,
                                         padding: EdgeInsets.symmetric(
                                             vertical: 15, horizontal: 10),
-                                        child: Row(
+                                        child: isLoading ?  Center(child : CircularProgressIndicator(value: i,)) :  Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: <Widget>[
