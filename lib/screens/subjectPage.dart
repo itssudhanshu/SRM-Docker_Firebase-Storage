@@ -155,7 +155,7 @@ class _SubjectPageState extends State<SubjectPage> {
 
   Future<void> downloadFile(String uri, String fileName, String doc) async {
     // String savePath = await getFilePath(fileName);
-    String _sub = subject.toString().replaceAll(" ", "_");
+    // String _sub = subject.toString().replaceAll(" ", "_");
 
     // Directory dir = await getApplicationDocumentsDirectory();
     Directory dir = await getExternalStorageDirectory();
@@ -166,7 +166,7 @@ class _SubjectPageState extends State<SubjectPage> {
     // print(_externalDocumentsDirectory.path.toString().replaceAll("Android/*", ""));
     // print(newDir);
     savePath =
-        '${newDir.path}/$_sub/$doc/' + fileName.toString().replaceAll("'", "");
+        '${newDir.path}/$subject/$doc/' + fileName.toString().replaceAll("'", "");
     String showPath =
         savePath.toString().replaceAll("/storage/emulated/0/", "");
     if (FileSystemEntity.typeSync(savePath) != FileSystemEntityType.notFound) {

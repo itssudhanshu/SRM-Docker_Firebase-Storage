@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:srm_notes/components/rounded_button.dart';
 import 'package:srm_notes/constants.dart';
 import 'package:srm_notes/screens/login.dart';

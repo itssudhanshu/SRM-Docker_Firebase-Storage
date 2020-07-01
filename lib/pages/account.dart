@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -14,8 +13,6 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'leaderboard.dart';
-import 'package:srm_notes/screens/login.dart';
 
 FirebaseUser loggedInUser;
 bool _doneLoading = false;

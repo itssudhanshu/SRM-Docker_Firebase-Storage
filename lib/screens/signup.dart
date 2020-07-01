@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:srm_notes/components/already_have_an_account_acheck.dart';
 import 'package:srm_notes/components/models/loading.dart';
 import 'package:srm_notes/components/rounded_button.dart';
