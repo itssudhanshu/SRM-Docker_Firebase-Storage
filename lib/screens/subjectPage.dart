@@ -157,26 +157,39 @@ class _SubjectPageState extends State<SubjectPage> {
     // String savePath = await getFilePath(fileName);
     String _sub = subject.toString().replaceAll(" ", "_");
 
-    Directory dir = await getApplicationDocumentsDirectory();
-    savePath = '${dir.path}/$_sub/$doc/' +
-        fileName.toString().replaceAll("'", "");
-
-    setState(() {
-      _scaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          // duration: Duration(milliseconds: 50),
-          backgroundColor: Colors.green,
-          content: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'File Downloaded into your storage - $savePath',
+    // Directory dir = await getApplicationDocumentsDirectory();
+    Directory dir = await getExternalStorageDirectory();
+    // var newDir =
+    //     await new Directory('${dir.path}/SRM Docker').create(recursive: true);
+    var newDir = await new Directory('/storage/emulated/0/SRM Docker')
+        .create(recursive: true);
+    // print(_externalDocumentsDirectory.path.toString().replaceAll("Android/*", ""));
+    // print(newDir);
+    savePath =
+        '${newDir.path}/$_sub/$doc/' + fileName.toString().replaceAll("'", "");
+    String showPath =
+        savePath.toString().replaceAll("/storage/emulated/0/", "");
+    if (FileSystemEntity.typeSync(savePath) != FileSystemEntityType.notFound) {
+      OpenFile.open(savePath);
+    } else {
+      setState(() {
+        _scaffoldKey.currentState.showSnackBar(
+          SnackBar(
+            // duration: Duration(milliseconds: 50),
+            backgroundColor: Colors.green,
+            content: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'File Downloaded into your storage - $showPath',
+              ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      });
 
-    await dio.download(uri, savePath);
+      await dio.download(uri, savePath);
+      OpenFile.open(savePath);
+    }
   }
 
   Future<String> getSWData() async {
@@ -265,8 +278,6 @@ class _SubjectPageState extends State<SubjectPage> {
                     onTap: () async {
                       print(url);
                       await downloadFile(url, title, doc);
-                      print(savePath);
-                      OpenFile.open(savePath);
                     },
                     child: Padding(
                         padding: const EdgeInsets.all(8.0),
