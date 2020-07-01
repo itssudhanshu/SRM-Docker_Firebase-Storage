@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:srm_notes/components/models/loading.dart';
 import '../constants.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -153,27 +155,41 @@ class _SubjectPageState extends State<SubjectPage> {
 
   Future<void> downloadFile(String uri, String fileName, String doc) async {
     // String savePath = await getFilePath(fileName);
-    print(fileName.toString().replaceAll("'", ""));
-    String _sub = subject.toString().replaceAll(" ", "_");
-    savePath = "/storage/emulated/0/SRM_Docker/$_sub/$doc/" +
-        fileName.toString().replaceAll("'", "");
-    await dio.download(uri, savePath);
-    setState(() {
-      _scaffoldKey.currentState.showSnackBar(
-        SnackBar(
-          // duration: Duration(milliseconds: 50),
-          backgroundColor: Colors.green,
-          content: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'File Downloaded into your storage - SRM_Docker/$_sub/$doc/',
+    // String _sub = subject.toString().replaceAll(" ", "_");
+
+    // Directory dir = await getApplicationDocumentsDirectory();
+    Directory dir = await getExternalStorageDirectory();
+    // var newDir =
+    //     await new Directory('${dir.path}/SRM Docker').create(recursive: true);
+    var newDir = await new Directory('/storage/emulated/0/SRM Docker')
+        .create(recursive: true);
+    // print(_externalDocumentsDirectory.path.toString().replaceAll("Android/*", ""));
+    // print(newDir);
+    savePath =
+        '${newDir.path}/$subject/$doc/' + fileName.toString().replaceAll("'", "");
+    String showPath =
+        savePath.toString().replaceAll("/storage/emulated/0/", "");
+    if (FileSystemEntity.typeSync(savePath) != FileSystemEntityType.notFound) {
+      OpenFile.open(savePath);
+    } else {
+      setState(() {
+        _scaffoldKey.currentState.showSnackBar(
+          SnackBar(
+            // duration: Duration(milliseconds: 50),
+            backgroundColor: Colors.green,
+            content: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'File Downloaded into your storage - $showPath',
+              ),
             ),
           ),
-        ),
-      );
-    });
-    // print(savePath);
-    // OpenFile.open(savePath);
+        );
+      });
+
+      await dio.download(uri, savePath);
+      OpenFile.open(savePath);
+    }
   }
 
   Future<String> getSWData() async {
@@ -204,7 +220,8 @@ class _SubjectPageState extends State<SubjectPage> {
   Future<void> share(value) async {
     await FlutterShare.share(
         title: 'Share',
-        text: 'See what i found in Srm Docker.\nyou can also download Srm Docker from $downloadlink',
+        text:
+            'See what i found in Srm Docker.\nyou can also download Srm Docker from $downloadlink',
         linkUrl: value,
         chooserTitle: 'Share your doc.');
   }
@@ -261,8 +278,6 @@ class _SubjectPageState extends State<SubjectPage> {
                     onTap: () async {
                       print(url);
                       await downloadFile(url, title, doc);
-                      print(savePath);
-                      await OpenFile.open(savePath);
                     },
                     child: Padding(
                         padding: const EdgeInsets.all(8.0),

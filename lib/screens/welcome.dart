@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:srm_notes/components/rounded_button.dart';
 import 'package:srm_notes/constants.dart';
 import 'package:srm_notes/screens/login.dart';
@@ -36,15 +35,22 @@ class WelcomeScreen extends StatelessWidget {
             SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
                     "WELCOME TO SRM DOCKER",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
                   ),
-                  SizedBox(height: size.height * 0.05),
-                  SvgPicture.asset(
-                    "assets/icons/chat.svg",
-                    height: size.height * 0.45,
+                  SizedBox(height: size.height * 0.10),
+                  // SvgPicture.asset(
+                  //   "assets/icons/chat.svg",
+                  //   height: size.height * 0.45,
+                  // ),
+                  Container(
+                    child: Image.asset('assets/images/docker_logo.png'),
                   ),
                   SizedBox(height: size.height * 0.05),
                   RoundedButton(
@@ -65,14 +71,14 @@ class WelcomeScreen extends StatelessWidget {
                     color: kPrimaryLightColor,
                     textColor: Colors.black,
                     press: () {
-                       Navigator.push(
-                         context,
-                         MaterialPageRoute(
-                           builder: (context) {
-                             return SignUpScreen();
-                           },
-                         ),
-                       );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return SignUpScreen();
+                          },
+                        ),
+                      );
                     },
                   ),
                 ],

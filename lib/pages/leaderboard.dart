@@ -21,7 +21,6 @@ class _LeaderboardState extends State<Leaderboard>
   final _auth = FirebaseAuth.instance;
 
   Widget cardWidget({name, regno, uploads, rank, profilepic}) {
-
     profilepic = profilepic.toString().replaceAll('~', '//');
     return Center(
       child: Padding(
@@ -30,72 +29,84 @@ class _LeaderboardState extends State<Leaderboard>
           children: <Widget>[
             Container(
               height: 90,
-              decoration: rank == 1 ? BoxDecoration(
-                borderRadius: BorderRadius.circular(_borderRadius),
-                gradient: LinearGradient(colors: [
-                  Colors.red,
-                  Colors.blue,
-                //  Color.fromRGBO(189, 147, 122,0),
-                //  Color.fromRGBO(229, 214, 114,0),
-                 
-                ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-                boxShadow: [
-                  BoxShadow(
-                    color: kPrimaryLightColor, //items[index].endColor,
-                    blurRadius: 12,
-                    offset: Offset(0, 6),
-                  ),
-                ],
-              ) : BoxDecoration(
-                borderRadius: BorderRadius.circular(_borderRadius),
-                gradient: LinearGradient(colors: [
-                  // items[index].startColor,
-                  // items[index].endColor
-                  kPrimaryColor,
-                  kPrimaryLightColor
-                ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-                boxShadow: [
-                  BoxShadow(
-                    color: kPrimaryLightColor, //items[index].endColor,
-                    blurRadius: 12,
-                    offset: Offset(0, 6),
-                  ),
-                ],
-              ),
+              decoration: rank == 1
+                  ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(_borderRadius),
+                      border: Border.all(width: 5.0, color: Colors.orange[900]),
+                      gradient: LinearGradient(colors: [
+                        Colors.orange[700],
+                        Colors.amber[200],
+                        //  Color.fromRGBO(189, 147, 122,0),
+                        //  Color.fromRGBO(229, 214, 114,0),
+                      ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                      boxShadow: [
+                        BoxShadow(
+                          color: kPrimaryLightColor, //items[index].endColor,
+                          blurRadius: 12,
+                          offset: Offset(0, 6),
+                        ),
+                      ],
+                    )
+                  : BoxDecoration(
+                      borderRadius: BorderRadius.circular(_borderRadius),
+                      gradient: LinearGradient(colors: [
+                        // items[index].startColor,
+                        // items[index].endColor
+                        kPrimaryColor,
+                        kPrimaryLightColor
+                      ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                      boxShadow: [
+                        BoxShadow(
+                          color: kPrimaryLightColor, //items[index].endColor,
+                          blurRadius: 12,
+                          offset: Offset(0, 6),
+                        ),
+                      ],
+                    ),
             ),
             Positioned(
               right: 0,
               bottom: 0,
               top: 0,
               child: CustomPaint(
-                size: Size(100, 150),
-                painter: CustomCardShapePainter(
-                    _borderRadius,
-                    // items[index].startColor, items[index].endColor
-                    kPrimaryColor,
-                    kPrimaryLightColor),
-              ),
+                  size: Size(100, 150),
+                  painter: rank == 1
+                      ? CustomCardShapePainter(
+                          _borderRadius,
+                          // items[index].startColor, items[index].endColor
+                          Colors.amber[900],
+                          Colors.amber[200])
+                      : CustomCardShapePainter(
+                          _borderRadius,
+                          // items[index].startColor, items[index].endColor
+                          kPrimaryColor,
+                          kPrimaryLightColor)),
             ),
             Positioned.fill(
               child: Row(
                 children: <Widget>[
                   Expanded(
-                    child: CircleAvatar(
-                      backgroundColor: kPrimaryLightColor.withOpacity(0.8),
-                      radius: 30,
-                      child: ClipOval(
-                          child: profilepic == null
-                              ? Icon(
-                                  Icons.person,
-                                  size: 40,
-                                  color: Colors.purple,
-                                )
-                              : Image.network(
-                                  profilepic,
-                                  // height: 50,
-                                  width: 60,
-                                  // fit: BoxFit.fill,
-                                )),
+                    child: Container(
+                      width: 70,
+                      height: 70,
+                      child: Align(
+                        alignment: Alignment.center,
+                        heightFactor: 0.8,
+                        widthFactor: 0.7,
+                        child: ClipOval(
+                            child: profilepic == null
+                                ? Icon(
+                                    Icons.person,
+                                    size: 40,
+                                    color: Colors.purple,
+                                  )
+                                : Image.network(
+                                    profilepic,
+                                    height: 60,
+                                    width: 60,
+                                    fit: BoxFit.fill,
+                                  )),
+                      ),
                     ),
                     flex: 2,
                   ),
@@ -145,7 +156,9 @@ class _LeaderboardState extends State<Leaderboard>
                               child: Text(
                                 '$uploads',
                                 style: TextStyle(
-                                  color: kPrimaryColor,
+                                  color: rank == 1
+                                      ? Colors.amber[900]
+                                      : kPrimaryColor,
                                   fontSize: 20.0,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -173,7 +186,8 @@ class _LeaderboardState extends State<Leaderboard>
                         Text(
                           rank.toString(),
                           style: TextStyle(
-                            color: kPrimaryColor,
+                            color:
+                                rank == 1 ? Colors.amber[900] : kPrimaryColor,
                             fontFamily: 'Avenir',
                             fontSize: 35,
                             fontWeight: FontWeight.w700,
