@@ -42,7 +42,7 @@ class _SubjectPageState extends State<SubjectPage> {
   Future report(uploader1, reason1, url, doc, sub) async {
     var response = await Firestore.instance
         .collection("Reports")
-        .document(uploader1)
+        .document('${DateTime.now()}')
         .setData({
       'reason': reason1,
       'uploader': uploader1,
@@ -157,7 +157,7 @@ class _SubjectPageState extends State<SubjectPage> {
     String _sub = subject.toString().replaceAll(" ", "_");
     savePath = "/storage/emulated/0/SRM_Docker/$_sub/$doc/" +
         fileName.toString().replaceAll("'", "");
-    dio.download(uri, savePath);
+    await dio.download(uri, savePath);
     setState(() {
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(
@@ -262,7 +262,7 @@ class _SubjectPageState extends State<SubjectPage> {
                       print(url);
                       await downloadFile(url, title, doc);
                       print(savePath);
-                      OpenFile.open(savePath);
+                      await OpenFile.open(savePath);
                     },
                     child: Padding(
                         padding: const EdgeInsets.all(8.0),
