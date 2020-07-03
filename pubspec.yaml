@@ -45,6 +45,7 @@ dependencies:
   firebase_remote_config: ^0.3.1
   permission_handler: ^5.0.1+1
   url_launcher: ^5.4.11
+  paginate_firestore: ^0.1.1
   path_provider: 
 
 dev_dependencies:
@@ -58,7 +59,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/docker_logo.png"
+  image_path: "assets/images/logo_finished.jpg"
 
 # The following section is specific to Flutter.
 flutter:

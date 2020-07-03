@@ -239,7 +239,8 @@ class _UploadPageState extends State<UploadPage> {
     assert(detector != null);
     detector.onTap();
   }
-  double i=0;
+
+  double i = 0;
   void _clearCachedFiles() {
     setState(() => {_loadingPath = true, cameraimage = false});
     FilePicker.clearTemporaryFiles().then((result) {
@@ -467,6 +468,9 @@ class _UploadPageState extends State<UploadPage> {
                                                                     .toString()
                                                                     .split('/')
                                                                     .last;
+                                                        setState(() {
+                                                          var total = index;
+                                                        });
                                                         return Container(
                                                           margin: EdgeInsets
                                                               .fromLTRB(
@@ -567,23 +571,28 @@ class _UploadPageState extends State<UploadPage> {
                                         color: kPrimaryColor,
                                         padding: EdgeInsets.symmetric(
                                             vertical: 15, horizontal: 10),
-                                        child:isLoading ?  Center(child : CircularProgressIndicator()) :  Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text(
-                                              "Upload Image",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20.0),
-                                            ),
-                                            SizedBox(width: size.width * 0.02),
-                                            Icon(
-                                              Icons.file_upload,
-                                              color: Colors.white,
-                                            ),
-                                          ],
-                                        ),
+                                        child: isLoading
+                                            ? Center(
+                                                child:
+                                                    CircularProgressIndicator())
+                                            : Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Text(
+                                                    "Upload Image",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 20.0),
+                                                  ),
+                                                  SizedBox(
+                                                      width: size.width * 0.02),
+                                                  Icon(
+                                                    Icons.file_upload,
+                                                    color: Colors.white,
+                                                  ),
+                                                ],
+                                              ),
                                       ),
                                     ),
                                   ),
@@ -591,18 +600,17 @@ class _UploadPageState extends State<UploadPage> {
                               : GestureDetector(
                                   onTap: () async {
                                     // setState(() {
-                                    i = 0 ;
+                                    i = 0;
                                     for (File file in multifile) {
                                       setState(() {
                                         isLoading = true;
-                                        i = i+1;
+                                        i = i + 1;
                                       });
                                       // get file name
                                       _fileName =
                                           file.toString().split('/').last;
 
-                                      if (file != null &&
-                                          selectedSub != null) {
+                                      if (file != null && selectedSub != null) {
                                         // uploading = true;
 
                                         //call uploading function
@@ -629,23 +637,30 @@ class _UploadPageState extends State<UploadPage> {
                                         color: kPrimaryColor,
                                         padding: EdgeInsets.symmetric(
                                             vertical: 15, horizontal: 10),
-                                        child: isLoading ?  Center(child : CircularProgressIndicator(value: i,)) :  Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text(
-                                              "Upload",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20.0),
-                                            ),
-                                            SizedBox(width: size.width * 0.02),
-                                            Icon(
-                                              Icons.file_upload,
-                                              color: Colors.white,
-                                            ),
-                                          ],
-                                        ),
+                                        child: isLoading
+                                            ? Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                value: i,
+                                              ))
+                                            : Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Text(
+                                                    "Upload",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 20.0),
+                                                  ),
+                                                  SizedBox(
+                                                      width: size.width * 0.02),
+                                                  Icon(
+                                                    Icons.file_upload,
+                                                    color: Colors.white,
+                                                  ),
+                                                ],
+                                              ),
                                       ),
                                     ),
                                   ),

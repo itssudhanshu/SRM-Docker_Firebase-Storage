@@ -8,7 +8,7 @@ class Loading extends StatelessWidget {
       color: kPrimaryLightColor,
       child: Center(
         child:Image.asset(
-                "assets/images/docker_logo.png",
+                "assets/images/logo_finished.jpg",
               ),
         // SpinKitChasingDots(
         //   color: kPrimaryColor,
