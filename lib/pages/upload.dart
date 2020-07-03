@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:srm_notes/components/appbar.dart';
+import 'package:srm_notes/components/models/loading.dart';
 import '../constants.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
@@ -191,7 +192,7 @@ class _UploadPageState extends State<UploadPage> {
     //  firebaseStorageRef.putData(file);
     StorageTaskSnapshot taskSnapshot = await task.onComplete;
     print("upload complete");
-    _clearCachedFiles();
+    // _clearCachedFiles();
     String url = await taskSnapshot.ref.getDownloadURL();
     url = url.replaceAll('//', '~');
     print(url);
@@ -633,17 +634,34 @@ class _UploadPageState extends State<UploadPage> {
                                     width: size.width * 0.5,
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(29),
-                                      child: Container(
-                                        color: kPrimaryColor,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 15, horizontal: 10),
-                                        child: isLoading
-                                            ? Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                value: i,
-                                              ))
-                                            : Row(
+                                      child: isLoading
+                                          ? Container(
+                                           
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Center(
+                                                    child: Image.asset(
+                                                      "assets/images/load.gif",
+                                                      color: kPrimaryColor,
+                                                      width: size.width * 0.3,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "Uploading...",
+                                                    style: TextStyle(
+                                                      color: kPrimaryColor,
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            )
+                                          : Container(
+                                              color: kPrimaryColor,
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 15, horizontal: 10),
+                                              child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 children: <Widget>[
@@ -661,7 +679,7 @@ class _UploadPageState extends State<UploadPage> {
                                                   ),
                                                 ],
                                               ),
-                                      ),
+                                            ),
                                     ),
                                   ),
                                 ),
