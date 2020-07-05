@@ -113,6 +113,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  dart_notification_center:
+    dependency: transitive
+    description:
+      name: dart_notification_center
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0+1"
   dio:
     dependency: "direct main"
     description:
@@ -120,6 +127,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.9"
+  dropdown_banner:
+    dependency: "direct main"
+    description:
+      name: dropdown_banner
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.0"
   fake_async:
     dependency: transitive
     description:

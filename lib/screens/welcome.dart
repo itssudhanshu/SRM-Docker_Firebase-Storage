@@ -37,21 +37,29 @@ class WelcomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    "WELCOME TO SRM DOCKER",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                  SizedBox(height: size.height * 0.10),
+                   Text("SRM",
+                 style: TextStyle(
+                            color: kPrimaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30),
+                ),
+                Opacity(opacity: 0.8,child: 
+                Text("DOCKER",
+                 style: TextStyle(
+                            color: kPrimaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30),
+                )
+                ),
+                  // SizedBox(height: size.height * 0.10),
                   // SvgPicture.asset(
                   //   "assets/icons/chat.svg",
                   //   height: size.height * 0.45,
                   // ),
                   Container(
-                    child: Image.asset('assets/images/docker_logo.png'),
-                  ),
+                      width: size.width * 0.8,
+                      child: Image.asset('assets/images/logobg.png',
+                          fit: BoxFit.cover)),
                   SizedBox(height: size.height * 0.05),
                   RoundedButton(
                     text: "SIGN IN",

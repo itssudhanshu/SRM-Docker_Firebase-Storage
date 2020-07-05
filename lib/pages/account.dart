@@ -82,7 +82,7 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future getimagefromgallery() async {
-    var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery,imageQuality: 50);
     try {
       setState(() {
         sampleImage = tempImage;

@@ -94,11 +94,11 @@ class _LeaderboardState extends State<Leaderboard>
                         heightFactor: 0.8,
                         widthFactor: 0.7,
                         child: ClipOval(
-                            child: profilepic == null
+                            child: profilepic == "null"
                                 ? Icon(
                                     Icons.person,
                                     size: 40,
-                                    color: Colors.purple,
+                                    color: Colors.white,
                                   )
                                 : Image.network(
                                     profilepic,
