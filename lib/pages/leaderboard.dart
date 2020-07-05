@@ -271,6 +271,7 @@ class _LeaderboardState extends State<Leaderboard>
                       if (snapshot.data == null) {
                         return Loading();
                       }
+
                       final usersdata = snapshot.data.documents.toList();
                       usersdata
                           .sort((a, b) => b['uploads'].compareTo(a['uploads']));

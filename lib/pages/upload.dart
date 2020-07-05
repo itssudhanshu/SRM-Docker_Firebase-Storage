@@ -76,7 +76,7 @@ class _UploadPageState extends State<UploadPage> {
     });
   }
 
-  bool isLoading = true;
+  bool isLoading = false;
 
   ///
   Future<String> getSWData() async {
