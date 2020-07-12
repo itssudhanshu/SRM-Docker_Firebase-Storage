@@ -1,6 +1,9 @@
-# srm_notes
+<p align="center">(Android/iOS)</p>
+<p align="center">
+  <img src="https://github.com/itssudhanshu/SRM-Docker/blob/master/assets/images/docker_logo.png" width="150">
+</p>
 
-A new Flutter project.
+<h3 align="center">An Automated Cross-Platform for Documents Sharing</h3>
 
 ## Getting Started
 
