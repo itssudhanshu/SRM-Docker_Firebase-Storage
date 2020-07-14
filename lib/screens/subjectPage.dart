@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:srm_notes/components/models/loading.dart';
 import '../constants.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -43,7 +44,7 @@ class _SubjectPageState extends State<SubjectPage> {
   Future report(uploader1, reason1, url, doc, sub) async {
     var response = await Firestore.instance
         .collection("Reports")
-        .document(uploader1)
+        .document('${DateTime.now()}')
         .setData({
       'reason': reason1,
       'uploader': uploader1,
@@ -157,15 +158,23 @@ class _SubjectPageState extends State<SubjectPage> {
     // String _sub = subject.toString().replaceAll(" ", "_");
 
     // Directory dir = await getApplicationDocumentsDirectory();
+    
+    var status = await Permission.storage.status;
+                  if (!status.isGranted) {
+                    await Permission.storage.request();
+                  }
     Directory dir = await getExternalStorageDirectory();
+
+    var newDir =
+        await new Directory('/storage/emulated/0/SRM Docker').create(recursive: true);
+
     // var newDir =
     //     await new Directory('${dir.path}/SRM Docker').create(recursive: true);
-    var newDir = await new Directory('/storage/emulated/0/SRM Docker')
-        .create(recursive: true);
+
     // print(_externalDocumentsDirectory.path.toString().replaceAll("Android/*", ""));
     // print(newDir);
-    savePath =
-        '${newDir.path}/$subject/$doc/' + fileName.toString().replaceAll("'", "");
+    savePath = '${newDir.path}/$subject/$doc/' +
+        fileName.toString().replaceAll("'", "");
     String showPath =
         savePath.toString().replaceAll("/storage/emulated/0/", "");
     if (FileSystemEntity.typeSync(savePath) != FileSystemEntityType.notFound) {

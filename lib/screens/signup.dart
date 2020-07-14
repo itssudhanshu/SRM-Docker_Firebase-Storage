@@ -118,10 +118,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       top: size.height / 4,
                       // left: 100,
                       child: Opacity(
-                        opacity: 0.6,
+                        opacity: 1,
                         child: Container(
                           child: Image.asset(
-                            'assets/images/docker_logo.png',
+                            'assets/images/logobg.png',
                             scale: 0.7,
                           ),
                         ),

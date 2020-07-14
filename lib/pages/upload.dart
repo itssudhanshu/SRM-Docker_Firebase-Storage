@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
+import 'package:dropdown_banner/dropdown_banner.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
 import 'package:srm_notes/components/appbar.dart';
+import 'package:srm_notes/components/models/loading.dart';
 import '../constants.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
@@ -23,6 +25,7 @@ class UploadPage extends StatefulWidget {
 
 class _UploadPageState extends State<UploadPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final navigatorKey = GlobalKey<NavigatorState>();
 
   final _fireStore = Firestore.instance;
   final store = FirebaseStorage.instance;
@@ -32,6 +35,8 @@ class _UploadPageState extends State<UploadPage> {
   ///
   File _imagefile;
   bool cameraimage = false;
+  var total;
+  var rem = 1;
 
   ///
   String _fileName;
@@ -71,6 +76,8 @@ class _UploadPageState extends State<UploadPage> {
     });
   }
 
+  bool isLoading = false;
+
   ///
   Future<String> getSWData() async {
     //Get Latest version info from firebase config
@@ -90,6 +97,14 @@ class _UploadPageState extends State<UploadPage> {
       // Fetch throttled.
       print(exception);
     } catch (exception) {
+      //    navigatorKey:
+      // navigatorKey;
+      DropdownBanner.showBanner(
+        text: 'Poor Internet Connection, Unable to fetch subjects',
+        color: Colors.red,
+        textStyle: TextStyle(
+            color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+      );
       print('Unable to fetch remote config. Cached or default values will be '
           'used');
     }
@@ -102,7 +117,6 @@ class _UploadPageState extends State<UploadPage> {
     getCurrentUser();
     getSWData();
     _controller.addListener(() => _extension = _controller.text);
-
     super.initState();
   }
 
@@ -189,7 +203,9 @@ class _UploadPageState extends State<UploadPage> {
     //  firebaseStorageRef.putData(file);
     StorageTaskSnapshot taskSnapshot = await task.onComplete;
     print("upload complete");
-    _clearCachedFiles();
+    await setState(() {
+      rem = rem + 1;
+    });
     String url = await taskSnapshot.ref.getDownloadURL();
     url = url.replaceAll('//', '~');
     print(url);
@@ -238,8 +254,10 @@ class _UploadPageState extends State<UploadPage> {
     detector.onTap();
   }
 
+  double i = 0;
+
   void _clearCachedFiles() {
-    setState(() => {_loadingPath = true, cameraimage = false});
+    setState(() => {_loadingPath = true, cameraimage = false, rem = 1});
     FilePicker.clearTemporaryFiles().then((result) {
       _scaffoldKey.currentState.showSnackBar(
         SnackBar(
@@ -258,339 +276,381 @@ class _UploadPageState extends State<UploadPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      key: _scaffoldKey,
-      // extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        child: ConstAppbar(title: "Upload"),
-        preferredSize: Size.fromHeight(50.0),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: FloatingActionButton(
-          child: Icon(Icons.camera),
-          elevation: 0,
-          backgroundColor: kPrimaryColor,
-          onPressed: () {
-            _pickImage();
-            // cameraimage = true;
-          },
+    return DropdownBanner(
+      child: Scaffold(
+        key: _scaffoldKey,
+        // extendBodyBehindAppBar: true,
+        appBar: PreferredSize(
+          child: ConstAppbar(title: "Upload"),
+          preferredSize: Size.fromHeight(50.0),
         ),
-      ),
-      body:
-          //  uploading
-          //     ? Loading()
-          //     :
-          Container(
-        height: size.height,
-        width: double.infinity,
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              top: 0,
-              left: 0,
-              child: Image.asset(
-                "assets/images/signup_top.png",
-                width: size.width * 0.35,
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: FloatingActionButton(
+            child: Icon(Icons.camera),
+            elevation: 0,
+            backgroundColor: kPrimaryColor,
+            onPressed: () {
+              _pickImage();
+              // cameraimage = true;
+            },
+          ),
+        ),
+        body:
+            //  uploading
+            //     ? Loading()
+            //     :
+            Container(
+          height: size.height,
+          width: double.infinity,
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                top: 0,
+                left: 0,
+                child: Image.asset(
+                  "assets/images/signup_top.png",
+                  width: size.width * 0.35,
+                ),
               ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              child: Image.asset(
-                "assets/images/main_bottom.png",
-                width: size.width * 0.25,
+              Positioned(
+                bottom: 0,
+                left: 0,
+                child: Image.asset(
+                  "assets/images/main_bottom.png",
+                  width: size.width * 0.25,
+                ),
               ),
-            ),
-            // notes ? notespage() : questionpage(),
-            SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  // SizedBox(height: size.height * 0.02),
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2.0, color: color),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: SearchableDropdown(
-                        key: dropdownKey,
-                        //ese SearchableDropdown.single for suffix icon
-                        underline: SizedBox(width: 20),
-                        iconEnabledColor: kPrimaryColor,
-                        iconDisabledColor: Colors.black,
-                        items: data.map((item) {
-                          return new DropdownMenuItem(
-                            child: new Text(item['Course Title']),
-                            value: item['Course Title'].toString(),
-                          );
-                        }).toList(),
-                        // _items.map((item) {
-                        //   return DropdownMenuItem(
-                        //     child: new Text(item),
-                        //     value: item,
-                        //   );
-                        // }).toList(),
-                        value: selectedSub,
-                        hint: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Text("Select Course"),
+              // notes ? notespage() : questionpage(),
+              SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    // SizedBox(height: size.height * 0.02),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 2.0, color: color),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        searchHint: Text("Select one"),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedSub = value;
+                        child: SearchableDropdown(
+                          key: dropdownKey,
+                          //ese SearchableDropdown.single for suffix icon
+                          underline: SizedBox(width: 20),
+                          iconEnabledColor: kPrimaryColor,
+                          iconDisabledColor: Colors.black,
+                          items: data.map((item) {
+                            return new DropdownMenuItem(
+                              child: new Text(item['Course Title']),
+                              value: item['Course Title'].toString(),
+                            );
+                          }).toList(),
+                          // _items.map((item) {
+                          //   return DropdownMenuItem(
+                          //     child: new Text(item),
+                          //     value: item,
+                          //   );
+                          // }).toList(),
+                          value: selectedSub,
+                          hint: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text("Select Course"),
+                          ),
+                          searchHint: Text("Select one"),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedSub = value;
 
-                            for (dynamic items in data) {
-                              if (items['Course Title'] == value) {
-                                selectedSubCode = items['Course Code'];
-                                selectedSubyear = items['Year'].toString();
-                                selectedSubbranch = items['Branch'];
-                                selectedSubdept = items['Dept'];
+                              for (dynamic items in data) {
+                                if (items['Course Title'] == value) {
+                                  selectedSubCode = items['Course Code'];
+                                  selectedSubyear = items['Year'].toString();
+                                  selectedSubbranch = items['Branch'];
+                                  selectedSubdept = items['Dept'];
+                                }
                               }
-                            }
-                            color = kPrimaryColor;
+                              color = kPrimaryColor;
 
-                            // width_dropd = 2.0;
-                          });
+                              // width_dropd = 2.0;
+                            });
+                          },
+                          isExpanded: true,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+
+                      ///change radiobutton and use [preSelectedDoc] as the changed [value]
+                      child: CustomRadioButton(
+                        autoWidth: false,
+                        width: 150,
+                        enableShape: true,
+                        elevation: 5.0,
+                        buttonColor: Theme.of(context).canvasColor,
+                        buttonLables: [
+                          "Notes",
+                          "Question Paper",
+                        ],
+                        buttonValues: [
+                          "Notes",
+                          "Question_Paper",
+                        ],
+                        radioButtonValue: (value) => {
+                          setState(() {
+                            preSelectedDoc = value;
+                          }),
                         },
-                        isExpanded: true,
+                        selectedColor: kPrimaryColor,
                       ),
                     ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-
-                    ///change radiobutton and use [preSelectedDoc] as the changed [value]
-                    child: CustomRadioButton(
-                      autoWidth: false,
-                      width: 150,
-                      enableShape: true,
-                      elevation: 5.0,
-                      buttonColor: Theme.of(context).canvasColor,
-                      buttonLables: [
-                        "Notes",
-                        "Question Paper",
-                      ],
-                      buttonValues: [
-                        "Notes",
-                        "Question_Paper",
-                      ],
-                      radioButtonValue: (value) => {
-                        setState(() {
-                          preSelectedDoc = value;
-                        }),
-                      },
-                      selectedColor: kPrimaryColor,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 15),
-                        child: cameraimage
-                            ? null
-                            : Text("Tap on Image to select File❓"),
-                      ),
-                      Container(
-                        child: cameraimage
-                            ? Container(
-                                height: size.height * 0.30,
-                                child: new Builder(
-                                  builder: (BuildContext context) =>
-                                      GestureDetector(
-                                          child: Container(
-                                    child: Image.file(_imagefile),
-                                  )),
-                                ))
-                            : Container(
-                                height: size.height * 0.30,
-                                child: new Builder(
-                                  builder: (BuildContext context) =>
-                                      GestureDetector(
-                                    onTap: () {
-                                      _openFileExplorer();
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                            "assets/images/uploaddone.png",
+                    SizedBox(height: 8),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15),
+                          child: cameraimage
+                              ? null
+                              : Text("Tap on Image to select File❓"),
+                        ),
+                        Container(
+                          child: cameraimage
+                              ? Container(
+                                  height: size.height * 0.30,
+                                  child: new Builder(
+                                    builder: (BuildContext context) =>
+                                        GestureDetector(
+                                            child: Container(
+                                      child: Image.file(_imagefile),
+                                    )),
+                                  ))
+                              : Container(
+                                  height: size.height * 0.30,
+                                  child: new Builder(
+                                    builder: (BuildContext context) =>
+                                        GestureDetector(
+                                      onTap: () {
+                                        _openFileExplorer();
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage(
+                                              "assets/images/uploaddone.png",
+                                            ),
+                                            fit: BoxFit.contain,
                                           ),
-                                          fit: BoxFit.contain,
                                         ),
-                                      ),
-                                      child: _loadingPath
-                                          ? GestureDetector(
-                                              onTap: () {
-                                                _openFileExplorer();
-                                              },
-                                              // child: Container(
-                                              //   decoration: BoxDecoration(
-                                              //     image: DecorationImage(
-                                              //       image: AssetImage(
-                                              //         "assets/images/uploaddone.png",
-                                              //       ),
-                                              //       fit: BoxFit.contain,
-                                              //     ),
-                                              //   ),
-                                              // ),
-                                            )
-                                          : multifile != null || _paths != null
-                                              ? new Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 10.0),
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.50,
-                                                  child: new Scrollbar(
-                                                    child: new ListView.builder(
-                                                      itemCount: multifile !=
-                                                                  null &&
-                                                              multifile
-                                                                  .isNotEmpty
-                                                          ? multifile.length
-                                                          : 1,
-                                                      itemBuilder:
-                                                          (BuildContext context,
-                                                              int index) {
-                                                        final String name =
-                                                            'File $index: ' +
-                                                                multifile[index]
-                                                                    .toString()
-                                                                    .split('/')
-                                                                    .last;
-                                                        return Container(
-                                                          margin: EdgeInsets
-                                                              .fromLTRB(
-                                                                  8.0,
-                                                                  8.0,
-                                                                  8.0,
-                                                                  0.0),
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color:
-                                                                kPrimaryLightColor,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15),
-                                                          ),
-                                                          child: new ListTile(
-                                                            leading:
-                                                                CircleAvatar(
-                                                              backgroundColor:
-                                                                  Colors.white,
-                                                              child: Icon(
-                                                                Icons
-                                                                    .attachment,
+                                        child: _loadingPath
+                                            ? GestureDetector(
+                                                onTap: () {
+                                                  _openFileExplorer();
+                                                },
+                                                // child: Container(
+                                                //   decoration: BoxDecoration(
+                                                //     image: DecorationImage(
+                                                //       image: AssetImage(
+                                                //         "assets/images/uploaddone.png",
+                                                //       ),
+                                                //       fit: BoxFit.contain,
+                                                //     ),
+                                                //   ),
+                                                // ),
+                                              )
+                                            : multifile != null ||
+                                                    _paths != null
+                                                ? new Container(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 10.0),
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.50,
+                                                    child: new Scrollbar(
+                                                      child:
+                                                          new ListView.builder(
+                                                        itemCount: multifile !=
+                                                                    null &&
+                                                                multifile
+                                                                    .isNotEmpty
+                                                            ? multifile.length
+                                                            : 1,
+                                                        itemBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                int index) {
+                                                          final String name =
+                                                              'File $index: ' +
+                                                                  multifile[
+                                                                          index]
+                                                                      .toString()
+                                                                      .split(
+                                                                          '/')
+                                                                      .last;
+                                                          total = index + 1;
+                                                          // rem = total;
+                                                          return Container(
+                                                            margin: EdgeInsets
+                                                                .fromLTRB(
+                                                                    8.0,
+                                                                    8.0,
+                                                                    8.0,
+                                                                    0.0),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  kPrimaryLightColor,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15),
+                                                            ),
+                                                            child: new ListTile(
+                                                              leading:
+                                                                  CircleAvatar(
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .white,
+                                                                child: Icon(
+                                                                  Icons
+                                                                      .attachment,
+                                                                  color: Colors
+                                                                      .green,
+                                                                ),
+                                                              ),
+                                                              trailing: Icon(
+                                                                Icons.check,
                                                                 color: Colors
                                                                     .green,
                                                               ),
+                                                              title: new Text(
+                                                                  name),
                                                             ),
-                                                            trailing: Icon(
-                                                              Icons.check,
-                                                              color:
-                                                                  Colors.green,
-                                                            ),
-                                                            title:
-                                                                new Text(name),
-                                                          ),
-                                                        );
-                                                      },
+                                                          );
+                                                        },
+                                                      ),
                                                     ),
-                                                  ),
-                                                )
-                                              : new Container(
-                                                  // child: Image.asset(
-                                                  //   "assets/images/upload.png",
-                                                  //   width: size.width * 0.70,
-                                                  // ),
-                                                  ),
-                                    ),
-                                  ),
-                                )),
-                      ),
-                      SizedBox(height: size.height * 0.03),
-                      new Column(
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () {
-                              _clearCachedFiles();
-                            },
-                            child: Text(
-                              "Clear present files",
-                              style: TextStyle(
-                                color: kPrimaryColor,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: size.height * 0.02),
-                          cameraimage
-                              ? GestureDetector(
-                                  onTap: () {
-                                    // setState(() {
-                                    setState(() async {
-                                      // get file name
-                                      _fileName =
-                                          _imagefile.toString().split('/').last;
-
-                                      if (_imagefile != null &&
-                                          selectedSub != null) {
-                                        // uploading = true;
-
-                                        //call uploading function
-                                        await makefolder();
-                                        await savedoc(_imagefile, _fileName);
-                                      } else {
-                                        setState(() {
-                                          openDropdown();
-                                        });
-                                      }
-                                    });
-                                    _clearCachedFiles();
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.symmetric(vertical: 10),
-                                    width: size.width * 0.5,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(29),
-                                      child: Container(
-                                        color: kPrimaryColor,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 15, horizontal: 10),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text(
-                                              "Upload Image",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20.0),
-                                            ),
-                                            SizedBox(width: size.width * 0.02),
-                                            Icon(
-                                              Icons.file_upload,
-                                              color: Colors.white,
-                                            ),
-                                          ],
-                                        ),
+                                                  )
+                                                : new Container(
+                                                    // child: Image.asset(
+                                                    //   "assets/images/upload.png",
+                                                    //   width: size.width * 0.70,
+                                                    // ),
+                                                    ),
                                       ),
                                     ),
-                                  ),
-                                )
-                              : GestureDetector(
-                                  onTap: () {
-                                    // setState(() {
-                                    setState(() async {
+                                  )),
+                        ),
+                        SizedBox(height: size.height * 0.03),
+                        new Column(
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () {
+                                _clearCachedFiles();
+                              },
+                              child: Text(
+                                "Clear present files",
+                                style: TextStyle(
+                                  color: kPrimaryColor,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: size.height * 0.02),
+                            cameraimage
+                                ? GestureDetector(
+                                    onTap: () {
+                                      // setState(() {
+                                      setState(() async {
+                                        // get file name
+                                        _fileName = _imagefile
+                                            .toString()
+                                            .split('/')
+                                            .last;
+
+                                        if (_imagefile != null &&
+                                            selectedSub != null) {
+                                          // uploading = true;
+
+                                          //call uploading function
+                                          await makefolder();
+                                          await savedoc(_imagefile, _fileName);
+                                        } else {
+                                          setState(() {
+                                            openDropdown();
+                                          });
+                                        }
+                                      });
+                                      _clearCachedFiles();
+                                    },
+                                    child: Container(
+                                      margin:
+                                          EdgeInsets.symmetric(vertical: 10),
+                                      width: size.width * 0.5,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(29),
+                                        child: isLoading
+                                            ? Container(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Center(
+                                                      child: Image.asset(
+                                                        "assets/images/load.gif",
+                                                        color: kPrimaryColor,
+                                                        width: size.width * 0.3,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "Uploading...",
+                                                      style: TextStyle(
+                                                        color: kPrimaryColor,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                            : Container(
+                                                color: kPrimaryColor,
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 15,
+                                                    horizontal: 10),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      "Upload Image",
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 20.0),
+                                                    ),
+                                                    SizedBox(
+                                                        width:
+                                                            size.width * 0.02),
+                                                    Icon(
+                                                      Icons.file_upload,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                      ),
+                                    ),
+                                  )
+                                : GestureDetector(
+                                    onTap: () async {
+                                      // setState(() {
+                                      i = 0;
                                       for (File file in multifile) {
+                                        setState(() {
+                                          isLoading = true;
+                                          i = i + 1;
+                                        });
                                         // get file name
                                         _fileName =
                                             file.toString().split('/').last;
@@ -602,55 +662,86 @@ class _UploadPageState extends State<UploadPage> {
                                           //call uploading function
                                           await makefolder();
                                           await savedoc(file, _fileName);
+                                          setState(() {
+                                            isLoading = false;
+                                          });
                                         } else {
                                           setState(() {
+                                            isLoading = false;
                                             openDropdown();
                                           });
                                         }
                                       }
-                                      // uploading = false;
-                                    });
-                                    _clearCachedFiles();
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.symmetric(vertical: 10),
-                                    width: size.width * 0.5,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(29),
-                                      child: Container(
-                                        color: kPrimaryColor,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 15, horizontal: 10),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Text(
-                                              "Upload",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20.0),
-                                            ),
-                                            SizedBox(width: size.width * 0.02),
-                                            Icon(
-                                              Icons.file_upload,
-                                              color: Colors.white,
-                                            ),
-                                          ],
-                                        ),
+                                      _clearCachedFiles();
+                                    },
+                                    child: Container(
+                                      margin:
+                                          EdgeInsets.symmetric(vertical: 10),
+                                      width: size.width * 0.5,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(29),
+                                        child: isLoading
+                                            ? Container(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Center(
+                                                      child: Image.asset(
+                                                        "assets/images/load.gif",
+                                                        color: kPrimaryColor,
+                                                        width: size.width * 0.3,
+                                                      ),
+                                                    ),
+                                                    rem == 2
+                                                        ? Text(
+                                                            'ALL DONE 👍',
+                                                          )
+                                                        : Text(
+                                                            '$rem / $total Uploading...',
+                                                            
+                                                          ),
+                                                  ],
+                                                ),
+                                              )
+                                            : Container(
+                                                color: kPrimaryColor,
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 15,
+                                                    horizontal: 10),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      "Upload",
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 20.0),
+                                                    ),
+                                                    SizedBox(
+                                                        width:
+                                                            size.width * 0.02),
+                                                    Icon(
+                                                      Icons.file_upload,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
                                       ),
                                     ),
                                   ),
-                                ),
-                          SizedBox(height: size.height * 0.02),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
+                            SizedBox(height: size.height * 0.02),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

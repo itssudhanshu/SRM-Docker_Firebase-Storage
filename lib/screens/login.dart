@@ -91,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 //   height: size.height * 0.35,
                 // ),
                 Container(
-                  child: Image.asset('assets/images/docker_logo.png'),
+                  child: Image.asset('assets/images/logobg.png'),
                 ),
                 SizedBox(height: size.height * 0.03),
                 Container(

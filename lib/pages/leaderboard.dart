@@ -94,11 +94,11 @@ class _LeaderboardState extends State<Leaderboard>
                         heightFactor: 0.8,
                         widthFactor: 0.7,
                         child: ClipOval(
-                            child: profilepic == null
+                            child: profilepic == "null"
                                 ? Icon(
                                     Icons.person,
                                     size: 40,
-                                    color: Colors.purple,
+                                    color: Colors.white,
                                   )
                                 : Image.network(
                                     profilepic,
@@ -271,6 +271,7 @@ class _LeaderboardState extends State<Leaderboard>
                       if (snapshot.data == null) {
                         return Loading();
                       }
+
                       final usersdata = snapshot.data.documents.toList();
                       usersdata
                           .sort((a, b) => b['uploads'].compareTo(a['uploads']));

@@ -76,13 +76,13 @@ class _AccountPageState extends State<AccountPage> {
     getSWData();
     checkCached();
     timer = Timer.periodic(Duration(seconds: 10), (timer) async {
-      print('timer called');
+      // print('timer called');
       this.getCurrentUser();
     });
   }
 
   Future getimagefromgallery() async {
-    var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery,imageQuality: 50);
     try {
       setState(() {
         sampleImage = tempImage;
