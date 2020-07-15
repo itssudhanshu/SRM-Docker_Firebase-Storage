@@ -5,6 +5,18 @@
 
 <h3 align="center">An Automated Cross-Platform for Documents Sharing</h3>
 
+Features - 
+
+* __Subject Page__ - List of all subjects and their individual document page.
+
+* __Upload Document__ - It is the USP(Unique Selling Point) of the App in which user can itself add the documents for others.
+
+* __Leaderboard__ - An automatic leaderboard generator which shows the ranks of users who with highest document uploader.
+
+* __Profile Page__ - A personalised profile page for the user.
+
+The app has __Feedback Feature and Report Feature__ to report unwanted documents.
+
 ---
 
 ### How to use the App   
